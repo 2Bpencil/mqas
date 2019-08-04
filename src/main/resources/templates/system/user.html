@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="layout/default :: head('Index Page','')"></head>
+
+<body class="">
+
+    <div id="wrapper">
+        <nav th:replace="layout/default :: nav"></nav>
+        <div id="page-wrapper" class="gray-bg" >
+            <!--铃铛 邮件 退出-->
+            <div class="row border-bottom" >
+                <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:onclick="'javascript:userLogOut()'">
+                                <i class="fa fa-sign-out"></i> Log out
+                            </a>
+
+                        </li>
+                    </ul>
+
+                </nav>
+            </div >
+            <!--面包屑-->
+            <div class="row wrapper border-bottom white-bg page-heading" th:replace="layout/default :: breadcrumb"></div>
+            <div class="wrapper wrapper-content">
+                <div class="middle-box text-center animated fadeInRightBig">
+                    <h3 class="font-bold">This is page content</h3>
+
+
+                    <h3 data-sec-authorize="hasRole('ROLE_ADMIN')">
+                        这部分内容当用户角色为为ADMIN时显示
+                    </h3>
+                    <p> 登录用户为：<span sec:authentication="name"></span></p>
+                    Roles: <span sec:authentication="principal.authorities"></span>
+
+                    <h6>hahha </h6>
+
+                    <div th:text="${session.curMenu}">[...]</div>
+
+
+                    <div class="error-desc">
+                        You can create here any grid layout you want. And any variation layout you imagine:) Check out
+                        main dashboard and other site. It use many different layout.
+                        <br/><a href="index.html" class="btn btn-primary m-t">Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="layout/default :: foot"></div>
+        </div>
+    </div>
+    <div th:replace="layout/default :: js('')"></div>
+</body>
+
+</html>

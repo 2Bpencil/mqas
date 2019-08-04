@@ -14247,3 +14247,95 @@ Caused by: java.io.FileNotFoundException: class path resource [templates/excepti
 2019-08-04 22:09:44.360  INFO 10164 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 96 ms
 2019-08-04 22:09:48.100  INFO 10164 --- [http-nio-8085-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
 2019-08-04 22:09:52.377  INFO 10164 --- [http-nio-8085-exec-3] .t.m.c.s.SysAuthenticationSuccessHandler : 用户-tyf-登录成功!
+2019-08-04 22:11:03.639  INFO 24424 --- [main] com.tyf.mqas.MqasApplication             : Starting MqasApplication on DESKTOP-HJQURCO with PID 24424 (D:\developer-kits\idea-project\mqas\target\classes started by 63250 in D:\developer-kits\idea-project\mqas)
+2019-08-04 22:11:03.641  INFO 24424 --- [main] com.tyf.mqas.MqasApplication             : No active profile set, falling back to default profiles: default
+2019-08-04 22:11:04.092  INFO 24424 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-08-04 22:11:04.140  INFO 24424 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 44ms. Found 3 repository interfaces.
+2019-08-04 22:11:04.341  INFO 24424 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ea281022] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-08-04 22:11:04.496  INFO 24424 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8085 (http)
+2019-08-04 22:11:04.508  INFO 24424 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-08-04 22:11:04.509  INFO 24424 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-04 22:11:04.586  INFO 24424 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-08-04 22:11:04.587  INFO 24424 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 923 ms
+2019-08-04 22:11:04.814  INFO 24424 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2019-08-04 22:11:04.896  INFO 24424 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-08-04 22:11:04.932  INFO 24424 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.10.Final}
+2019-08-04 22:11:04.933  INFO 24424 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-08-04 22:11:05.007  INFO 24424 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-08-04 22:11:05.143  INFO 24424 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2019-08-04 22:11:05.504  INFO 24424 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-08-04 22:11:05.627  WARN 24424 --- [main] c.t.m.c.s.SysFilterSecurityInterceptor   : Could not validate configuration attributes as the SecurityMetadataSource did not return any attributes from getAllConfigAttributes()
+2019-08-04 22:11:05.652  INFO 24424 --- [main] c.t.m.c.s.SysFilterSecurityInterceptor   : 初始化security拦截器
+2019-08-04 22:11:05.733  INFO 24424 --- [main] com.tyf.mqas.config.webMvc.MvcConfig     : ********************加载WebConfig************************* 
+2019-08-04 22:11:05.807  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/js/**'], []
+2019-08-04 22:11:05.807  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/css/**'], []
+2019-08-04 22:11:05.808  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/fonts/**'], []
+2019-08-04 22:11:05.808  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/img/**'], []
+2019-08-04 22:11:05.808  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/font-awesome/**'], []
+2019-08-04 22:11:05.808  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/email_templates/**'], []
+2019-08-04 22:11:05.824  INFO 24424 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@720a1fd0, org.springframework.security.web.context.SecurityContextPersistenceFilter@6f3b13d0, org.springframework.security.web.header.HeaderWriterFilter@1999149e, org.springframework.security.web.csrf.CsrfFilter@6e5f5478, org.springframework.security.web.authentication.logout.LogoutFilter@1ccdc7aa, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@b94703b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6e9a10cd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3dde5f38, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5ab7ac02, org.springframework.security.web.session.SessionManagementFilter@27896d3b, org.springframework.security.web.access.ExceptionTranslationFilter@63a84bb6, com.tyf.mqas.config.security.SysFilterSecurityInterceptor@43c39321, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2037f12b]
+2019-08-04 22:11:05.842  WARN 24424 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2019-08-04 22:11:06.155  WARN 24424 --- [main] org.thymeleaf.templatemode.TemplateMode  : [THYMELEAF][main] Template Mode 'HTML5' is deprecated. Using Template Mode 'HTML' instead.
+2019-08-04 22:11:06.205  INFO 24424 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8085 (http) with context path ''
+2019-08-04 22:11:06.256  INFO 24424 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8084 (http)
+2019-08-04 22:11:06.257  INFO 24424 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-08-04 22:11:06.257  INFO 24424 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-04 22:11:06.275  INFO 24424 --- [main] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2019-08-04 22:11:06.275  INFO 24424 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 68 ms
+2019-08-04 22:11:06.301  INFO 24424 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2019-08-04 22:11:06.330  INFO 24424 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8084 (http) with context path ''
+2019-08-04 22:11:06.331  INFO 24424 --- [main] com.tyf.mqas.MqasApplication             : Started MqasApplication in 2.933 seconds (JVM running for 3.406)
+2019-08-04 22:11:06.507  INFO 24424 --- [RMI TCP Connection(4)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-08-04 22:11:06.507  INFO 24424 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-08-04 22:11:06.610  INFO 24424 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 103 ms
+2019-08-04 22:11:10.141  INFO 24424 --- [http-nio-8085-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2019-08-04 22:11:14.586  INFO 24424 --- [http-nio-8085-exec-3] .t.m.c.s.SysAuthenticationSuccessHandler : 用户-tyf-登录成功!
+2019-08-04 22:18:19.742  INFO 22240 --- [main] com.tyf.mqas.MqasApplication             : Starting MqasApplication on DESKTOP-HJQURCO with PID 22240 (D:\developer-kits\idea-project\mqas\target\classes started by 63250 in D:\developer-kits\idea-project\mqas)
+2019-08-04 22:18:19.744  INFO 22240 --- [main] com.tyf.mqas.MqasApplication             : No active profile set, falling back to default profiles: default
+2019-08-04 22:18:20.202  INFO 22240 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-08-04 22:18:20.251  INFO 22240 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 45ms. Found 3 repository interfaces.
+2019-08-04 22:18:20.459  INFO 22240 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$b59ce9a7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-08-04 22:18:20.620  INFO 22240 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8085 (http)
+2019-08-04 22:18:20.632  INFO 22240 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-08-04 22:18:20.633  INFO 22240 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-04 22:18:20.712  INFO 22240 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-08-04 22:18:20.712  INFO 22240 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 948 ms
+2019-08-04 22:18:20.945  INFO 22240 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2019-08-04 22:18:21.027  INFO 22240 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-08-04 22:18:21.065  INFO 22240 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.10.Final}
+2019-08-04 22:18:21.067  INFO 22240 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-08-04 22:18:21.142  INFO 22240 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-08-04 22:18:21.283  INFO 22240 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2019-08-04 22:18:21.656  INFO 22240 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-08-04 22:18:21.783  WARN 22240 --- [main] c.t.m.c.s.SysFilterSecurityInterceptor   : Could not validate configuration attributes as the SecurityMetadataSource did not return any attributes from getAllConfigAttributes()
+2019-08-04 22:18:21.809  INFO 22240 --- [main] c.t.m.c.s.SysFilterSecurityInterceptor   : 初始化security拦截器
+2019-08-04 22:18:21.887  INFO 22240 --- [main] com.tyf.mqas.config.webMvc.MvcConfig     : ********************加载WebConfig************************* 
+2019-08-04 22:18:21.972  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/js/**'], []
+2019-08-04 22:18:21.973  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/css/**'], []
+2019-08-04 22:18:21.973  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/fonts/**'], []
+2019-08-04 22:18:21.973  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/img/**'], []
+2019-08-04 22:18:21.973  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/font-awesome/**'], []
+2019-08-04 22:18:21.973  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/email_templates/**'], []
+2019-08-04 22:18:21.989  INFO 22240 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@57c6feea, org.springframework.security.web.context.SecurityContextPersistenceFilter@7534785a, org.springframework.security.web.header.HeaderWriterFilter@37fef327, org.springframework.security.web.csrf.CsrfFilter@46b6701e, org.springframework.security.web.authentication.logout.LogoutFilter@98637a2, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3a3ad8e7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3ba3f40d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5908e6d6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3b57f915, org.springframework.security.web.session.SessionManagementFilter@55951fcd, org.springframework.security.web.access.ExceptionTranslationFilter@4ab66127, com.tyf.mqas.config.security.SysFilterSecurityInterceptor@370c7cc5, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2ae5bd34]
+2019-08-04 22:18:22.008  WARN 22240 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2019-08-04 22:18:22.323  WARN 22240 --- [main] org.thymeleaf.templatemode.TemplateMode  : [THYMELEAF][main] Template Mode 'HTML5' is deprecated. Using Template Mode 'HTML' instead.
+2019-08-04 22:18:22.373  INFO 22240 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8085 (http) with context path ''
+2019-08-04 22:18:22.425  INFO 22240 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8084 (http)
+2019-08-04 22:18:22.426  INFO 22240 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-08-04 22:18:22.426  INFO 22240 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-04 22:18:22.445  INFO 22240 --- [main] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2019-08-04 22:18:22.445  INFO 22240 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 70 ms
+2019-08-04 22:18:22.471  INFO 22240 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2019-08-04 22:18:22.501  INFO 22240 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8084 (http) with context path ''
+2019-08-04 22:18:22.502  INFO 22240 --- [main] com.tyf.mqas.MqasApplication             : Started MqasApplication in 3.008 seconds (JVM running for 3.448)
+2019-08-04 22:18:22.632  INFO 22240 --- [RMI TCP Connection(5)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-08-04 22:18:22.632  INFO 22240 --- [RMI TCP Connection(5)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-08-04 22:18:22.731  INFO 22240 --- [RMI TCP Connection(5)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 99 ms
+2019-08-04 22:18:24.992  INFO 22240 --- [http-nio-8085-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2019-08-04 22:18:29.631  INFO 22240 --- [http-nio-8085-exec-3] .t.m.c.s.SysAuthenticationSuccessHandler : 用户-tyf-登录成功!
+2019-08-04 22:18:37.688  INFO 22240 --- [http-nio-8085-exec-9] .t.m.c.s.SysAuthenticationSuccessHandler : 用户-tyf-登录成功!
+2019-08-04 22:18:43.718  INFO 22240 --- [http-nio-8085-exec-4] .t.m.c.s.SysAuthenticationSuccessHandler : 用户-tyf-登录成功!
