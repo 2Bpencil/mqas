@@ -2,11 +2,20 @@ package com.tyf.mqas.code.controller;
 
 
 
-import com.tyf.mqas.code.service.impl.UserServiceImpl;
+import com.tyf.mqas.code.service.UserService;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -14,12 +23,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
     @RequestMapping(value = "userManage",method = RequestMethod.GET)
     public String userManage(){
-        return "system/user";
+        return "user";
     }
 
+    @RequestMapping(value = "getTableJson",method = RequestMethod.GET)
+    public void getTableJson(HttpServletRequest request, HttpServletResponse response){
+        List<Map<String,Object>> list = new ArrayList<>();
+        for (int i = 0; i < 10 ; i++) {
+            Map<String,Object> map = new HashMap<>(5);
+            map.put("first_name","aaa"+i);
+            map.put("last_name","bbb"+i);
+            map.put("position","ccc"+i);
+            map.put("office","ddd"+i);
+            map.put("start_date","eee"+i);
+            list.add(map);
+        }
+        Map<String,Object> dataMap = new HashMap<>();
+        dataMap.put("draw",1);
+        dataMap.put("recordsTotal",53);
+        dataMap.put("recordsFiltered",53);
+        dataMap.put("data",list);
 
+
+
+        String json = JSONObject.fromObject(dataMap).toString();
+        System.out.println(json);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

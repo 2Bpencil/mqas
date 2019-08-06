@@ -3,7 +3,7 @@ package com.tyf.mqas.config.security;
 import com.tyf.mqas.code.dao.MenuRepository;
 import com.tyf.mqas.code.entity.Menu;
 import com.tyf.mqas.code.entity.Role;
-import com.tyf.mqas.code.service.impl.RoleServiceImpl;
+import com.tyf.mqas.code.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -19,7 +19,7 @@ import java.util.*;
 public class SysInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     @Autowired
-    private RoleServiceImpl roleService;
+    private RoleService roleService;
     @Autowired
     private MenuRepository menuRepository;
 

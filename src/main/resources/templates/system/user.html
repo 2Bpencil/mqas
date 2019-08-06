@@ -6,58 +6,59 @@
 
 <body class="">
 
-    <div id="wrapper">
-        <nav th:replace="layout/default :: nav"></nav>
-        <div id="page-wrapper" class="gray-bg" >
-            <!--铃铛 邮件 退出-->
-            <div class="row border-bottom" >
-                <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
-                    <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+<div id="wrapper">
+    <nav th:replace="layout/default :: nav"></nav>
+    <div id="page-wrapper" class="gray-bg" >
+        <!--铃铛 邮件 退出-->
+        <div class="row border-bottom" >
+            <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                    </li>
+                    <li>
+                        <a href="javascript:;" th:onclick="'javascript:userLogOut()'">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+
+                    </li>
+                </ul>
+
+            </nav>
+        </div >
+        <!--面包屑-->
+        <div class="row wrapper border-bottom white-bg page-heading" th:replace="layout/default :: breadcrumb"></div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>jQuery Grid Plugin – jqGrid</h5>
                     </div>
-                    <ul class="nav navbar-top-links navbar-right">
-                        <li>
-                            <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
-                        </li>
-                        <li>
-                            <a href="javascript:;" th:onclick="'javascript:userLogOut()'">
-                                <i class="fa fa-sign-out"></i> Log out
-                            </a>
+                    <div class="ibox-content">
+                        <p>
+                            <strong>jqGrid</strong> is an Ajax-enabled JavaScript control that provides solutions for representing and manipulating tabular data on the web. Since the grid is a client-side solution loading data dynamically through Ajax callbacks, it can be integrated with any server-side technology, including PHP, ASP, Java Servlets, JSP, ColdFusion, and Perl.
+                            jqGrid uses a jQuery Java Script Library and is written as plugin for that package. For more information on jQuery Grid, please refer to the <a target="_blank" href="http://www.trirand.com/blog/"> jqGrid web site.</a>
+                        </p>
 
-                        </li>
-                    </ul>
+                        <h4>Basic example</h4>
 
-                </nav>
-            </div >
-            <!--面包屑-->
-            <div class="row wrapper border-bottom white-bg page-heading" th:replace="layout/default :: breadcrumb"></div>
-            <div class="wrapper wrapper-content">
-                <div class="middle-box text-center animated fadeInRightBig">
-                    <h3 class="font-bold">This is page content</h3>
-
-
-                    <h3 data-sec-authorize="hasRole('ROLE_ADMIN')">
-                        这部分内容当用户角色为为ADMIN时显示
-                    </h3>
-                    <p> 登录用户为：<span sec:authentication="name"></span></p>
-                    Roles: <span sec:authentication="principal.authorities"></span>
-
-                    <h6>hahha </h6>
-
-                    <div th:text="${session.curMenu}">[...]</div>
-
-
-                    <div class="error-desc">
-                        You can create here any grid layout you want. And any variation layout you imagine:) Check out
-                        main dashboard and other site. It use many different layout.
-                        <br/><a href="index.html" class="btn btn-primary m-t">Dashboard</a>
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_1"></table>
+                            <div id="pager_list_1"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div th:replace="layout/default :: foot"></div>
         </div>
+        </div>
+        <div th:replace="layout/default :: foot"></div>
     </div>
-    <div th:replace="layout/default :: js('')"></div>
+</div>
+<div th:replace="layout/default :: js('/js/user/user.js')"></div>
 </body>
 
 </html>

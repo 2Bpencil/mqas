@@ -1,6 +1,6 @@
 package com.tyf.mqas.config.security;
 
-import com.tyf.mqas.code.service.impl.UserServiceImpl;
+import com.tyf.mqas.code.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ import java.util.Set;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
     @Autowired
     private SysFilterSecurityInterceptor sysFilterSecurityInterceptor;
     @Autowired

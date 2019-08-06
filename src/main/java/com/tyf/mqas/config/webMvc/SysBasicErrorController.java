@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Date: 2019/7/11 19:41
  * @Description:自定义错误页面
  */
-//@Controller
+@Controller
 public class SysBasicErrorController implements  ErrorController {
 
     private static final String ERROR_PATH = "/error";
@@ -25,7 +25,7 @@ public class SysBasicErrorController implements  ErrorController {
     public String errorHtml(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 
-        if(statusCode == 4003){
+        if(statusCode == 403){
             return "exception/403";
         }else if(statusCode == 404){
             return "exception/404";

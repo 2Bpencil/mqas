@@ -2,7 +2,7 @@ package com.tyf.mqas.config.security;
 
 import com.tyf.mqas.code.dao.UserRepository;
 import com.tyf.mqas.code.entity.User;
-import com.tyf.mqas.code.service.impl.MenuServiceImpl;
+import com.tyf.mqas.code.service.MenuService;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class SysAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private MenuServiceImpl menuService;
+    private MenuService menuService;
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
