@@ -1,75 +1,87 @@
-var grid_selector = "#table_list_1";
-var pager_selector = "#pager_list_1";
-$(document).ready(function () {
-
-
-    // Examle data for jqGrid
-    var mydata = [
-        {id: "1", invdate: "2010-05-24", name: "test", note: "note", tax: "10.00", total: "2111.00"} ,
-        {id: "2", invdate: "2010-05-25", name: "test2", note: "note2", tax: "20.00", total: "320.00"},
-        {id: "3", invdate: "2007-09-01", name: "test3", note: "note3", tax: "30.00", total: "430.00"},
-        {id: "4", invdate: "2007-10-04", name: "test", note: "note", tax: "10.00", total: "210.00"},
-        {id: "5", invdate: "2007-10-05", name: "test2", note: "note2", tax: "20.00", total: "320.00"},
-        {id: "6", invdate: "2007-09-06", name: "test3", note: "note3", tax: "30.00", total: "430.00"},
-        {id: "7", invdate: "2007-10-04", name: "test", note: "note", tax: "10.00", total: "210.00"},
-        {id: "8", invdate: "2007-10-03", name: "test2", note: "note2", amount: "300.00", tax: "21.00", total: "320.00"},
-        {id: "9", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "11", invdate: "2007-10-01", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "12", invdate: "2007-10-02", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "13", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "14", invdate: "2007-10-04", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "15", invdate: "2007-10-05", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "16", invdate: "2007-09-06", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "17", invdate: "2007-10-04", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "18", invdate: "2007-10-03", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "19", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "21", invdate: "2007-10-01", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "22", invdate: "2007-10-02", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "23", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "24", invdate: "2007-10-04", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "25", invdate: "2007-10-05", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "26", invdate: "2007-09-06", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"},
-        {id: "27", invdate: "2007-10-04", name: "test", note: "note", amount: "200.00", tax: "10.00", total: "210.00"},
-        {id: "28", invdate: "2007-10-03", name: "test2", note: "note2", amount: "300.00", tax: "20.00", total: "320.00"},
-        {id: "29", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", total: "430.00"}
-    ];
-
-    // Configuration for jqGrid Example 1
-    $(grid_selector).jqGrid({
-        data: mydata,
-        datatype: "local",
-        height: 500,
-        autowidth: true,
-        shrinkToFit: true,
-        multiselect : true,
-        multiboxonly : true,
-        rowNum: 10,
-        rowList: [10, 20, 30],
-        colNames: ['Inv No', 'Date', 'Client', 'Amount', 'Tax', 'Total', 'Notes'],
-        colModel: [
-            {name: 'id', index: 'id', width: 60, sorttype: "int"},
-            {name: 'invdate', index: 'invdate', width: 90, sorttype: "date", formatter: "date"},
-            {name: 'name', index: 'name', width: 100},
-            {name: 'amount', index: 'amount', width: 80, align: "right", sorttype: "float", formatter: "number"},
-            {name: 'tax', index: 'tax', width: 80, align: "right", sorttype: "float"},
-            {name: 'total', index: 'total', width: 80, align: "right", sorttype: "float"},
-            {name: 'note', index: 'note', width: 150, sortable: false}
-        ],
-        pager: pager_selector,
-        viewrecords: true,
-        caption: "demo",
-        hidegrid: false
-    });
-
-
-
-
-
-
-
-    // Add responsive to jqGrid
-    $(window).bind('resize', function () {
-        var width = $('.jqGrid_wrapper').width();
-        $('#table_list_1').setGridWidth(width);
-    });
+$(document).ready(function(){
+    initTable();
+    validateData();
 });
+
+/**
+ * 初始化表格
+ */
+function initTable(){
+    $('.dataTables-example').DataTable({
+        dom: '<"html5buttons"B>lTfgitp',
+        "serverSide": true,     // true表示使用后台分页
+        "ajax": {
+            "url": contextPath+"user/getTableJson",  // 异步传输的后端接口url
+            "type": "GET"      // 请求方式
+        },
+        "columns": [
+            { "data": "first_name" },
+            { "data": "last_name" },
+            { "data": "position" },
+            { "data": "office" },
+            { "data": "start_date" },
+        ],
+        buttons: [
+            { extend: 'copy'},
+            {extend: 'csv'},
+            {extend: 'excel', title: 'ExampleFile'},
+            {extend: 'pdf', title: 'ExampleFile'},
+
+            {extend: 'print',
+                customize: function (win){
+                    $(win.document.body).addClass('white-bg');
+                    $(win.document.body).css('font-size', '10px');
+
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                }
+            }
+        ],
+        language:{
+            lengthMenu:"每页显示 _MENU_条数据",
+            sSearch: "搜索: ",
+            info:"第_PAGE_/_PAGES_页, 显示第_START_到第_END_, 搜索到_TOTAL_/_MAX_条",
+            infoFiltered:"",
+            sProcessing: "正在加载数据，请稍等",
+            zeroRecords:"抱歉，没有数据",
+            paginate:{
+                previous: "上一页",
+                next: "下一页",
+                first: "第一页",
+                last: "最后"
+            }
+        }
+
+
+    });
+}
+/**
+ * 验证数据
+ */
+function validateData(){
+    $("#form").validate({
+        rules: {
+            password: {
+                required: true,
+                minlength: 3
+            },
+            url: {
+                required: true,
+                url: true
+            },
+            number: {
+                required: true,
+                number: true
+            },
+            min: {
+                required: true,
+                minlength: 6
+            },
+            max: {
+                required: true,
+                maxlength: 4
+            }
+        }
+    });
+}
