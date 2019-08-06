@@ -43,8 +43,8 @@ public class UserController {
         }
         Map<String,Object> dataMap = new HashMap<>();
         dataMap.put("draw",1);
-        dataMap.put("recordsTotal",53);
-        dataMap.put("recordsFiltered",53);
+        dataMap.put("recordsTotal",25);
+        dataMap.put("recordsFiltered",25);
         dataMap.put("data",list);
 
 
