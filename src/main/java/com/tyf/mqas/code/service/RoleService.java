@@ -5,6 +5,8 @@ import com.tyf.mqas.code.dao.RoleRepository;
 import com.tyf.mqas.code.entity.Menu;
 import com.tyf.mqas.code.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,4 +34,14 @@ public class RoleService {
     public List<Role> findByMenuId(Integer id) {
         return roleRepository.findByMenuId(id);
     }
+
+    /**
+     * 分页查询
+     * @param pageable
+     * @return
+     */
+    public Page<Role> getPages(Pageable pageable){
+        return roleRepository.findAll(pageable);
+    }
+
 }
