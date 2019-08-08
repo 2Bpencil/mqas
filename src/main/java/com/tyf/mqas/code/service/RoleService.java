@@ -31,6 +31,10 @@ public class RoleService {
         return allRoles;
     }
 
+    public List<Role> findAllTableData(){
+        return roleRepository.findAll();
+    }
+
     public List<Role> findByMenuId(Integer id) {
         return roleRepository.findByMenuId(id);
     }

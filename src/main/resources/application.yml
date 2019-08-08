@@ -1,6 +1,11 @@
 #访问端口
 server:
   port: 8085
+  tomcat:
+    uri-encoding: UTF-8
+
+
+
 
 spring:
     #***************************************数据源配置***************************************
@@ -52,6 +57,11 @@ spring:
       prefix: classpath:/templates/
       #在构建URL时添加到视图名称后的后缀（默认值：.html）
       suffix: .html
+    http:
+      encoding:
+        charset: UTF-8
+        force: true
+        enabled: true
 #******************************************应用监控配置*****************************************
 management:
   server:

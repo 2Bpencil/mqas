@@ -15,11 +15,14 @@ function initTable(){
             "type": "GET"      // 请求方式
         },
         "columns": [
-            { "data": "first_name" },
-            { "data": "last_name" },
-            { "data": "position" },
-            { "data": "office" },
-            { "data": "start_date" },
+            { "data": "id","visible": false },
+            { "data": "authority" },
+            { "data": "name" },
+            { "data": null,'render':function (data, type, row, meta) {
+                //data  和 row  是数据
+                    return '<button type="button" onclick="alert('+data.id+')" class="btn btn-primary btn-xs" >test</button>';// class="btn btn-w-m btn-link"
+                } },
+
         ],
         buttons: [
             { extend: 'copy'},
