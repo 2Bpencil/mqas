@@ -32,7 +32,12 @@ public class PageGetter<T> {
     public DataPage<T> getPages(Map<String,String[]> parameterMap){
         DataPage<T> page = new DataPage<>();
         page.setDraw(Integer.parseInt(parameterMap.get("draw").toString()));
+        int start = Integer.parseInt(parameterMap.get("start").toString());
         parameterMap.remove("draw");
+
+
+
+
 
 
 
