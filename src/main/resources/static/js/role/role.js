@@ -1,4 +1,6 @@
-var table;
+var roleTable;//表格对象
+var roleValidator;//表单验证
+var $table = "#role_table";
 $(document).ready(function(){
     initTable();
     validateData();
@@ -8,7 +10,7 @@ $(document).ready(function(){
  * 初始化表格
  */
 function initTable(){
-    table = $('.dataTables-example').DataTable({
+    roleTable = $($table).DataTable({
         dom: '<"html5buttons"B>lTfgitp',
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
@@ -16,15 +18,33 @@ function initTable(){
             "type": "GET"      // 请求方式
         },
         "columns": [
-            { "data": "id","visible": false },
-            { "data": "authority",render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS },
-            { "data": "name" },
-            { "data": null,'render':function (data, type, row, meta) {
-                //data  和 row  是数据
-                    return '<button type="button" onclick="alert('+data.id+')" class="btn btn-primary btn-xs" >按钮</button>';// class="btn btn-w-m btn-link"
-                },orderable : false },
+            { "data": "id",
+                "visible": false ,
+                "searchable":false,
+            },
+            { "data": "authority",
+                render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
+                width: '40%'
 
+            },
+            { "data": "name",
+                width: '40%'
+            },
+            { "data": null,
+                "searchable":false,
+                'orderable' : false ,
+                width: '15%',
+                'render':function (data, type, row, meta) {
+                //data  和 row  是数据
+                    var buttons = '';
+                    buttons+='<button type="button" onclick="editRole('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>';
+                    buttons+='<button type="button" onclick="deleteRole('+data.id+')" class="btn btn-primary btn-xs" >删除</button>';
+                    buttons+='<button type="button" onclick="assignmentMenu('+data.id+')" class="btn btn-primary btn-xs" >分配菜单</button>';
+                    return buttons;
+                }
+            },
         ],
+        "order": [[ 0, 'desc' ]],
         buttons: [
             { extend: 'copy'},
             {extend: 'csv'},
@@ -42,53 +62,141 @@ function initTable(){
                 }
             }
         ],
-        language:CONSTANT.DATA_TABLES.DEFAULT_OPTION.language
-        /*{
-            lengthMenu:"每页显示 _MENU_条数据",
-            sSearch: "搜索: ",
-            info:"第_PAGE_/_PAGES_页, 显示第_START_到第_END_, 搜索到_TOTAL_/_MAX_条",
-            infoFiltered:"",
-            sProcessing: "正在加载数据，请稍等",
-            zeroRecords:"抱歉，没有数据",
-            paginate:{
-                previous: "上一页",
-                next: "下一页",
-                first: "第一页",
-                last: "最后"
-            }
-        }*/
-
-
+        language:CONSTANT.DATA_TABLES.DEFAULT_OPTION.language,
+        autoWidth:false,
+        processing: false,
     });
+    $($table).on( 'error.dt', function ( e, settings, techNote, message ){
+        //这里可以接管错误处理，也可以不做任何处理
+    }).DataTable();
 }
 /**
  * 验证数据
  */
 function validateData(){
-    $("#form").validate({
+    roleValidator= $("#roleForm").validate({
         rules: {
-            password: {
+            authority: {
                 required: true,
-                minlength: 3
+                maxlength: 50
             },
-            url: {
+            name: {
                 required: true,
-                url: true
+                maxlength: 50
             },
-            number: {
-                required: true,
-                number: true
+        },
+        messages : {
+            authority : {
+                required : "不能为空",
+                maxlength : "不超过50个字符",
+                remote : "名称已存在",
             },
-            min: {
-                required: true,
-                minlength: 6
-            },
-            max: {
-                required: true,
-                maxlength: 4
+            name : {
+                required: "不能为空",
+                maxlength : "不超过50个字符",
+            }
+        },
+        submitHandler : function(form) {
+            saveRole();
+
+        }
+    });
+}
+
+/**
+ * 保存角色
+ */
+function saveRole(){
+    //保存
+    $.ajax({
+        type : "GET",
+        data : $("#roleForm").serialize(),
+        url : contextPath+"role/saveOrEditEntity",
+        success: function(result){
+            if(result == 1){
+                $("#roleModal" ).modal('hide');
+                reloadTable();
+                showAlert("保存成功",'success');
+            }else{
+                showAlert("保存失败",'error');
             }
         }
     });
+}
+
+/**
+ * 编辑角色
+ * @param id
+ */
+function editRole(id){
+    $.ajax({
+        type : "GET",
+        data : {id:id},
+        dataType:"json",
+        url : contextPath+"role/getEntityInfo",
+        success: function(result){
+            $('#form_id').val(result.id);
+            $('#form_authority').val(result.authority);
+            $('#form_name').val(result.name);
+            reloadTable();
+            $("#roleModal" ).modal('show');
+        }
+    });
+}
+
+/**
+ * 刷新表格
+ */
+function reloadTable(){
+    roleTable.ajax.reload();
+}
+
+/**
+ * 删除角色
+ * @param id
+ */
+function deleteRole(id){
+    swal({
+        title: "是否确定删除?",
+        text: "你将会删除这条记录!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+    }, function () {
+        $.ajax({
+            type : "GET",
+            data : {id:id},
+            dataType:"json",
+            url : contextPath+"role/deleteRole",
+            success: function(result){
+                if(result == 1){
+                    reloadTable();
+                    swal("删除成功!", "", "success");
+                }else{
+                    swal("删除失败!", "", "error");
+                }
+            }
+        });
+
+
+
+    });
+}
+
+/**
+ * 分配菜单
+ * @param id
+ */
+function assignmentMenu(id){
+
+}
+/**
+ * 清空表单
+ */
+function clearForm(){
+    roleValidator.resetForm();
 }
 
 
@@ -100,7 +208,7 @@ var CONSTANT = {
                 "sProcessing":   "处理中...",
                 "sLengthMenu":   "每页 _MENU_ 项",
                 "sZeroRecords":  "没有匹配结果",
-                "sInfo":         "当前显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项。",//共 _TOTAL_ 项
+                "sInfo":         "当前显示第 _START_ 至 _END_ 项，查询到 _TOTAL_ 项，共_MAX_项。",//共 _TOTAL_ 项  搜索到_TOTAL_/_MAX_条
                 "sInfoEmpty":    "当前显示第 0 至 0 项，共 0 项",
                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
                 "sInfoPostFix":  "",

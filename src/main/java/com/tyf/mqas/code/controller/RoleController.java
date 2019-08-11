@@ -1,16 +1,20 @@
 package com.tyf.mqas.code.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.tyf.mqas.base.dataPage.DataPage;
+import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.service.RoleService;
-import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -27,6 +31,8 @@ import java.util.Map;
 @RequestMapping("/role")
 public class RoleController {
 
+    private final static Logger logger = LoggerFactory.getLogger(RoleController.class);
+
     @Autowired
     private RoleService roleService;
     @RequestMapping(value = "roleManage",method = RequestMethod.GET)
@@ -34,32 +40,87 @@ public class RoleController {
         return "/system/role";
     }
 
+    /**
+     * 分页查询
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "getTableJson",method = RequestMethod.GET)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
-        String draw = request.getParameter("draw");
-        //数据起始位置
-        String start = request.getParameter("start");
-        //每页显示的条数
-        String length = request.getParameter("length");
-
         Map<String,String[]> parameterMap = request.getParameterMap();
-
-
-
-
-        Map<String,Object> dataMap = new HashMap<>(4);
-        dataMap.put("draw",1);
-        dataMap.put("recordsTotal",25);
-        dataMap.put("recordsFiltered",25);
-        dataMap.put("data",roleService.findAllTableData());
-
-        String json = JSONObject.fromObject(dataMap).toString();
-        System.out.println(json);
+        DataPage<Role> pages = roleService.getDataPage(parameterMap);
+        String json = JSONObject.toJSONString(pages);
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 保存或者编辑实体
+     */
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    public void saveOrEditEntity(@ModelAttribute("role") Role role, HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String oprate = "新增";
+        if(role.getId()!=null){
+            oprate = "编辑";
+        }
+        try{
+            roleService.saveEntity(role);
+            logger.info(oprate+"角色成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.error(oprate+"角色失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 获取实体信息
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        Role role = roleService.getRoleById(Integer.parseInt(id));
+        String json = JSONObject.toJSONString(role);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除角色
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "deleteRole",method = RequestMethod.GET)
+    public void deleteRole(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String id = request.getParameter("id");
+        try{
+            roleService.deleteRole(Integer.parseInt(id));
+            logger.info("删除角色成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.error("删除角色失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

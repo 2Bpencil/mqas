@@ -1,6 +1,7 @@
 package com.tyf.mqas.base.dataPage;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 
@@ -15,7 +16,7 @@ public class DataPage<T> {
     //请求计数器,即绘制表索引，页面有多个表时需严格定义，一般情况下为1
     private Integer draw;
     //列表数据
-    private List<T> data;
+    private List<Map<String,Object>> data;
     //记录总数
     private Integer recordsTotal;
     //过滤后的总数
@@ -29,11 +30,11 @@ public class DataPage<T> {
         this.draw = draw;
     }
 
-    public List<T> getData() {
+    public List<Map<String, Object>> getData() {
         return data;
     }
 
-    public void setData(List<T> data) {
+    public void setData(List<Map<String, Object>> data) {
         this.data = data;
     }
 

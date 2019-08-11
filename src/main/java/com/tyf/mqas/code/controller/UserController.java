@@ -3,7 +3,7 @@ package com.tyf.mqas.code.controller;
 
 
 import com.tyf.mqas.code.service.UserService;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,13 +43,13 @@ public class UserController {
         }
         Map<String,Object> dataMap = new HashMap<>();
         dataMap.put("draw",1);
-        dataMap.put("recordsTotal",25);
-        dataMap.put("recordsFiltered",25);
+        dataMap.put("recordsTotal",10);
+        dataMap.put("recordsFiltered",10);
         dataMap.put("data",list);
 
 
 
-        String json = JSONObject.fromObject(dataMap).toString();
+        String json = JSONObject.toJSONString(dataMap);
         System.out.println(json);
         try {
             response.getWriter().print(json);

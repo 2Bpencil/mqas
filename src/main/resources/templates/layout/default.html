@@ -11,14 +11,14 @@
 
         <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
         <link th:href="@{/font-awesome/css/font-awesome.css}" rel="stylesheet">
-
+        <!-- Sweet Alert -->
+        <link th:href="@{/css/plugins/sweetalert/sweetalert.css}"rel="stylesheet">
         <link th:href="@{/css/animate.css}" rel="stylesheet">
         <link th:href="@{/css/style.css}" rel="stylesheet">
-        <!--jqgrid-->
-        <link th:href="@{/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css}">
-        <link th:href="@{/css/plugins/jqGrid/ui.jqgrid.css}" rel="stylesheet">
         <!--datatables-->
         <link th:href="@{/css/plugins/dataTables/datatables.min.css}" rel="stylesheet">
+        <!--ztree-->
+        <link th:href="@{/js/plugins/ztree/css/zTreeStyle.css}" rel="stylesheet">
 
         <link rel="stylesheet" type="text/css" th:each="cssPath,status:${#strings.setSplit(cssPaths,',')}" th:href="@{${cssPath}}"/>
 
@@ -227,13 +227,18 @@
             <!-- Peity -->
             <script th:src="@{/js/plugins/peity/jquery.peity.min.js}"></script>
             <!-- jqGrid -->
-            <script th:src="@{/js/plugins/jqGrid/i18n/grid.locale-en.js}"></script>
-            <script th:src="@{/js/plugins/jqGrid/jquery.jqGrid.min.js}"></script>
             <script th:src="@{/js/plugins/jquery-ui/jquery-ui.min.js}"></script>
             <!--datatables-->
             <script th:src="@{/js/plugins/jeditable/jquery.jeditable.js}"></script>
             <script th:src="@{/js/plugins/dataTables/datatables.min.js}"></script>
+            <!-- Sweet alert -->
+            <script th:src="@{/js/plugins/sweetalert/sweetalert.min.js}"></script>
+            <!--ztree-->
+            <script th:src="@{/js/plugins/ztree/js/jquery.ztree.core.min.js}"></script>
+            <script th:src="@{/js/plugins/ztree/js/jquery.ztree.exedit.min.js}"></script>
+            <script th:src="@{/js/plugins/ztree/js/jquery.ztree.excheck.js}"></script>
             <!-- Custom and plugin javascript -->
+            <script th:src="@{/js/common.js}"></script>
             <script th:src="@{/js/inspinia.js}"></script>
             <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
 
