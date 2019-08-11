@@ -4,9 +4,11 @@ import com.tyf.mqas.base.repository.ExpandJpaRepository;
 import com.tyf.mqas.code.entity.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -20,4 +22,17 @@ public interface RoleRepository extends ExpandJpaRepository<Role,Integer> {
 
     @Override
     Page<Role> findAll(Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from r_role_menu where role_id = ?1", nativeQuery = true)
+    void deleteRoleAndMenu(Integer roleId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO r_role_menu(role_id,menu_id) VALUES(?1,?2)", nativeQuery = true)
+    void saveRoleAndMenu(Integer roleId,Integer menuId);
+
+
+
 }

@@ -114,7 +114,8 @@ function saveRole(){
         url : contextPath+"role/saveOrEditEntity",
         success: function(result){
             if(result == 1){
-                $("#roleModal" ).modal('hide');
+                hideModal('roleModal');
+                clearForm();
                 reloadTable();
                 showAlert("保存成功",'success');
             }else{
@@ -139,7 +140,7 @@ function editRole(id){
             $('#form_authority').val(result.authority);
             $('#form_name').val(result.name);
             reloadTable();
-            $("#roleModal" ).modal('show');
+            showModal("roleModal");
         }
     });
 }
@@ -179,9 +180,6 @@ function deleteRole(id){
                 }
             }
         });
-
-
-
     });
 }
 
@@ -190,13 +188,132 @@ function deleteRole(id){
  * @param id
  */
 function assignmentMenu(id){
+    roleId = id;
+    AssPer();
 
 }
+var roleId;
+/**
+ * 加载分配菜单页面
+ */
+function AssPer(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : true,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "ps",
+                "N" : ""
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            url : contextPath+"menu/getAllMenus",
+        },
+        callback : {
+            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
+        }
+    };
+    $.fn.zTree.init($("#MenuGroup"), setting, zNodes);
+
+}
+
+/*
+ * 异步加载树完成后回调函数
+ */
+function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+    //反填角色已有的菜单
+    $.ajax({
+        type : "GET",
+        data : {
+            id : roleId
+        },
+        url : contextPath + "role/getMenusByRoleId",
+        dataType : "JSON",
+        success : function(result){
+            $("#check2").attr("checked",false);
+            $("#check1").attr("checked",false);
+            var  treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+            treeObj.expandAll(true);
+            for (var i = 0; i < result.length; i++) {
+                var node =treeObj.getNodeByParam("id",result[i].id);
+                treeObj.checkNode(node,true,false);
+                treeObj.expandNode(node, true, false, false);
+            }
+            var boole = true;
+            var nodes = treeObj.getNodes();
+            for(var i=0;i<nodes.length;i++){
+                if(!nodes[i].checked){
+                    boole = false;
+                    return;
+                }
+            }
+            if(boole){
+                document.getElementById("check1").checked='checked';
+            }
+        }
+    });
+
+    showModal("menuModal");
+}
+/**
+ * 全选/取消全选
+ */
+function checkAll(boo){
+    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+    if(boo == "y"){
+        $("#check2").attr("checked",false);
+        treeObj.checkAllNodes(true);
+    }else{
+        $("#check1").attr("checked",false);
+        treeObj.checkAllNodes(false);
+    }
+}
+
+/**
+ * 保存权限
+ */
+function saveRoleAndMenu(){
+    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+    var nodes = treeObj.getCheckedNodes(true);
+    var menuIds = "";
+    for(var i=0;i<nodes.length;i++){
+        if(i == nodes.length-1){
+            menuIds += nodes[i].id;
+        }else{
+            menuIds += nodes[i].id+",";
+        }
+    }
+    $.ajax({
+        type : "GET",
+        data : {
+            roleId : roleId,
+            menuIds : menuIds,
+        },
+        url : contextPath + "role/saveRoleAndMenu",
+        success : function(result){
+            hideModal("menuModal");
+            if(result == '1'){
+                showAlert("权限分配成功",'success');
+            }else{
+                showAlert("权限分配失败",'error');
+            }
+        }
+    });
+}
+
 /**
  * 清空表单
  */
 function clearForm(){
-    roleValidator.resetForm();
+    $('#roleForm')[0].reset();
 }
 
 

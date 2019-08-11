@@ -1,9 +1,8 @@
 package com.tyf.mqas.code.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.tyf.mqas.code.dao.MenuRepository;
 import com.tyf.mqas.code.entity.Menu;
-import com.tyf.mqas.code.service.MenuService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,16 @@ public class MenuService  {
      */
     public String getMenusByUserId(Integer userId){
         List<Menu> list = menuRepository.findByUserId(userId);
-        return JSONArray.fromObject(list).toString();
+        return JSONArray.toJSONString(list);
+    }
+
+    /**
+     * 获取所有菜单
+     * @return
+     */
+    public String getAllMenus(){
+        List<Menu> list = menuRepository.findAll();
+        return JSONArray.toJSONString(list);
     }
 
 }

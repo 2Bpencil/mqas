@@ -17,4 +17,5 @@ public interface MenuRepository extends ExpandJpaRepository<Menu,Integer> {
     List<Menu> findByUserId(Integer userId);
 
 
+
 }

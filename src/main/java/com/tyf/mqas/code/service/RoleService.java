@@ -1,5 +1,6 @@
 package com.tyf.mqas.code.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.tyf.mqas.base.dataPage.DataPage;
 import com.tyf.mqas.base.dataPage.PageGetter;
 import com.tyf.mqas.code.dao.MenuRepository;
@@ -9,11 +10,13 @@ import com.tyf.mqas.code.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class RoleService extends PageGetter<Role> {
@@ -82,6 +85,16 @@ public class RoleService extends PageGetter<Role> {
         return roleRepository.getOne(id);
     }
 
+    /**
+     * 根据id获取菜单
+     * @param roleId
+     * @return
+     */
+    public String getMenusByRoleId(Integer roleId){
+        List<Menu> list = menuRepository.findByRoleId(roleId);
+        return JSONArray.toJSONString(list);
+    }
+
 
     /**
      * 保存角色菜单的关系
@@ -89,7 +102,10 @@ public class RoleService extends PageGetter<Role> {
      * @param menuIds
      */
     public void saveRsRoleMenu(Integer roleId,String menuIds){
-
+        roleRepository.deleteRoleAndMenu(roleId);
+        Stream.of(menuIds.split(",")).forEach(id->{
+            roleRepository.saveRoleAndMenu(roleId,Integer.parseInt(id));
+        });
     }
 
 }

@@ -123,6 +123,48 @@ public class RoleController {
 
     }
 
+    /**
+     * 获取角色的菜单
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getMenusByRoleId",method = RequestMethod.GET)
+    public void getMenusByRoleId(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = roleService.getMenusByRoleId(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "saveRoleAndMenu",method = RequestMethod.GET)
+    public void saveRoleAndMenu(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String roleId = request.getParameter("roleId");
+        String menuIds = request.getParameter("menuIds");
+        try{
+            roleService.saveRsRoleMenu(Integer.parseInt(roleId),menuIds );
+            logger.info("保存菜单成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.info("保存菜单成功");
+            e.printStackTrace();
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }
     

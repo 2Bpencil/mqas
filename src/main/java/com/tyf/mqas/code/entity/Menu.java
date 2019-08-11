@@ -3,6 +3,7 @@ package com.tyf.mqas.code.entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "menu")
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

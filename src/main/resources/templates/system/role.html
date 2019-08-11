@@ -35,10 +35,10 @@
                 <h2>角色管理</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="index.html">This is</a>
+                        <a href="#">系统管理</a>
                     </li>
                     <li class="active">
-                        <strong>Breadcrumb</strong>
+                        <strong>角色管理</strong>
                     </li>
                 </ol>
             </div>
@@ -55,23 +55,8 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Basic Data Tables example with responsive plugin</h5>
+                            <h5>角色列表</h5>
                             <div class="ibox-tools">
-                               <!-- <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="table_data_tables.html#">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user">
-                                    <li><a href="table_data_tables.html#">Config option 1</a>
-                                    </li>
-                                    <li><a href="table_data_tables.html#">Config option 2</a>
-                                    </li>
-                                </ul>
-                                <a class="close-link">
-                                    <i class="fa fa-times"></i>
-                                </a>-->
                             </div>
                         </div>
                         <div class="ibox-content">
@@ -108,7 +93,7 @@
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <i class="fa fa-users modal-icon"></i>
                 <h4 class="modal-title">角色表单</h4>
             </div>
@@ -122,7 +107,7 @@
                     <div class="form-group"><label>角色代码</label> <input type="text" id="form_authority"  placeholder="填写英文角色代码" class="form-control" name="authority"></div>
                     <div class="form-group"><label>角色名称</label> <input type="text" id="form_name"  placeholder="请填写中文角色名称" class="form-control" name="name"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
                     </div>
                 </form>
@@ -140,20 +125,17 @@
                 <h4 class="modal-title">菜单分配</h4>
             </div>
             <div class="modal-body">
-                <!--<p><strong>Lorem Ipsum is simply dummy</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                    remaining essentially unchanged.</p>
-                <div class="form-group"><label>Sample Input</label> <input type="email" placeholder="Enter your email" class="form-control"></div>-->
-                <form role="form" id="ztree">
-                    <div class="form-group"><label>Email</label><ul id="MenuGroup" class="ztree"></ul> </div>
+                <form role="form" id="ztreeForm">
+                    <div class="form-group"><label>菜单树</label><ul id="MenuGroup" class="ztree"></ul> </div>
 
+                    <div class="form-group"><label>角色名称</label>  <a onclick="checkAll('y')" class="selBtn"> <input type="checkbox" id="check1"> 全选  </a><a onclick="checkAll('n')" class="selBtn"> <input type="checkbox" id="check2"> 取消全选 </a></div>
+                    <div class="form-group"><label>角色名称</label>  </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
-                        <button type="button" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-primary" onclick="saveRoleAndMenu();">保存</button>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>

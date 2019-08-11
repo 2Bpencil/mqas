@@ -47,8 +47,6 @@ public class UserController {
         dataMap.put("recordsFiltered",10);
         dataMap.put("data",list);
 
-
-
         String json = JSONObject.toJSONString(dataMap);
         System.out.println(json);
         try {
