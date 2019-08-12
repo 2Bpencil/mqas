@@ -2,10 +2,17 @@ package com.tyf.mqas.code.controller;
 
 
 
+import com.tyf.mqas.base.datapage.DataPage;
+import com.tyf.mqas.code.entity.Role;
+import com.tyf.mqas.code.entity.User;
 import com.tyf.mqas.code.service.UserService;
 import com.alibaba.fastjson.JSONObject;
+import com.tyf.mqas.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -21,40 +28,81 @@ import java.util.Map;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
     @RequestMapping(value = "userManage",method = RequestMethod.GET)
     public String userManage(){
-        return "user";
+        return "system/user";
     }
 
+    /**
+     * 获取用户列表
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "getTableJson",method = RequestMethod.GET)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
-        List<Map<String,Object>> list = new ArrayList<>();
-        for (int i = 0; i < 10 ; i++) {
-            Map<String,Object> map = new HashMap<>(5);
-            map.put("first_name","aaa"+i);
-            map.put("last_name","bbb"+i);
-            map.put("position","ccc"+i);
-            map.put("office","ddd"+i);
-            map.put("start_date","eee"+i);
-            list.add(map);
-        }
-        Map<String,Object> dataMap = new HashMap<>();
-        dataMap.put("draw",1);
-        dataMap.put("recordsTotal",10);
-        dataMap.put("recordsFiltered",10);
-        dataMap.put("data",list);
 
-        String json = JSONObject.toJSONString(dataMap);
-        System.out.println(json);
+        Map<String,String[]> parameterMap = request.getParameterMap();
+        DataPage<User> pages = userService.getDataPage(parameterMap);
+        String json = JSONObject.toJSONString(pages);
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    /**
+     * 保存或者编辑实体
+     */
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    public void saveOrEditEntity(@ModelAttribute("user") User user, HttpServletResponse response){
+        int flag = 1;
+        String oprate = "新增";
+        if(user.getId()!=null){
+            User u = userService.getUserById(user.getId());
+            u.setUsername(user.getUsername());
+            u.setPhone(user.getPhone());
+            u.setSex(user.getSex());
+            user = u;
+            oprate = "编辑";
+        }
+        try{
+            userService.saveEntity(user);
+            logger.info(SecurityUtil.getCurUserName()+oprate+"用户成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.error(SecurityUtil.getCurUserName()+oprate+"用户失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    /**
+     * 获取实体信息
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        User user = userService.getUserById(Integer.parseInt(id));
+        Map map = new HashMap();
+        map.put("id",user.getId());
+        map.put("username",user.getUsername());
+        map.put("phone",user.getPhone());
+        map.put("sex",user.getSex());
+        String json = JSONObject.toJSONString(map);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

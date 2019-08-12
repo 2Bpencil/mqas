@@ -27,9 +27,20 @@ public interface RoleRepository extends ExpandJpaRepository<Role,Integer> {
 
     @Transactional
     @Modifying
+    @Query(value = "delete from r_user_role where role_id = ?1", nativeQuery = true)
+    void deleteRoleAndUser(Integer roleId);
+
+    @Transactional
+    @Modifying
     @Query(value = "INSERT INTO r_role_menu(role_id,menu_id) VALUES(?1,?2)", nativeQuery = true)
     void saveRoleAndMenu(Integer roleId,Integer menuId);
 
+
+    @Query(value = "select count(*) from role where authority = ?2 and id != ?1", nativeQuery = true)
+    Integer getRoleNumByIdAndAuthority(Integer id,String authority);
+
+    @Query(value = "select count(*) from role where authority = ?1", nativeQuery = true)
+    Integer getRoleNumByAuthority(String authority);
 
 
 }

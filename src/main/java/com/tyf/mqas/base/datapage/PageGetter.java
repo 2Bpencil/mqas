@@ -1,4 +1,4 @@
-package com.tyf.mqas.base.dataPage;
+package com.tyf.mqas.base.datapage;
 import com.tyf.mqas.base.page.ReflectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ public class PageGetter<T> {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
-    private String tableName;
     private Class<T> entityClass = ReflectionUtils.getClassGenricType(getClass());
     /**
      *

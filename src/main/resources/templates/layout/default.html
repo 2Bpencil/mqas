@@ -20,6 +20,10 @@
         <!--ztree-->
         <link th:href="@{/js/plugins/ztree/css/zTreeStyle.css}" rel="stylesheet">
 
+        <link th:href="@{/css/plugins/iCheck/custom.css}" rel="stylesheet">
+        <link th:href="@{/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css}" rel="stylesheet">
+
+
         <link rel="stylesheet" type="text/css" th:each="cssPath,status:${#strings.setSplit(cssPaths,',')}" th:href="@{${cssPath}}"/>
 
     </head>
@@ -237,6 +241,10 @@
             <script th:src="@{/js/plugins/ztree/js/jquery.ztree.core.min.js}"></script>
             <script th:src="@{/js/plugins/ztree/js/jquery.ztree.exedit.min.js}"></script>
             <script th:src="@{/js/plugins/ztree/js/jquery.ztree.excheck.js}"></script>
+            <!-- iCheck -->
+            <script th:src="@{/js/plugins/iCheck/icheck.min.js}" ></script>
+
+
             <!-- Custom and plugin javascript -->
             <script th:src="@{/js/common.js}"></script>
             <script th:src="@{/js/inspinia.js}"></script>
@@ -254,7 +262,6 @@
                 }
                 /*获取应用的根目录，我的绝对路径是*/
                 var contextPath = $('#contextPath').attr('href');
-                console.log(contextPath);
             </script>
             <!--页面js-->
             <script th:each="jsPath,status:${#strings.setSplit(jsPaths,',')}" th:src="@{${jsPath}}"></script>

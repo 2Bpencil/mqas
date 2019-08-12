@@ -1,16 +1,14 @@
 package com.tyf.mqas.code.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.tyf.mqas.base.dataPage.DataPage;
-import com.tyf.mqas.base.dataPage.PageGetter;
+import com.tyf.mqas.base.datapage.DataPage;
+import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.MenuRepository;
 import com.tyf.mqas.code.dao.RoleRepository;
 import com.tyf.mqas.code.entity.Menu;
 import com.tyf.mqas.code.entity.Role;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -74,6 +72,7 @@ public class RoleService extends PageGetter<Role> {
      */
     public void deleteRole(Integer id){
         roleRepository.deleteById(id);
+        roleRepository.deleteRoleAndUser(id);
     }
 
     /**
@@ -106,6 +105,22 @@ public class RoleService extends PageGetter<Role> {
         Stream.of(menuIds.split(",")).forEach(id->{
             roleRepository.saveRoleAndMenu(roleId,Integer.parseInt(id));
         });
+    }
+
+    /**
+     * 判断重复
+     * @param authority
+     * @param id
+     * @return
+     */
+    public boolean verifyTheRepeat(String authority,String id){
+        Integer num = null;
+        if(StringUtils.isNotBlank(id)){
+            num = roleRepository.getRoleNumByIdAndAuthority(Integer.parseInt(id), authority);
+        }else{
+            num = roleRepository.getRoleNumByAuthority( authority);
+        }
+        return num > 0?false:true;
     }
 
 }

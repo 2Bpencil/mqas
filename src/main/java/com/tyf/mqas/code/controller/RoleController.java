@@ -1,9 +1,10 @@
 package com.tyf.mqas.code.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tyf.mqas.base.dataPage.DataPage;
+import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.service.RoleService;
+import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +70,10 @@ public class RoleController {
         }
         try{
             roleService.saveEntity(role);
-            logger.info(oprate+"角色成功");
+            logger.info(SecurityUtil.getCurUserName()+oprate+"角色成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(oprate+"角色失败");
+            logger.error(SecurityUtil.getCurUserName()+oprate+"角色失败");
         }
         try {
             response.getWriter().print(flag);
@@ -110,10 +111,10 @@ public class RoleController {
         String id = request.getParameter("id");
         try{
             roleService.deleteRole(Integer.parseInt(id));
-            logger.info("删除角色成功");
+            logger.info(SecurityUtil.getCurUserName()+"删除角色成功");
         }catch (Exception e){
             flag = 0;
-            logger.error("删除角色失败");
+            logger.error(SecurityUtil.getCurUserName()+"删除角色失败");
         }
         try {
             response.getWriter().print(flag);
@@ -151,10 +152,10 @@ public class RoleController {
         String menuIds = request.getParameter("menuIds");
         try{
             roleService.saveRsRoleMenu(Integer.parseInt(roleId),menuIds );
-            logger.info("保存菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"保存菜单成功");
         }catch (Exception e){
             flag = 0;
-            logger.info("保存菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"保存菜单失败");
             e.printStackTrace();
         }
         try {
@@ -164,6 +165,24 @@ public class RoleController {
         }
 
     }
+
+    /**
+     * 验证重复
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
+        String authority = request.getParameter("authority");
+        String id = request.getParameter("id");
+        boolean isExist = roleService.verifyTheRepeat(authority, id);
+        try {
+            response.getWriter().print(isExist);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

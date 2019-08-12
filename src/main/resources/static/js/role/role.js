@@ -78,7 +78,17 @@ function validateData(){
         rules: {
             authority: {
                 required: true,
-                maxlength: 50
+                maxlength: 50,
+                remote : {//远程地址只能输出"true"或"false"
+                    url : contextPath + "role/verifyTheRepeat",
+                    type : "get",
+                    dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    data : {
+                        id : function(){
+                            return $("#form_id").val();
+                        }
+                    }
+                },
             },
             name: {
                 required: true,
@@ -89,7 +99,7 @@ function validateData(){
             authority : {
                 required : "不能为空",
                 maxlength : "不超过50个字符",
-                remote : "名称已存在",
+                remote : "角色名已存在",
             },
             name : {
                 required: "不能为空",
@@ -139,7 +149,6 @@ function editRole(id){
             $('#form_id').val(result.id);
             $('#form_authority').val(result.authority);
             $('#form_name').val(result.name);
-            reloadTable();
             showModal("roleModal");
         }
     });

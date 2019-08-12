@@ -1,4 +1,4 @@
-package com.tyf.mqas.base.dataPage;
+package com.tyf.mqas.base.datapage;
 
 public class DataColumn {
 

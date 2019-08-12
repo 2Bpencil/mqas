@@ -1,5 +1,7 @@
 package com.tyf.mqas.code.service;
 
+import com.tyf.mqas.base.datapage.DataPage;
+import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.base.page.AbstractPagesGetter;
 import com.tyf.mqas.base.page.Page;
 import com.tyf.mqas.base.page.SearchFilter;
@@ -17,9 +19,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class UserService extends AbstractPagesGetter<User> implements UserDetailsService {
+public class UserService extends PageGetter<User> implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -45,20 +48,39 @@ public class UserService extends AbstractPagesGetter<User> implements UserDetail
         }
     }
 
+    /**
+     * 保存方法
+     * @param user
+     * @return
+     */
     public User saveEntity(User user) {
         return userRepository.save(user);
     }
 
     /**
-     *
-     * @param pages
-     * @param filterList
+     * 分页查询
+     * @param parameterMap
      * @return
      */
-    public String getPageJson(Page<User> pages, List<SearchFilter> filterList){
-        String sql = "SELECT * FROM user";
-        return super.getPage(pages, sql, filterList).getPageJson();
+    public DataPage<User> getDataPage(Map<String,String[]> parameterMap){
+        return super.getPages(parameterMap);
     }
 
+    /**
+     * 删除
+     * @param id
+     */
+    public void deleteUserById(Integer id){
+        userRepository.deleteById(id);
+    }
+
+    /**
+     * 获取用户
+     * @param id
+     * @return
+     */
+    public User getUserById(Integer id){
+        return userRepository.getOne(id);
+    }
 
 }

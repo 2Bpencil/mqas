@@ -1,3 +1,6 @@
+var userTable;//表格对象
+var userValidator;//表单验证
+var $table = "#user_table";
 $(document).ready(function(){
     initTable();
     validateData();
@@ -7,7 +10,7 @@ $(document).ready(function(){
  * 初始化表格
  */
 function initTable(){
-    $('.dataTables-example').DataTable({
+    userTable = $($table).DataTable({
         dom: '<"html5buttons"B>lTfgitp',
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
@@ -15,12 +18,42 @@ function initTable(){
             "type": "GET"      // 请求方式
         },
         "columns": [
-            { "data": "first_name" },
-            { "data": "last_name" },
-            { "data": "position" },
-            { "data": "office" },
-            { "data": "start_date" },
+            { "data": "id",
+                "visible": false ,
+                "searchable":false,
+            },
+            { "data": "username",
+                render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
+                width: '35%'
+
+            },
+            { "data": "phone",
+                'orderable' : false ,
+                render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
+                width: '35%'
+            },
+            { "data": "sex",
+                render : function(data,type, row, meta) {
+                    return ( parseInt(data) === 1?"男":"女");
+                },
+                'orderable' : false ,
+                width: '15%'
+            },
+            {   "data": null,
+                "searchable":false,
+                'orderable' : false ,
+                width: '15%',
+                'render':function (data, type, row, meta) {
+                    //data  和 row  是数据
+                    var buttons = '';
+                    buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>';
+                    buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>';
+                    buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配角色</button>';
+                    return buttons;
+                }
+            },
         ],
+        "order": [[ 0, 'desc' ]],
         buttons: [
             { extend: 'copy'},
             {extend: 'csv'},
@@ -38,50 +71,336 @@ function initTable(){
                 }
             }
         ],
-        language:{
-            lengthMenu:"每页显示 _MENU_条数据",
-            sSearch: "搜索: ",
-            info:"第_PAGE_/_PAGES_页, 显示第_START_到第_END_, 搜索到_TOTAL_/_MAX_条",
-            infoFiltered:"",
-            sProcessing: "正在加载数据，请稍等",
-            zeroRecords:"抱歉，没有数据",
-            paginate:{
-                previous: "上一页",
-                next: "下一页",
-                first: "第一页",
-                last: "最后"
-            }
-        }
-
-
+        language:CONSTANT.DATA_TABLES.DEFAULT_OPTION.language,
+        autoWidth:false,
+        processing: false,
     });
+    $($table).on( 'error.dt', function ( e, settings, techNote, message ){
+        //这里可以接管错误处理，也可以不做任何处理
+    }).DataTable();
 }
 /**
  * 验证数据
  */
 function validateData(){
-    $("#form").validate({
+    jQuery.validator.addMethod("cellPhone", function(value, element) {
+        return this.optional(element)
+            || /^1[0-9]\d{1}\d{4}\d{4}( x\d{1,6})?$/.test(value);
+    }, "联系方式无效");
+    userValidator= $("#userForm").validate({
         rules: {
-            password: {
+            username: {
                 required: true,
-                minlength: 3
+                maxlength: 50,
+                remote : {//远程地址只能输出"true"或"false"
+                    url : contextPath + "user/verifyTheRepeat",
+                    type : "get",
+                    dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    data : {
+                        id : function(){
+                            return $("#form_id").val();
+                        }
+                    }
+                },
             },
-            url: {
-                required: true,
-                url: true
+            phone: {
+                cellPhone : 'required'
             },
-            number: {
+            sex:{
                 required: true,
-                number: true
+                }
+        },
+        messages : {
+            username : {
+                required : "不能为空",
+                maxlength : "不超过50个字符",
+                remote : "角色名已存在",
             },
-            min: {
-                required: true,
-                minlength: 6
+            phone : {
+                required: "不能为空",
+                maxlength : "不超过50个字符",
             },
-            max: {
-                required: true,
-                maxlength: 4
+            sex:{
+                required: "请选择性别",
+            }
+        },
+        submitHandler : function(form) {
+            saveUser();
+
+        }
+    });
+}
+
+/**
+ * 保存角色
+ */
+function saveUser(){
+    //保存
+    $.ajax({
+        type : "GET",
+        data : $("#userForm").serialize(),
+        url : contextPath+"user/saveOrEditEntity",
+        success: function(result){
+            if(result == 1){
+                hideModal('userModal');
+                clearForm();
+                reloadTable();
+                showAlert("保存成功",'success');
+            }else{
+                showAlert("保存失败",'error');
             }
         }
     });
 }
+
+/**
+ * 编辑角色
+ * @param id
+ */
+function editUser(id){
+    $.ajax({
+        type : "GET",
+        data : {id:id},
+        dataType:"json",
+        url : contextPath+"user/getEntityInfo",
+        success: function(result){
+            $('#form_id').val(result.id);
+            $('#form_username').val(result.username);
+            $('#form_phone').val(result.phone);
+            if(result.sex == 0){
+                $("#sex0").prop('checked','true');
+            }else {
+                $("#sex1").prop('checked','true');
+            }
+            showModal("userModal");
+        }
+    });
+}
+
+/**
+ * 刷新表格
+ */
+function reloadTable(){
+    userTable.ajax.reload();
+}
+
+/**
+ * 删除角色
+ * @param id
+ */
+function deleteUser(id){
+    swal({
+        title: "是否确定删除?",
+        text: "你将会删除这条记录!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+    }, function () {
+        $.ajax({
+            type : "GET",
+            data : {id:id},
+            dataType:"json",
+            url : contextPath+"user/deleteUser",
+            success: function(result){
+                if(result == 1){
+                    reloadTable();
+                    swal("删除成功!", "", "success");
+                }else{
+                    swal("删除失败!", "", "error");
+                }
+            }
+        });
+    });
+}
+
+/**
+ * 分配菜单
+ * @param id
+ */
+function assignmentRole(id){
+    userId = id;
+    AssPer();
+
+}
+var userId;
+/**
+ * 加载分配菜单页面
+ */
+function AssPer(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : true,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "ps",
+                "N" : ""
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            url : contextPath+"menu/getAllMenus",
+        },
+        callback : {
+            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
+        }
+    };
+    $.fn.zTree.init($("#MenuGroup"), setting, zNodes);
+
+}
+
+/*
+ * 异步加载树完成后回调函数
+ */
+function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+    //反填角色已有的菜单
+    $.ajax({
+        type : "GET",
+        data : {
+            id : userId
+        },
+        url : contextPath + "user/getMenusByRoleId",
+        dataType : "JSON",
+        success : function(result){
+            $("#check2").attr("checked",false);
+            $("#check1").attr("checked",false);
+            var  treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+            treeObj.expandAll(true);
+            for (var i = 0; i < result.length; i++) {
+                var node =treeObj.getNodeByParam("id",result[i].id);
+                treeObj.checkNode(node,true,false);
+                treeObj.expandNode(node, true, false, false);
+            }
+            var boole = true;
+            var nodes = treeObj.getNodes();
+            for(var i=0;i<nodes.length;i++){
+                if(!nodes[i].checked){
+                    boole = false;
+                    return;
+                }
+            }
+            if(boole){
+                document.getElementById("check1").checked='checked';
+            }
+        }
+    });
+
+    showModal("menuModal");
+}
+/**
+ * 全选/取消全选
+ */
+function checkAll(boo){
+    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+    if(boo == "y"){
+        $("#check2").attr("checked",false);
+        treeObj.checkAllNodes(true);
+    }else{
+        $("#check1").attr("checked",false);
+        treeObj.checkAllNodes(false);
+    }
+}
+
+/**
+ * 保存权限
+ */
+function saveRoleAndMenu(){
+    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+    var nodes = treeObj.getCheckedNodes(true);
+    var menuIds = "";
+    for(var i=0;i<nodes.length;i++){
+        if(i == nodes.length-1){
+            menuIds += nodes[i].id;
+        }else{
+            menuIds += nodes[i].id+",";
+        }
+    }
+    $.ajax({
+        type : "GET",
+        data : {
+            userId : userId,
+            menuIds : menuIds,
+        },
+        url : contextPath + "user/saveRoleAndMenu",
+        success : function(result){
+            hideModal("menuModal");
+            if(result == '1'){
+                showAlert("权限分配成功",'success');
+            }else{
+                showAlert("权限分配失败",'error');
+            }
+        }
+    });
+}
+
+/**
+ * 清空表单
+ */
+function clearForm(){
+    $('#userForm')[0].reset();
+}
+
+
+/*常量*/
+var CONSTANT = {
+    DATA_TABLES : {
+        DEFAULT_OPTION : { //DataTables初始化选项
+            language: {
+                "sProcessing":   "处理中...",
+                "sLengthMenu":   "每页 _MENU_ 项",
+                "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "当前显示第 _START_ 至 _END_ 项，查询到 _TOTAL_ 项，共_MAX_项。",//共 _TOTAL_ 项  搜索到_TOTAL_/_MAX_条
+                "sInfoEmpty":    "当前显示第 0 至 0 项，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix":  "",
+                "sSearch":       "搜索:",
+                "sUrl":          "",
+                "sEmptyTable":     "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands":  ",",
+                "oPaginate": {
+                    "sFirst":    "首页",
+                    "sPrevious": "上页",
+                    "sNext":     "下页",
+                    "sLast":     "末页",
+                    "sJump":     "跳转"
+                },
+                "oAria": {
+                    "sSortAscending":  ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            autoWidth: false,	//禁用自动调整列宽
+            stripeClasses: ["odd", "even"],//为奇偶行加上样式，兼容不支持CSS伪类的场合
+            order: [],			//取消默认排序查询,否则复选框一列会出现小箭头
+            processing: false,	//隐藏加载提示,自行处理
+            serverSide: true,	//启用服务器端分页
+            searching: false	//禁用原生搜索
+        },
+        COLUMN: {
+            CHECKBOX: {	//复选框单元格
+                className: "td-checkbox",
+                orderable: false,
+                width: "30px",
+                data: null,
+                render: function (data, type, row, meta) {
+                    return '<input type="checkbox" class="iCheck">';
+                }
+            }
+        },
+        RENDER: {	//常用render可以抽取出来，如日期时间、头像等
+            ELLIPSIS: function (data, type, row, meta) {
+                data = data||"";
+                return '<span title="' + data + '">' + data + '</span>';
+            }
+        }
+    }
+};

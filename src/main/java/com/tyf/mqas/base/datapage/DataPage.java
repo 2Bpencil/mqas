@@ -1,4 +1,4 @@
-package com.tyf.mqas.base.dataPage;
+package com.tyf.mqas.base.datapage;
 
 import java.util.List;
 import java.util.Map;

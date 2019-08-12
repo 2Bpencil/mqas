@@ -20,9 +20,11 @@ public class User implements UserDetails {
     @Column(length = 20)
     private String username;
     @Column(length = 20)
-    private String nickname;
+    private String phone;
     @Column(length = 100)
     private String password;
+    @Column
+    private Integer sex;
     @Column
     private Boolean isAccountNonExpired = true;
     @Column
@@ -114,11 +116,19 @@ public class User implements UserDetails {
         isEnabled = enabled;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
     }
 }

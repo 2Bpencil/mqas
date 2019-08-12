@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="layout/default :: head('Index Page','')"></head>
+<head th:replace="layout/default :: head('User Page','')"></head>
 
 <body class="">
 
@@ -30,35 +30,124 @@
             </nav>
         </div >
         <!--面包屑-->
-        <div class="row wrapper border-bottom white-bg page-heading" th:replace="layout/default :: breadcrumb"></div>
+        <div class="row wrapper border-bottom white-bg page-heading" >
+            <div class="col-sm-4">
+                <h2>用户管理</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="#">系统管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>用户管理</strong>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-sm-8">
+                <div class="title-action">
+                    <!--操作按钮-->
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#userModal">新增用户</a>
+                    <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
+                </div>
+            </div>
+        </div>
         <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>jQuery Grid Plugin – jqGrid</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <p>
-                            <strong>jqGrid</strong> is an Ajax-enabled JavaScript control that provides solutions for representing and manipulating tabular data on the web. Since the grid is a client-side solution loading data dynamically through Ajax callbacks, it can be integrated with any server-side technology, including PHP, ASP, Java Servlets, JSP, ColdFusion, and Perl.
-                            jqGrid uses a jQuery Java Script Library and is written as plugin for that package. For more information on jQuery Grid, please refer to the <a target="_blank" href="http://www.trirand.com/blog/"> jqGrid web site.</a>
-                        </p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>用户列表</h5>
+                            <div class="ibox-tools">
+                            </div>
+                        </div>
+                        <div class="ibox-content">
 
-                        <h4>Basic example</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover dataTables-example"  id="user_table">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>用户名</th>
+                                        <th>电话</th>
+                                        <th>性别</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <th>ID</th>
+                                        <th>用户名</th>
+                                        <th>电话</th>
+                                        <th>性别</th>
+                                        <th>操作</th>
+                                    </tfoot>
+                                </table>
+                            </div>
 
-                        <div class="jqGrid_wrapper">
-                            <table id="table_list_1"></table>
-                            <div id="pager_list_1"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
         <div th:replace="layout/default :: foot"></div>
     </div>
 </div>
-<div th:replace="layout/default :: js('/js/user/user.js')"></div>
+<!--表单-->
+<div class="modal inmodal" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-user modal-icon"></i>
+                <h4 class="modal-title">用户表单</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="userForm">
+                    <input type="hidden" id="form_id" name="id">
+                    <div class="form-group"><label>用户名</label> <input type="text" id="form_username"  placeholder="请填写用户名" class="form-control" name="username"></div>
+                    <div class="form-group"><label>联系电话</label> <input type="text" id="form_phone"  placeholder="请填写联系电话" class="form-control" name="phone"></div>
+                    <div class="form-group"><label>性别</label>
+                        <input type="radio" value="0" name="sex" id="sex0"> <i></i>女
+                        <input type="radio" value="1" name="sex" id="sex1"> <i></i>男
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-bars modal-icon"></i>
+                <h4 class="modal-title">角色分配</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="ztreeForm">
+                    <div class="form-group"><label>角色树</label><ul id="MenuGroup" class="ztree"></ul> </div>
+
+                    <div class="form-group"><label>角色名称</label>  <a onclick="checkAll('y')" class="selBtn"> <input type="checkbox" id="check1"> 全选  </a><a onclick="checkAll('n')" class="selBtn"> <input type="checkbox" id="check2"> 取消全选 </a></div>
+                    <div class="form-group"><label>角色名称</label>  </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="saveRoleAndMenu();">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="layout/default :: js('/js/plugins/validate/jquery.validate.min.js,/js/user/user.js')"></div>
+<script>
+
+
+</script>
 </body>
 
 </html>
