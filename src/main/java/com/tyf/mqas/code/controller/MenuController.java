@@ -20,6 +20,12 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
+
+    @RequestMapping(value = "menuManage",method = RequestMethod.GET)
+    public String menuManage(){
+        return "system/menu";
+    }
+
     /**
      * 获取所有菜单
      * @param request

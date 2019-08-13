@@ -48,7 +48,7 @@ function initTable(){
                     var buttons = '';
                     buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>';
                     buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>';
-                    buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配角色</button>';
+                    buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配用户</button>';
                     return buttons;
                 }
             },
@@ -114,7 +114,7 @@ function validateData(){
             username : {
                 required : "不能为空",
                 maxlength : "不超过50个字符",
-                remote : "角色名已存在",
+                remote : "用户名已存在",
             },
             phone : {
                 required: "不能为空",
@@ -132,7 +132,7 @@ function validateData(){
 }
 
 /**
- * 保存角色
+ * 保存用户
  */
 function saveUser(){
     //保存
@@ -154,7 +154,7 @@ function saveUser(){
 }
 
 /**
- * 编辑角色
+ * 编辑用户
  * @param id
  */
 function editUser(id){
@@ -185,7 +185,7 @@ function reloadTable(){
 }
 
 /**
- * 删除角色
+ * 删除用户
  * @param id
  */
 function deleteUser(id){
@@ -216,7 +216,7 @@ function deleteUser(id){
 }
 
 /**
- * 分配菜单
+ * 分配角色
  * @param id
  */
 function assignmentRole(id){
@@ -247,13 +247,13 @@ function AssPer(){
         async : {
             enable : true,
             type : "GET",
-            url : contextPath+"menu/getAllMenus",
+            url : contextPath+"role/getAllRoleTree",
         },
         callback : {
             onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
         }
     };
-    $.fn.zTree.init($("#MenuGroup"), setting, zNodes);
+    $.fn.zTree.init($("#roleGroup"), setting, zNodes);
 
 }
 
@@ -261,18 +261,18 @@ function AssPer(){
  * 异步加载树完成后回调函数
  */
 function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
-    //反填角色已有的菜单
+    //反填用户已有的菜单
     $.ajax({
         type : "GET",
         data : {
             id : userId
         },
-        url : contextPath + "user/getMenusByRoleId",
+        url : contextPath + "user/getRolesByUserId",
         dataType : "JSON",
         success : function(result){
             $("#check2").attr("checked",false);
             $("#check1").attr("checked",false);
-            var  treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+            var  treeObj = $.fn.zTree.getZTreeObj("roleGroup");
             treeObj.expandAll(true);
             for (var i = 0; i < result.length; i++) {
                 var node =treeObj.getNodeByParam("id",result[i].id);
@@ -293,13 +293,13 @@ function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
         }
     });
 
-    showModal("menuModal");
+    showModal("roleModal");
 }
 /**
  * 全选/取消全选
  */
 function checkAll(boo){
-    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+    var treeObj = $.fn.zTree.getZTreeObj("roleGroup");
     if(boo == "y"){
         $("#check2").attr("checked",false);
         treeObj.checkAllNodes(true);
@@ -312,26 +312,26 @@ function checkAll(boo){
 /**
  * 保存权限
  */
-function saveRoleAndMenu(){
-    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
+function saveUserAndRole(){
+    var treeObj = $.fn.zTree.getZTreeObj("roleGroup");
     var nodes = treeObj.getCheckedNodes(true);
-    var menuIds = "";
+    var roleIds = "";
     for(var i=0;i<nodes.length;i++){
         if(i == nodes.length-1){
-            menuIds += nodes[i].id;
+            roleIds += nodes[i].id;
         }else{
-            menuIds += nodes[i].id+",";
+            roleIds += nodes[i].id+",";
         }
     }
     $.ajax({
         type : "GET",
         data : {
             userId : userId,
-            menuIds : menuIds,
+            roleIds : roleIds,
         },
-        url : contextPath + "user/saveRoleAndMenu",
+        url : contextPath + "user/saveUserAndRole",
         success : function(result){
-            hideModal("menuModal");
+            hideModal("roleModal");
             if(result == '1'){
                 showAlert("权限分配成功",'success');
             }else{

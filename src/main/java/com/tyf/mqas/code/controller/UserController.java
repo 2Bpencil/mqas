@@ -67,6 +67,8 @@ public class UserController {
             u.setSex(user.getSex());
             user = u;
             oprate = "编辑";
+        }else{
+            user.setPassword("123456");
         }
         try{
             userService.saveEntity(user);
@@ -100,6 +102,86 @@ public class UserController {
         String json = JSONObject.toJSONString(map);
         try {
             response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 删除角色
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "deleteUser",method = RequestMethod.GET)
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String id = request.getParameter("id");
+        try{
+            userService.deleteUserById(Integer.parseInt(id));
+            logger.info(SecurityUtil.getCurUserName()+"删除用户成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.error(SecurityUtil.getCurUserName()+"删除用户失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 获取角色的菜单
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getRolesByUserId",method = RequestMethod.GET)
+    public void getRolesByUserId(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = userService.getRolesByUserId(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *保存用户角色关系
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "saveUserAndRole",method = RequestMethod.GET)
+    public void saveUserAndRole(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String userId = request.getParameter("userId");
+        String roleIds = request.getParameter("roleIds");
+        try{
+            userService.saveUserAndRole(Integer.parseInt(userId),roleIds );
+            logger.info(SecurityUtil.getCurUserName()+"保存菜单成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.info(SecurityUtil.getCurUserName()+"保存菜单失败");
+            e.printStackTrace();
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 验证重复
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
+        String username = request.getParameter("username");
+        String id = request.getParameter("id");
+        boolean isExist = userService.verifyTheRepeat(username, id);
+        try {
+            response.getWriter().print(isExist);
         } catch (IOException e) {
             e.printStackTrace();
         }

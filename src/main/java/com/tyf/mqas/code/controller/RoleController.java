@@ -1,5 +1,6 @@
 package com.tyf.mqas.code.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Role;
@@ -181,6 +182,24 @@ public class RoleController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取角色树
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllRoleTree",method = RequestMethod.GET)
+    public void getAllRoleTree(HttpServletRequest request, HttpServletResponse response){
+
+        String json = roleService.findRoleTree();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

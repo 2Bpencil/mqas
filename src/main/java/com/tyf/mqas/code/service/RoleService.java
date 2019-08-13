@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -39,8 +40,21 @@ public class RoleService extends PageGetter<Role> {
         return allRoles;
     }
 
-    public List<Role> findAllTableData(){
-        return roleRepository.findAll();
+    /**
+     * 角色树
+     * @return
+     */
+    public String findRoleTree(){
+        List<Role> list = roleRepository.findAll();
+        List<Map<String,Object>> treeList = new ArrayList<>();
+        list.forEach(role -> {
+            Map<String,Object> map = new HashMap<>();
+            map.put("name",role.getName());
+            map.put("id",role.getId());
+            map.put("pId","root");
+            treeList.add(map);
+        });
+        return JSONArray.toJSONString(treeList);
     }
 
     public List<Role> findByMenuId(Integer id) {
