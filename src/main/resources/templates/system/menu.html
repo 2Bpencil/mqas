@@ -45,28 +45,23 @@
             <div class="col-sm-8">
                 <div class="title-action">
                     <!--操作按钮-->
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#roleModal">新增角色</a>
-                    <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#menuModal">新增</a>
+                    <a href="#" class="btn btn-primary"  >编辑</a>
+                    <a href="#" class="btn btn-primary"  >删除</a>
+                    <a href="#" class="btn btn-primary" onclick="jQuery('#treeTable').treetable('expandAll'); return false;">展开</a>
+                    <a href="#" class="btn btn-primary" onclick="jQuery('#treeTable').treetable('collapseAll'); return false;">关闭</a>
                 </div>
             </div>
         </div>
         <div class="wrapper wrapper-content  animated fadeInRight">
             <div class="row">
-                <div class="col-md-4">
-                    <div id="nestable-menu">
-                        <button type="button" data-action="expand-all" class="btn btn-white btn-sm">Expand All</button>
-                        <button type="button" data-action="collapse-all" class="btn btn-white btn-sm">Collapse All</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox ">
                         <div class="ibox-title">
-                            <h5>Nestable basic list</h5>
+                            <h5>菜单列表</h5>
                         </div>
                         <div class="ibox-content">
-
+                            <table id="treeTable"  class="ui-jqgrid-htable"></table>
 
 
                         </div>
@@ -78,23 +73,30 @@
     </div>
 </div>
 <!--表单-->
-<div class="modal inmodal" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal inmodal" id="menuModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-users modal-icon"></i>
-                <h4 class="modal-title">角色表单</h4>
+                <i class="fa fa-bars modal-icon"></i>
+                <h4 class="modal-title">菜单表单</h4>
             </div>
             <div class="modal-body">
-                <!--<p><strong>Lorem Ipsum is simply dummy</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                    remaining essentially unchanged.</p>
-                <div class="form-group"><label>Sample Input</label> <input type="email" placeholder="Enter your email" class="form-control"></div>-->
-                <form role="form" id="roleForm">
+                <form role="form" id="menuForm">
                     <input type="hidden" id="form_id" name="id">
-                    <div class="form-group"><label>角色代码</label> <input type="text" id="form_authority"  placeholder="填写英文角色代码" class="form-control" name="authority"></div>
-                    <div class="form-group"><label>角色名称</label> <input type="text" id="form_name"  placeholder="请填写中文角色名称" class="form-control" name="name"></div>
+                    <input type="hidden" id="form_pid" name="pid">
+                    <div class="form-group"><label>上级菜单</label> <input type="text" id="form_parent" disabled="disabled"  placeholder="" class="form-control" name="parent"></div>
+                    <div class="form-group"><label>菜单名称</label> <input type="text" id="form_name"  placeholder="请填写中文菜单名称" class="form-control" name="name"></div>
+                    <div class="form-group"><label>菜单代码</label> <input type="text" id="form_code"  placeholder="填写英文菜单代码" class="form-control" name="code"></div>
+                    <div class="form-group"><label>菜单代码</label> <input type="text" id="form_url"  placeholder="/***/***" class="form-control" name="url"></div>
+                    <div class="form-group"><label>菜单类型</label>
+                        <select class="form-control m-b"id="form_type"  name="type">
+                            <option value="">请选择菜单类型</option>
+                            <option value="0">父级菜单</option>
+                            <option value="1">叶子菜单</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>排序</label> <input type="text" id="form_sort"  placeholder="填写正整数" class="form-control" name="sort"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
@@ -105,29 +107,7 @@
         </div>
     </div>
 </div>
-<div class="modal inmodal" id="menuModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-bars modal-icon"></i>
-                <h4 class="modal-title">菜单分配</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form" id="ztreeForm">
-                    <div class="form-group"><label>菜单树</label><ul id="MenuGroup" class="ztree"></ul> </div>
 
-                    <div class="form-group"><label>角色名称</label>  <a onclick="checkAll('y')" class="selBtn"> <input type="checkbox" id="check1"> 全选  </a><a onclick="checkAll('n')" class="selBtn"> <input type="checkbox" id="check2"> 取消全选 </a></div>
-                    <div class="form-group"><label>角色名称</label>  </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="saveRoleAndMenu();">保存</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 <div th:replace="layout/default :: js('/js/plugins/validate/jquery.validate.min.js,/js/plugins/treetable/jquery.treetable.js,/js/menu/menu.js')"></div>
 <script>
 

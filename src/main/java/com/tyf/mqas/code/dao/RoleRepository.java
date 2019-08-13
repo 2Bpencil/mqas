@@ -2,8 +2,6 @@ package com.tyf.mqas.code.dao;
 
 import com.tyf.mqas.base.repository.ExpandJpaRepository;
 import com.tyf.mqas.code.entity.Role;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -42,5 +40,11 @@ public interface RoleRepository extends ExpandJpaRepository<Role,Integer> {
     @Query(value = "select count(*) from role where authority = ?1", nativeQuery = true)
     Integer getRoleNumByAuthority(String authority);
 
-
+    /**
+     * 根据角色id获取角色用户关系
+     * @param roleId
+     * @return
+     */
+    @Query(value = "select count(*) from r_user_role where role_id = ?1", nativeQuery = true)
+    Integer getRsRoleUserNumByRoleId(Integer roleId);
 }

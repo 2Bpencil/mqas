@@ -3,10 +3,6 @@ server:
   port: 8085
   tomcat:
     uri-encoding: UTF-8
-
-
-
-
 spring:
     #***************************************数据源配置***************************************
     datasource:
@@ -69,9 +65,9 @@ management:
     ssl:
       enabled: false
 #******************************************日志配置*****************************************
-logging:
-  file: springboot.log
-  level.root: info
+#logging:
+ # file: springboot.log
+  #level.root: info
 #  level.com.tyf.springbootdemo.config: info
 
 

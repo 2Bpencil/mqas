@@ -105,8 +105,11 @@
                     <div class="form-group"><label>用户名</label> <input type="text" id="form_username"  placeholder="请填写用户名" class="form-control" name="username"></div>
                     <div class="form-group"><label>联系电话</label> <input type="text" id="form_phone"  placeholder="请填写联系电话" class="form-control" name="phone"></div>
                     <div class="form-group"><label>性别</label>
-                        <input type="radio" value="0" name="sex" id="sex0"> <i></i>女
-                        <input type="radio" value="1" name="sex" id="sex1"> <i></i>男
+                        <select class="form-control m-b"id="form_sex"  name="sex">
+                            <option value="">请选择性别</option>
+                            <option value="0">女</option>
+                            <option value="1">男</option>
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>

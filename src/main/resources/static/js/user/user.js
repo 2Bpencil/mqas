@@ -167,11 +167,7 @@ function editUser(id){
             $('#form_id').val(result.id);
             $('#form_username').val(result.username);
             $('#form_phone').val(result.phone);
-            if(result.sex == 0){
-                $("#sex0").prop('checked','true');
-            }else {
-                $("#sex1").prop('checked','true');
-            }
+            $('#form_sex').val(result.sex);
             showModal("userModal");
         }
     });
@@ -346,6 +342,8 @@ function saveUserAndRole(){
  */
 function clearForm(){
     $('#userForm')[0].reset();
+    $('#form_sex').val();
+    $('#userForm').validate().resetForm();
 }
 
 

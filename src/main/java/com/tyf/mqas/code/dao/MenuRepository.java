@@ -16,6 +16,7 @@ public interface MenuRepository extends ExpandJpaRepository<Menu,Integer> {
             " from role r2 left join r_user_role ur on ur.role_id = r2.id where ur.user_id = ?1) ", nativeQuery = true)
     List<Menu> findByUserId(Integer userId);
 
-
+    @Query(value = "select * from menu ORDER BY sort ASC ", nativeQuery = true)
+    List<Menu> findAllBySort();
 
 }

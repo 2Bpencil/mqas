@@ -137,4 +137,18 @@ public class RoleService extends PageGetter<Role> {
         return num > 0?false:true;
     }
 
+    /**
+     * 判断角色是否被使用
+     * @param id
+     * @return
+     */
+    public Boolean checkRoleUsed(Integer id){
+        Integer num = roleRepository.getRsRoleUserNumByRoleId(id);
+        if(num > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

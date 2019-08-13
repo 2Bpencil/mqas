@@ -168,6 +168,21 @@ public class RoleController {
     }
 
     /**
+     * 判断角色是否被使用
+     */
+    @RequestMapping(value = "checkRoleUsed",method = RequestMethod.GET)
+    public void checkRoleUsed(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        boolean flag =roleService.checkRoleUsed(Integer.parseInt(id));
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
      * 验证重复
      * @param request
      * @param response

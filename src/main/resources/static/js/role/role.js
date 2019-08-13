@@ -166,30 +166,48 @@ function reloadTable(){
  * @param id
  */
 function deleteRole(id){
-    swal({
-        title: "是否确定删除?",
-        text: "你将会删除这条记录!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        closeOnConfirm: false
-    }, function () {
-        $.ajax({
-            type : "GET",
-            data : {id:id},
-            dataType:"json",
-            url : contextPath+"role/deleteRole",
-            success: function(result){
-                if(result == 1){
-                    reloadTable();
-                    swal("删除成功!", "", "success");
-                }else{
-                    swal("删除失败!", "", "error");
-                }
+    $.ajax({
+        type : "GET",
+        data : {id:id},
+        dataType:"json",
+        url : contextPath+"role/checkRoleUsed",
+        success: function(result){
+            if(result){
+                swal({
+                    title: "是否确定删除?",
+                    text: "你将会删除这条记录!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type : "GET",
+                        data : {id:id},
+                        dataType:"json",
+                        url : contextPath+"role/deleteRole",
+                        success: function(result){
+                            if(result == 1){
+                                reloadTable();
+                                swal("删除成功!", "", "success");
+                            }else{
+                                swal("删除失败!", "", "error");
+                            }
+                        }
+                    });
+                });
+            }else{
+                swal({
+                    title: "提示",
+                    text: "该角色已被分配不能删除！"
+                });
             }
-        });
+        }
     });
+
+
+
 }
 
 /**
@@ -323,6 +341,7 @@ function saveRoleAndMenu(){
  */
 function clearForm(){
     $('#roleForm')[0].reset();
+    $('#userForm').validate().resetForm();
 }
 
 
