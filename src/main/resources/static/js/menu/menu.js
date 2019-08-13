@@ -1,5 +1,4 @@
 
-// var heads=['菜单名称','描述','编码','路径','图标','菜单类型','状态','排序'];
 var heads=['菜单名称','菜单代码','路径','菜单类型','排序'];
 $(document).ready(function(){
     showTreeTable();
