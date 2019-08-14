@@ -116,9 +116,11 @@ public class RoleService extends PageGetter<Role> {
      */
     public void saveRsRoleMenu(Integer roleId,String menuIds){
         roleRepository.deleteRoleAndMenu(roleId);
-        Stream.of(menuIds.split(",")).forEach(id->{
-            roleRepository.saveRoleAndMenu(roleId,Integer.parseInt(id));
-        });
+        if(StringUtils.isNotBlank(menuIds)){
+            Stream.of(menuIds.split(",")).forEach(id->{
+                roleRepository.saveRoleAndMenu(roleId,Integer.parseInt(id));
+            });
+        }
     }
 
     /**

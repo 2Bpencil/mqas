@@ -65,6 +65,7 @@ public class UserController {
             u.setUsername(user.getUsername());
             u.setPhone(user.getPhone());
             u.setSex(user.getSex());
+            u.setRealName(user.getRealName());
             user = u;
             oprate = "编辑";
         }else{
@@ -99,6 +100,7 @@ public class UserController {
         map.put("username",user.getUsername());
         map.put("phone",user.getPhone());
         map.put("sex",user.getSex());
+        map.put("realName",user.getRealName());
         String json = JSONObject.toJSONString(map);
         try {
             response.getWriter().print(json);

@@ -20,6 +20,8 @@ public class Menu {
     private Integer sort;
     @Column
     private Integer pid;
+    @Column
+    private String icon;
 
 
 
@@ -76,5 +78,13 @@ public class Menu {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

@@ -37,8 +37,8 @@ function initTable(){
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
-                    buttons+='<button type="button" onclick="editRole('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>';
-                    buttons+='<button type="button" onclick="deleteRole('+data.id+')" class="btn btn-primary btn-xs" >删除</button>';
+                    buttons+='<button type="button" onclick="editRole('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="deleteRole('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="assignmentMenu('+data.id+')" class="btn btn-primary btn-xs" >分配菜单</button>';
                     return buttons;
                 }
@@ -198,10 +198,7 @@ function deleteRole(id){
                     });
                 });
             }else{
-                swal({
-                    title: "提示",
-                    text: "该角色已被分配不能删除！"
-                });
+                swal("该角色已被分配不能删除!", "", "error");
             }
         }
     });
@@ -327,7 +324,7 @@ function saveRoleAndMenu(){
         url : contextPath + "role/saveRoleAndMenu",
         success : function(result){
             hideModal("menuModal");
-            if(result == '1'){
+            if(result == 1){
                 showAlert("权限分配成功",'success');
             }else{
                 showAlert("权限分配失败",'error');

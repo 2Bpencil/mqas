@@ -7,6 +7,9 @@
 
 
 $(document).ready(function () {
+    //初始化菜单
+    initPageMenu();
+
 
 
     // Add body-small class if window less than 768px
@@ -306,4 +309,33 @@ function WinMove() {
         .disableSelection();
 }
 
+/**
+ * 初始化菜单
+ */
+function initPageMenu(){
+    var menuJsonArray = JSON. parse($('#curMenu').val());
+    console.log(menuJsonArray);
+    var lis = '';
+    for (var i = 0; i < menuJsonArray.length; i++) {
+        var li = '';
+        var menu = menuJsonArray[i];
+        if(menu.type == 0){
+            li+='<li><a href="#"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span><span class="fa arrow"></span></a> ';
+            var children = menu.children;
+            if(children.length>0){
+                var childrenLu = '<ul class="nav nav-second-level collapse">';
+                for (var j = 0; j <children.length ; j++) {
+                    childrenLu+='<li><a href="'+children[j].url+'">'+children[j].name+'</a></li>';
+                }
+                childrenLu+='</ul>';
+                li+=childrenLu;
+            }
+            li+='</li>';
 
+        }else{
+            li +='<li><a href="'+menu.url+'"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span></a></li>';
+        }
+        lis+=li;
+    }
+    $('#side-menu').append(lis);
+}

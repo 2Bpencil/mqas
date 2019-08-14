@@ -25,6 +25,8 @@ public class User implements UserDetails {
     private String password;
     @Column
     private Integer sex;
+    @Column(length = 20)
+    private String realName;
     @Column
     private Boolean isAccountNonExpired = true;
     @Column
@@ -130,5 +132,13 @@ public class User implements UserDetails {
 
     public void setSex(Integer sex) {
         this.sex = sex;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

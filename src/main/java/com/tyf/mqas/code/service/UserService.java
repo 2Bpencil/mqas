@@ -75,6 +75,7 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
      */
     public void deleteUserById(Integer id){
         userRepository.deleteById(id);
+        userRepository.deleteRoleAndUser(id);
     }
 
     /**
@@ -103,9 +104,11 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
      */
     public void saveUserAndRole(Integer userId,String roleIds){
         userRepository.deleteRoleAndUser(userId);
-        Stream.of(roleIds.split(",")).forEach(id->{
-            userRepository.saveRoleAndUser(userId,Integer.parseInt(id));
-        });
+        if(StringUtils.isNotBlank(roleIds)){
+            Stream.of(roleIds.split(",")).forEach(id->{
+                userRepository.saveRoleAndUser(userId,Integer.parseInt(id));
+            });
+        }
     }
 
     /**

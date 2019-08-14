@@ -1,5 +1,8 @@
-
-var heads=['菜单名称','菜单代码','路径','菜单类型','排序'];
+//父id
+// paid = "";
+// meid = "";
+// mename = "";
+var heads=['菜单名称','菜单代码','路径','菜单类型','图标','排序'];
 $(document).ready(function(){
     showTreeTable();
     validateData();
@@ -18,21 +21,51 @@ function showTreeTable() {
         url : contextPath + 'menu/getAllMenus',
         dataType : "json",
         success : function(result) {
-            console.log(result);
             $.TreeTable("treeTable",heads,result);
         }
     });
 }
-var ids="";
-function getNodes(node){
-    ids += node.id+",";
-    if(node.children.length > 0){
-        for(var i = 0;i < node.children.length;i++){
-            getNodes(node.children[i]);
-        }
-    }
+
+/**
+ * 清空pid
+ */
+function clearPid(){
+    paid = "";
+    meid = "";
+    mename = "";
+
 }
 
+/**
+ * 新增
+ */
+function addMenu(){
+
+    if(meid == ""){
+        showModal("menuModal");
+    }else {
+        $.ajax({
+            type : "GET",
+            data : {id:meid},
+            url : contextPath+"menu/getEntityInfo",
+            dataType : "json",
+            success: function(result){
+                if(result.type == 1){
+                    swal("叶子菜单下不能新建菜单!", "", "error");
+                    return;
+                }else {
+                    $("#form_pid").val(meid);
+                    $("#form_parent").val(mename);
+                }
+                showModal("menuModal");
+            }
+        });
+    }
+
+
+
+
+}
 /**
  * 保存
  */
@@ -42,11 +75,12 @@ function saveMenu(){
         type : "GET",
         data : $("#menuForm").serialize(),
         url : contextPath+"menu/saveOrEditEntity",
+        dataType : "json",
         success: function(result){
             if(result == 1){
                 hideModal('menuModal');
+                showTreeTable();
                 clearForm();
-                reloadTable();
                 showAlert("保存成功",'success');
             }else{
                 showAlert("保存失败",'error');
@@ -59,9 +93,97 @@ function saveMenu(){
  * 编辑
  */
 function editMenu(){
-
+    if(meid==""){
+        swal({
+            title: "提示",
+            text: "请选中要编辑的项！"
+        });
+        return;
+    }
+    $.ajax({
+        type : "GET",
+        data : {id:meid},
+        url : contextPath+"menu/getEntityInfo",
+        dataType : "json",
+        success: function(result){
+            $('#form_id').val(result.id);
+            $('#form_pid').val(result.pid);
+            $('#form_name').val(result.name);
+            $('#form_code').val(result.code);
+            $('#form_url').val(result.url);
+            $('#form_type').val(result.type);
+            $('#form_sort').val(result.sort);
+            $('#form_icon').val(result.icon);
+            showModal("menuModal");
+        }
+    });
 }
 
+/**
+ * 删除
+ */
+function deleteMenu(){
+    if(meid == ""){
+        swal({
+            title: "提示",
+            text: "请选中要删除的项！"
+        });
+        return;
+    }
+    var node = jQuery('#treeTable').treetable('childs', meid);
+    getNodes(node);
+    $.ajax({
+        type : "GET",
+        data : {ids:ids},
+        dataType:"json",
+        url : contextPath+"menu/checkMenuUsed",
+        success: function(result){
+            if(result){
+                swal({
+                    title: "是否确定删除?",
+                    text: "你将会删除这条记录!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type : "GET",
+                        data : {ids:ids},
+                        dataType:"json",
+                        url : contextPath+"menu/deleteMenu",
+                        success: function(result){
+                            if(result == 1){
+                                ids="";
+                                showTreeTable();
+                                swal("删除成功!", "", "success");
+                            }else{
+                                swal("删除失败!", "", "error");
+                            }
+                        }
+                    });
+                });
+            }else{
+                swal("有菜单被分配，不能删除!", "", "error");
+            }
+        }
+    });
+}
+//删除用
+var ids="";
+function getNodes(node){
+    if(ids==""){
+        ids += node.id;
+    }else {
+        ids += ","+ node.id;
+    }
+    if(node.children.length > 0){
+        for(var i = 0;i < node.children.length;i++){
+            getNodes(node.children[i]);
+        }
+    }
+}
 //******************************************************表单验证*****************************************************************
 /**
  * 验证数据
@@ -121,6 +243,13 @@ function validateData(){
             }
         },
         submitHandler : function(form) {
+            if($('#form_pid').val()!=0 && $('#form_pid').val()!='' && $('#form_pid').val()!=null){
+                var type = $('#form_type').val();
+                if(type == 0){
+                    swal("父级菜单下只能选择叶子菜单!", "", "error");
+                    return;
+                }
+            }
             saveMenu();
 
         }
@@ -133,4 +262,8 @@ function clearForm(){
     $('#menuForm')[0].reset();
     $('#form_type').val("");
     $('#menuForm').validate().resetForm();
+    paid = "";
+    meid = "";
+    mename = "";
+    ids = "";
 }

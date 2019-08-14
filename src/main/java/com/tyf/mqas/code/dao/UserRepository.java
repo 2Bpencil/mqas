@@ -28,4 +28,5 @@ public interface UserRepository extends ExpandJpaRepository<User,Integer> {
 
     @Query(value = "select count(*) from user where username = ?1", nativeQuery = true)
     Integer getRoleNumByUsername(String username);
+
 }

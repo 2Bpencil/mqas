@@ -24,13 +24,18 @@ function initTable(){
             },
             { "data": "username",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
-                width: '35%'
+                width: '25%'
+
+            },
+            { "data": "real_name",
+                render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
+                width: '25%'
 
             },
             { "data": "phone",
                 'orderable' : false ,
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
-                width: '35%'
+                width: '20%'
             },
             { "data": "sex",
                 render : function(data,type, row, meta) {
@@ -46,8 +51,8 @@ function initTable(){
                 'render':function (data, type, row, meta) {
                     //data  和 row  是数据
                     var buttons = '';
-                    buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>';
-                    buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>';
+                    buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配用户</button>';
                     return buttons;
                 }
@@ -108,7 +113,10 @@ function validateData(){
             },
             sex:{
                 required: true,
-                }
+                },
+            realName:{
+                required: true,
+            }
         },
         messages : {
             username : {
@@ -122,6 +130,9 @@ function validateData(){
             },
             sex:{
                 required: "请选择性别",
+            },
+            realName:{
+                required: "不能为空",
             }
         },
         submitHandler : function(form) {
@@ -168,6 +179,7 @@ function editUser(id){
             $('#form_username').val(result.username);
             $('#form_phone').val(result.phone);
             $('#form_sex').val(result.sex);
+            $('#form_realName').val(result.realName);
             showModal("userModal");
         }
     });
