@@ -60,7 +60,7 @@ public class User implements UserDetails {
     }
     public void setPassword(String password) {//加密
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        password = passwordEncoder.encode(password);//加密
+        password = passwordEncoder.encode(password);
         this.password = password;
     }
 

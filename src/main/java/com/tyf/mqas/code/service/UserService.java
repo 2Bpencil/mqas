@@ -10,6 +10,7 @@ import com.tyf.mqas.code.dao.RoleRepository;
 import com.tyf.mqas.code.dao.UserRepository;
 import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.entity.User;
+import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(name);
+        User user = userRepository.findUserByUsername(name);
         if (user != null) {
             List<Role> roles = roleRepository.findByUserId(user.getId());
             System.out.println(roles.size());
@@ -127,6 +129,27 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
         return num > 0?false:true;
     }
 
+    /**
+     *
+     * @return
+     */
+    public boolean checkPassword(String password){
+        String username = SecurityUtil.getCurUserName();
+        User user = userRepository.findUserByUsername(username);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String oldPassword = user.getPassword();
+        return passwordEncoder.matches(password,oldPassword);
+    }
 
+    /**
+     * 保存密码
+     * @param password
+     */
+    public void savePassword(String password){
+        String username = SecurityUtil.getCurUserName();
+        User user = userRepository.findUserByUsername(username);
+        user.setPassword(password);
+        userRepository.save(user);
+    }
 
 }

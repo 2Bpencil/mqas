@@ -34,7 +34,7 @@ public class SysAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        User user = userRepository.findByUsername(SecurityUtil.getCurUserName());
+        User user = userRepository.findUserByUsername(SecurityUtil.getCurUserName());
         session.setMaxInactiveInterval(60 * 60 * 8);
         /**
          * 将当前用户的用户信息以及权限信息存入session中

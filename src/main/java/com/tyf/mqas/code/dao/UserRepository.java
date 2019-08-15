@@ -11,8 +11,6 @@ import javax.transaction.Transactional;
 @Repository
 public interface UserRepository extends ExpandJpaRepository<User,Integer> {
 
-    User findByUsername(String name);
-
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO r_user_role(user_id,role_id) VALUES(?1,?2)", nativeQuery = true)
@@ -28,5 +26,7 @@ public interface UserRepository extends ExpandJpaRepository<User,Integer> {
 
     @Query(value = "select count(*) from user where username = ?1", nativeQuery = true)
     Integer getRoleNumByUsername(String username);
+
+    User findUserByUsername(String username);
 
 }

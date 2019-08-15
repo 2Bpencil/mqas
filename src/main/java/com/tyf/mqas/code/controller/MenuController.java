@@ -61,10 +61,10 @@ public class MenuController {
         }
         try{
             menuService.saveEntity(menu);
-            logger.info(SecurityUtil.getCurUserName()+oprate+"菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"菜单成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+oprate+"菜单失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"菜单失败");
         }
         try {
             response.getWriter().print(flag);

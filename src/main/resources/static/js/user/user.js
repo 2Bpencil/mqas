@@ -337,6 +337,7 @@ function saveUserAndRole(){
             userId : userId,
             roleIds : roleIds,
         },
+        dataType:'json',
         url : contextPath + "user/saveUserAndRole",
         success : function(result){
             hideModal("roleModal");

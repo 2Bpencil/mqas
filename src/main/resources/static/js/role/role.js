@@ -202,9 +202,6 @@ function deleteRole(id){
             }
         }
     });
-
-
-
 }
 
 /**
@@ -338,7 +335,7 @@ function saveRoleAndMenu(){
  */
 function clearForm(){
     $('#roleForm')[0].reset();
-    $('#userForm').validate().resetForm();
+    $('#roleForm').validate().resetForm();
 }
 
 

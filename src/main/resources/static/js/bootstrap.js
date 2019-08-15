@@ -1106,10 +1106,10 @@ if (typeof jQuery === 'undefined') {
           this.ignoreBackdropClick = false
           return
         }
-        if (e.target !== e.currentTarget) return
-        this.options.backdrop == 'static'
-          ? this.$element[0].focus()
-          : this.hide()
+        // if (e.target !== e.currentTarget) return
+        // this.options.backdrop == 'static'
+        //   ? this.$element[0].focus()
+        //   : this.hide()
       }, this))
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow

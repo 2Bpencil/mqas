@@ -11,6 +11,7 @@ import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,14 +70,16 @@ public class UserController {
             user = u;
             oprate = "编辑";
         }else{
-            user.setPassword("123456");
+            String password = "123456";
+
+            user.setPassword(password);
         }
         try{
             userService.saveEntity(user);
-            logger.info(SecurityUtil.getCurUserName()+oprate+"用户成功");
+            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"用户成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+oprate+"用户失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"用户失败");
         }
         try {
             response.getWriter().print(flag);
@@ -119,10 +122,10 @@ public class UserController {
         String id = request.getParameter("id");
         try{
             userService.deleteUserById(Integer.parseInt(id));
-            logger.info(SecurityUtil.getCurUserName()+"删除用户成功");
+            logger.info(SecurityUtil.getCurUserName()+"---删除用户成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"删除用户失败");
+            logger.error(SecurityUtil.getCurUserName()+"---删除用户失败");
         }
         try {
             response.getWriter().print(flag);
@@ -160,10 +163,10 @@ public class UserController {
         String roleIds = request.getParameter("roleIds");
         try{
             userService.saveUserAndRole(Integer.parseInt(userId),roleIds );
-            logger.info(SecurityUtil.getCurUserName()+"保存菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"---保存菜单成功");
         }catch (Exception e){
             flag = 0;
-            logger.info(SecurityUtil.getCurUserName()+"保存菜单失败");
+            logger.info(SecurityUtil.getCurUserName()+"---保存菜单失败");
             e.printStackTrace();
         }
         try {
@@ -189,4 +192,42 @@ public class UserController {
         }
     }
 
+    /**
+     * 修改密码
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "modifyPassword",method = RequestMethod.GET)
+    public void modifyPassword(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String password = request.getParameter("repeat_password");
+        try{
+            userService.savePassword(password);
+            logger.info(SecurityUtil.getCurUserName()+"---修改密码成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.info(SecurityUtil.getCurUserName()+"---修改密码失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    /**
+     * 检查密码是否正确
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "checkPassword",method = RequestMethod.GET)
+    public void checkPassword(HttpServletRequest request, HttpServletResponse response){
+        String password = request.getParameter("old_password");
+        boolean flag = userService.checkPassword(password);
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

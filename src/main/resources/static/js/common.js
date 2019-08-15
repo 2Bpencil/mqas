@@ -1,3 +1,7 @@
+$(document).ready(function(){
+    validatePasswordData();
+});
+
 /**
  * 关闭Modal
  */
@@ -23,5 +27,87 @@ function showAlert(msg,type){
         title: msg,
         text: "",
         type: type
+    });
+}
+
+/**
+ * 清除密码表单
+ */
+function clearPasswordForm(){
+    $('#passwordForm')[0].reset();
+    $('#passwordForm').validate().resetForm();
+}
+
+/**
+ * 验证密码数据
+ */
+function validatePasswordData(){
+    $("#passwordForm").validate({
+        rules: {
+            old_password: {
+                required: true,
+                maxlength: 20,
+                minlength: 6,
+                remote : {//远程地址只能输出"true"或"false"
+                    url : contextPath + "user/checkPassword",
+                    type : "get",
+                    dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    data : {
+
+                    }
+                },
+            },
+            modify_password: {
+                required : true,
+                maxlength: 20,
+                minlength: 6,
+            },
+            repeat_password:{
+                required: true,
+                maxlength: 20,
+                minlength: 6,
+                equalTo: "#form_modify_password"
+            },
+        },
+        messages : {
+            old_password : {
+                required : "请输入原密码",
+                maxlength : "不超过20个字符",
+                minlength: "必须超过6个字符",
+                remote : "密码不正确",
+            },
+            modify_password : {
+                required: "请输入新密码",
+                maxlength : "不超过20个字符",
+                minlength: "必须超过6个字符",
+            },
+            repeat_password:{
+                required: "请从新输入新密码",
+                maxlength : "不超过20个字符",
+                minlength: "必须超过6个字符",
+                equalTo:"请再次输入相同的密码"
+            },
+        },
+        submitHandler : function(form) {
+
+            //保存
+            $.ajax({
+                type : "GET",
+                data : $("#passwordForm").serialize(),
+                dataType:"json",
+                url : contextPath+"user/modifyPassword",
+                success: function(result){
+                    if(result == 1){
+                        hideModal('passwordModal');
+                        clearPasswordForm();
+                        showAlert("修改成功",'success');
+                    }else{
+                        showAlert("修改失败",'error');
+                    }
+                }
+            });
+
+
+        }
     });
 }
