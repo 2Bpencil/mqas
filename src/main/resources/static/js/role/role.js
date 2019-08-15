@@ -336,6 +336,7 @@ function saveRoleAndMenu(){
 function clearForm(){
     $('#roleForm')[0].reset();
     $('#roleForm').validate().resetForm();
+    $('#form_id').val(null);
 }
 
 

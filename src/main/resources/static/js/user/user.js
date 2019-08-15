@@ -355,7 +355,8 @@ function saveUserAndRole(){
  */
 function clearForm(){
     $('#userForm')[0].reset();
-    $('#form_sex').val();
+    $('#form_sex').val('');
+    $('#form_id').val(null);
     $('#userForm').validate().resetForm();
 }
 

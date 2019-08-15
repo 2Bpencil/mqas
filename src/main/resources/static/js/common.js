@@ -82,7 +82,7 @@ function validatePasswordData(){
                 minlength: "必须超过6个字符",
             },
             repeat_password:{
-                required: "请从新输入新密码",
+                required: "请重新输入新密码",
                 maxlength : "不超过20个字符",
                 minlength: "必须超过6个字符",
                 equalTo:"请再次输入相同的密码"

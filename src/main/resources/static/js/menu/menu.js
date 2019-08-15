@@ -257,6 +257,8 @@ function validateData(){
 function clearForm(){
     $('#menuForm')[0].reset();
     $('#form_type').val("");
+    $('#form_id').val(null);
+    $('#form_pid').val(null);
     $('#menuForm').validate().resetForm();
     paid = "";
     meid = "";

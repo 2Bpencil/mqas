@@ -325,7 +325,7 @@ function initPageMenu(){
             if(children.length>0){
                 var childrenLu = '<ul class="nav nav-second-level collapse">';
                 for (var j = 0; j <children.length ; j++) {
-                    childrenLu+='<li><a href="'+children[j].url+'">'+children[j].name+'</a></li>';
+                    childrenLu+='<li><a href="'+children[j].url+'"><i class="'+children[j].icon+'"></i>'+children[j].name+'</a></li>';
                 }
                 childrenLu+='</ul>';
                 li+=childrenLu;
