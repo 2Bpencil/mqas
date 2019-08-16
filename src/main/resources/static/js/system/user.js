@@ -15,7 +15,10 @@ function initTable(){
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
             "url": contextPath+"user/getTableJson",  // 异步传输的后端接口url
-            "type": "GET"      // 请求方式
+            "type": "POST",      // 请求方式
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
         },
         "columns": [
             { "data": "id",
@@ -99,8 +102,11 @@ function validateData(){
                 maxlength: 50,
                 remote : {//远程地址只能输出"true"或"false"
                     url : contextPath + "user/verifyTheRepeat",
-                    type : "get",
+                    type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    beforeSend : function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
                         id : function(){
                             return $("#form_id").val();
@@ -148,9 +154,12 @@ function validateData(){
 function saveUser(){
     //保存
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : $("#userForm").serialize(),
         url : contextPath+"user/saveOrEditEntity",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result == 1){
                 hideModal('userModal');
@@ -170,10 +179,13 @@ function saveUser(){
  */
 function editUser(id){
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {id:id},
         dataType:"json",
         url : contextPath+"user/getEntityInfo",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             $('#form_id').val(result.id);
             $('#form_username').val(result.username);
@@ -207,10 +219,13 @@ function deleteUser(id){
         closeOnConfirm: false
     }, function () {
         $.ajax({
-            type : "GET",
+            type : "POST",
             data : {id:id},
             dataType:"json",
             url : contextPath+"user/deleteUser",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             success: function(result){
                 if(result == 1){
                     reloadTable();
@@ -229,14 +244,14 @@ function deleteUser(id){
  */
 function assignmentRole(id){
     userId = id;
-    AssPer();
+    initTree();
 
 }
 var userId;
 /**
  * 加载分配菜单页面
  */
-function AssPer(){
+function initTree(){
     var zNodes = []; //zTree的数据属性
     var setting = { //zTree的参数配置
         check : {
@@ -244,7 +259,7 @@ function AssPer(){
             chkStyle : 'checkbox',
             chkboxType : {
                 "Y" : "ps",
-                "N" : ""
+                "N" : "ps"
             }
         },
         data : {
@@ -255,7 +270,11 @@ function AssPer(){
         async : {
             enable : true,
             type : "GET",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             url : contextPath+"role/getAllRoleTree",
+
         },
         callback : {
             onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
@@ -271,11 +290,14 @@ function AssPer(){
 function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
     //反填用户已有的菜单
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {
             id : userId
         },
         url : contextPath + "user/getRolesByUserId",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         dataType : "JSON",
         success : function(result){
             $("#check2").attr("checked",false);
@@ -332,13 +354,16 @@ function saveUserAndRole(){
         }
     }
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {
             userId : userId,
             roleIds : roleIds,
         },
         dataType:'json',
         url : contextPath + "user/saveUserAndRole",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success : function(result){
             hideModal("roleModal");
             if(result == '1'){

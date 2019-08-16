@@ -75,26 +75,6 @@ public class MenuService  {
         return JSONArray.toJSONString(treeTables);
     }
 
-    /**
-     * ztree数据
-     * @return
-     */
-    public String getAllMenusForZtree(){
-        List<Menu> list = menuRepository.findAllBySort();
-        List<Map<String,Object>> treeList = new ArrayList<>();
-        list.forEach(menu -> {
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",menu.getId());
-            map.put("pId",menu.getPid());
-            map.put("name",menu.getName());
-            if(menu.getType()==0){
-                map.put("icon","/img/icon/menus.png");
-            }else{
-                map.put("icon","/img/icon/menu.png");
-            }
-        });
-        return JSONArray.toJSONString(treeList);
-    }
 
     /**
      * 保存菜单

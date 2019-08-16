@@ -15,11 +15,13 @@ $(document).ready(function(){
 function showTreeTable() {
     $("#treeTable").empty();
     $.ajax({
-        type : 'GET',
+        type : 'POST',
         url : contextPath + 'knowledge/getAllKnowledges',
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         dataType : "json",
         success : function(result) {
-            console.log(result)
             $.TreeTable("treeTable",heads,result);
         }
     });
@@ -54,9 +56,12 @@ function addKnowledge(){
 function saveKnowledge(){
 //保存
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : $("#knowledgeForm").serialize(),
         url : contextPath+"knowledge/saveOrEditEntity",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         dataType : "json",
         success: function(result){
             if(result == 1){
@@ -83,9 +88,12 @@ function editKnowledge(){
         return;
     }
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {id:meid},
         url : contextPath+"knowledge/getEntityInfo",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         dataType : "json",
         success: function(result){
                     $('#form_id').val(result.id);
@@ -111,10 +119,13 @@ function deleteKnowledge(){
     var node = jQuery('#treeTable').treetable('childs', meid);
     getNodes(node);
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {ids:ids},
         dataType:"json",
         url : contextPath+"knowledge/checkKnowledgeUsed",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result){
                 swal({
@@ -127,10 +138,13 @@ function deleteKnowledge(){
                     closeOnConfirm: false
                 }, function () {
                     $.ajax({
-                        type : "GET",
+                        type : "POST",
                         data : {ids:ids},
                         dataType:"json",
                         url : contextPath+"knowledge/deleteKnowledge",
+                        beforeSend : function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
                         success: function(result){
                             if(result == 1){
                                 ids="";
@@ -174,8 +188,11 @@ function validateData(){
                 maxlength: 100,
                 remote : {//远程地址只能输出"true"或"false"
                     url : contextPath + "knowledge/verifyTheRepeat",
-                    type : "get",
+                    type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    beforeSend : function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
                         id : function(){
                             return $("#form_id").val();

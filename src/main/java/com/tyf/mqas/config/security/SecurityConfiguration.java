@@ -60,6 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 //注销行为任意访问
                 .accessDeniedPage("/accessDenied");
+//        http.csrf().disable();//直接关闭防跨域攻击功能。（该方法暴力不推荐使用）
         http.addFilterBefore(sysFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 
     }

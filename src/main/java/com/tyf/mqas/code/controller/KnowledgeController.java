@@ -49,7 +49,7 @@ public class KnowledgeController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getAllKnowledges",method = RequestMethod.GET)
+    @RequestMapping(value = "getAllKnowledges",method = RequestMethod.POST)
     public void getAllKnowledges(HttpServletRequest request, HttpServletResponse response){
         String json = knowledgeService.getAllKnowledges();
         try {
@@ -62,7 +62,7 @@ public class KnowledgeController {
     /**
     * 保存或者编辑实体
     */
-    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("knowledge") Knowledge knowledge, HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String oprate = "新增";
@@ -106,7 +106,7 @@ public class KnowledgeController {
     * @param request
     * @param response
     */
-    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.POST)
     public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         Knowledge knowledge = knowledgeService.getKnowledgeById(Integer.parseInt(id));
@@ -123,7 +123,7 @@ public class KnowledgeController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "deleteKnowledge",method = RequestMethod.GET)
+    @RequestMapping(value = "deleteKnowledge",method = RequestMethod.POST)
     public void deleteKnowledge(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String ids = request.getParameter("ids");
@@ -150,7 +150,7 @@ public class KnowledgeController {
     * @param request
     * @param response
     */
-    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.POST)
     public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
         String name = request.getParameter("name");
         String id = request.getParameter("id");
@@ -167,7 +167,7 @@ public class KnowledgeController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "checkKnowledgeUsed",method = RequestMethod.GET)
+    @RequestMapping(value = "checkKnowledgeUsed",method = RequestMethod.POST)
     public void checkKnowledgeUsed(HttpServletRequest request, HttpServletResponse response){
         String ids = request.getParameter("ids");
         boolean flag = knowledgeService.checkKnowledgeUsed(ids);

@@ -42,7 +42,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getTableJson",method = RequestMethod.GET)
+    @RequestMapping(value = "getTableJson",method = RequestMethod.POST)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
 
         Map<String,String[]> parameterMap = request.getParameterMap();
@@ -57,7 +57,7 @@ public class UserController {
     /**
      * 保存或者编辑实体
      */
-    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("user") User user, HttpServletResponse response){
         int flag = 1;
         String oprate = "新增";
@@ -94,7 +94,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.POST)
     public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         User user = userService.getUserById(Integer.parseInt(id));
@@ -116,7 +116,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "deleteUser",method = RequestMethod.GET)
+    @RequestMapping(value = "deleteUser",method = RequestMethod.POST)
     public void deleteUser(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String id = request.getParameter("id");
@@ -140,7 +140,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getRolesByUserId",method = RequestMethod.GET)
+    @RequestMapping(value = "getRolesByUserId",method = RequestMethod.POST)
     public void getRolesByUserId(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         String json = userService.getRolesByUserId(Integer.parseInt(id));
@@ -156,7 +156,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "saveUserAndRole",method = RequestMethod.GET)
+    @RequestMapping(value = "saveUserAndRole",method = RequestMethod.POST)
     public void saveUserAndRole(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String userId = request.getParameter("userId");
@@ -180,7 +180,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.POST)
     public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
         String username = request.getParameter("username");
         String id = request.getParameter("id");
@@ -197,7 +197,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "modifyPassword",method = RequestMethod.GET)
+    @RequestMapping(value = "modifyPassword",method = RequestMethod.POST)
     public void modifyPassword(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String password = request.getParameter("repeat_password");
@@ -220,7 +220,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "checkPassword",method = RequestMethod.GET)
+    @RequestMapping(value = "checkPassword",method = RequestMethod.POST)
     public void checkPassword(HttpServletRequest request, HttpServletResponse response){
         String password = request.getParameter("old_password");
         boolean flag = userService.checkPassword(password);

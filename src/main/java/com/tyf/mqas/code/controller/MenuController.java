@@ -2,7 +2,6 @@ package com.tyf.mqas.code.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.code.entity.Menu;
-import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.service.MenuService;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class MenuController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getAllMenus",method = RequestMethod.GET)
+    @RequestMapping(value = "getAllMenus",method = RequestMethod.POST)
     public void getAllMenus(HttpServletRequest request, HttpServletResponse response){
         String json = menuService.getAllMenus();
         try {
@@ -47,9 +46,25 @@ public class MenuController {
     }
 
     /**
+     * ztree
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllMenusForTree",method = RequestMethod.GET)
+    public void getAllMenusForTree(HttpServletRequest request, HttpServletResponse response){
+        String json = menuService.getAllMenus();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * 保存或者编辑实体
      */
-    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("menu") Menu menu, HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String oprate = "新增";
@@ -80,7 +95,7 @@ public class MenuController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.POST)
     public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
         String code = request.getParameter("code");
         String id = request.getParameter("id");
@@ -96,7 +111,7 @@ public class MenuController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.POST)
     public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         Menu menu = menuService.getMenuById(Integer.parseInt(id));
@@ -113,7 +128,7 @@ public class MenuController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "checkMenuUsed",method = RequestMethod.GET)
+    @RequestMapping(value = "checkMenuUsed",method = RequestMethod.POST)
     public void checkMenuUsed(HttpServletRequest request, HttpServletResponse response){
         String ids = request.getParameter("ids");
         boolean flag =menuService.checkMenuUsed(ids);
@@ -129,7 +144,7 @@ public class MenuController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "deleteMenu",method = RequestMethod.GET)
+    @RequestMapping(value = "deleteMenu",method = RequestMethod.POST)
     public void deleteMenu(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String ids = request.getParameter("ids");

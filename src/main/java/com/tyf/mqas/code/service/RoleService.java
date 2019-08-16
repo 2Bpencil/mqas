@@ -52,6 +52,7 @@ public class RoleService extends PageGetter<Role> {
             map.put("name",role.getName());
             map.put("id",role.getId());
             map.put("pId","root");
+            map.put("icon","/img/icon/role.png");
             treeList.add(map);
         });
         return JSONArray.toJSONString(treeList);

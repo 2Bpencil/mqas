@@ -47,7 +47,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getTableJson",method = RequestMethod.GET)
+    @RequestMapping(value = "getTableJson",method = RequestMethod.POST)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
         Map<String,String[]> parameterMap = request.getParameterMap();
         DataPage<Role> pages = roleService.getDataPage(parameterMap);
@@ -62,7 +62,7 @@ public class RoleController {
     /**
      * 保存或者编辑实体
      */
-    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.GET)
+    @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("role") Role role, HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String oprate = "新增";
@@ -89,7 +89,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getEntityInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "getEntityInfo",method = RequestMethod.POST)
     public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         Role role = roleService.getRoleById(Integer.parseInt(id));
@@ -106,7 +106,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "deleteRole",method = RequestMethod.GET)
+    @RequestMapping(value = "deleteRole",method = RequestMethod.POST)
     public void deleteRole(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String id = request.getParameter("id");
@@ -130,7 +130,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getMenusByRoleId",method = RequestMethod.GET)
+    @RequestMapping(value = "getMenusByRoleId",method = RequestMethod.POST)
     public void getMenusByRoleId(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         String json = roleService.getMenusByRoleId(Integer.parseInt(id));
@@ -146,7 +146,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "saveRoleAndMenu",method = RequestMethod.GET)
+    @RequestMapping(value = "saveRoleAndMenu",method = RequestMethod.POST)
     public void saveRoleAndMenu(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String roleId = request.getParameter("roleId");
@@ -170,7 +170,7 @@ public class RoleController {
     /**
      * 判断角色是否被使用
      */
-    @RequestMapping(value = "checkRoleUsed",method = RequestMethod.GET)
+    @RequestMapping(value = "checkRoleUsed",method = RequestMethod.POST)
     public void checkRoleUsed(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
         boolean flag =roleService.checkRoleUsed(Integer.parseInt(id));
@@ -187,7 +187,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.GET)
+    @RequestMapping(value = "verifyTheRepeat",method = RequestMethod.POST)
     public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
         String authority = request.getParameter("authority");
         String id = request.getParameter("id");

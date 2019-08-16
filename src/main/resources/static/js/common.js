@@ -1,3 +1,7 @@
+// 再使用Ajax的时候会报 403(ajax get  方式是没问题的 post 的时候会报)
+// Spring Security 原本是 防止 CSRF 攻击 现在 ajax 被误伤了...
+var header = $("meta[name='_csrf_header']").attr("content");
+var token =$("meta[name='_csrf']").attr("content");
 $(document).ready(function(){
     validatePasswordData();
 });

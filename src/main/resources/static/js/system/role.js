@@ -15,7 +15,10 @@ function initTable(){
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
             "url": contextPath+"role/getTableJson",  // 异步传输的后端接口url
-            "type": "GET"      // 请求方式
+            "type": "POST",      // 请求方式
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
         },
         "columns": [
             { "data": "id",
@@ -119,9 +122,12 @@ function validateData(){
 function saveRole(){
     //保存
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : $("#roleForm").serialize(),
         url : contextPath+"role/saveOrEditEntity",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result == 1){
                 hideModal('roleModal');
@@ -141,10 +147,13 @@ function saveRole(){
  */
 function editRole(id){
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {id:id},
         dataType:"json",
         url : contextPath+"role/getEntityInfo",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             $('#form_id').val(result.id);
             $('#form_authority').val(result.authority);
@@ -167,10 +176,13 @@ function reloadTable(){
  */
 function deleteRole(id){
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {id:id},
         dataType:"json",
         url : contextPath+"role/checkRoleUsed",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result){
                 swal({
@@ -183,10 +195,13 @@ function deleteRole(id){
                     closeOnConfirm: false
                 }, function () {
                     $.ajax({
-                        type : "GET",
+                        type : "POST",
                         data : {id:id},
                         dataType:"json",
                         url : contextPath+"role/deleteRole",
+                        beforeSend : function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
                         success: function(result){
                             if(result == 1){
                                 reloadTable();
@@ -210,14 +225,14 @@ function deleteRole(id){
  */
 function assignmentMenu(id){
     roleId = id;
-    AssPer();
+    initTree();
 
 }
 var roleId;
 /**
  * 加载分配菜单页面
  */
-function AssPer(){
+function initTree(){
     var zNodes = []; //zTree的数据属性
     var setting = { //zTree的参数配置
         check : {
@@ -236,7 +251,10 @@ function AssPer(){
         async : {
             enable : true,
             type : "GET",
-            url : contextPath+"menu/getAllMenus",
+            url : contextPath+"menu/getAllMenusForTree",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
         },
         callback : {
             onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
@@ -252,9 +270,12 @@ function AssPer(){
 function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
     //反填角色已有的菜单
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {
             id : roleId
+        },
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
         },
         url : contextPath + "role/getMenusByRoleId",
         dataType : "JSON",
@@ -313,12 +334,15 @@ function saveRoleAndMenu(){
         }
     }
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {
             roleId : roleId,
             menuIds : menuIds,
         },
         url : contextPath + "role/saveRoleAndMenu",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success : function(result){
             hideModal("menuModal");
             if(result == 1){

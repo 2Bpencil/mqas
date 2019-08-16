@@ -17,9 +17,12 @@ $(document).ready(function(){
 function showTreeTable() {
     $("#treeTable").empty();
     $.ajax({
-        type : 'GET',
+        type : 'POST',
         url : contextPath + 'menu/getAllMenus',
         dataType : "json",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success : function(result) {
             $.TreeTable("treeTable",heads,result);
         }
@@ -45,10 +48,13 @@ function addMenu(){
         showModal("menuModal");
     }else {
         $.ajax({
-            type : "GET",
+            type : "POST",
             data : {id:meid},
             url : contextPath+"menu/getEntityInfo",
             dataType : "json",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             success: function(result){
                 if(result.type == 1){
                     swal("叶子菜单下不能新建菜单!", "", "error");
@@ -68,10 +74,13 @@ function addMenu(){
 function saveMenu(){
 //保存
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : $("#menuForm").serialize(),
         url : contextPath+"menu/saveOrEditEntity",
         dataType : "json",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result == 1){
                 hideModal('menuModal');
@@ -97,10 +106,13 @@ function editMenu(){
         return;
     }
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {id:meid},
         url : contextPath+"menu/getEntityInfo",
         dataType : "json",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             $('#form_id').val(result.id);
             $('#form_pid').val(result.pid);
@@ -129,10 +141,13 @@ function deleteMenu(){
     var node = jQuery('#treeTable').treetable('childs', meid);
     getNodes(node);
     $.ajax({
-        type : "GET",
+        type : "POST",
         data : {ids:ids},
         dataType:"json",
         url : contextPath+"menu/checkMenuUsed",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function(result){
             if(result){
                 swal({
@@ -145,10 +160,13 @@ function deleteMenu(){
                     closeOnConfirm: false
                 }, function () {
                     $.ajax({
-                        type : "GET",
+                        type : "POST",
                         data : {ids:ids},
                         dataType:"json",
                         url : contextPath+"menu/deleteMenu",
+                        beforeSend : function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
                         success: function(result){
                             if(result == 1){
                                 ids="";
@@ -192,8 +210,11 @@ function validateData(){
                 maxlength: 20,
                 remote : {//远程地址只能输出"true"或"false"
                     url : contextPath + "menu/verifyTheRepeat",
-                    type : "get",
+                    type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    beforeSend : function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
                         id : function(){
                             return $("#form_id").val();
