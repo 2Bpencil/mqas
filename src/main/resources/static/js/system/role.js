@@ -225,7 +225,7 @@ function AssPer(){
             chkStyle : 'checkbox',
             chkboxType : {
                 "Y" : "ps",
-                "N" : ""
+                "N" : "ps"
             }
         },
         data : {

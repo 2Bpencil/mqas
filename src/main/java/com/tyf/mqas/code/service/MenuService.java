@@ -65,9 +65,35 @@ public class MenuService  {
             treeTable.setName(menu.getName());
             String[] td = {menu.getCode(),menu.getUrl(),menu.getType()==0?"父级菜单":"叶子菜单",menu.getIcon()==null?"":menu.getIcon(),menu.getSort()==null?"":menu.getSort().toString()};
             treeTable.setTd(td);
+            if(menu.getType()==0){
+                treeTable.setIcon("/img/icon/menus.png");
+            }else{
+                treeTable.setIcon("/img/icon/menu.png");
+            }
             treeTables.add(treeTable);
         });
         return JSONArray.toJSONString(treeTables);
+    }
+
+    /**
+     * ztree数据
+     * @return
+     */
+    public String getAllMenusForZtree(){
+        List<Menu> list = menuRepository.findAllBySort();
+        List<Map<String,Object>> treeList = new ArrayList<>();
+        list.forEach(menu -> {
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",menu.getId());
+            map.put("pId",menu.getPid());
+            map.put("name",menu.getName());
+            if(menu.getType()==0){
+                map.put("icon","/img/icon/menus.png");
+            }else{
+                map.put("icon","/img/icon/menu.png");
+            }
+        });
+        return JSONArray.toJSONString(treeList);
     }
 
     /**

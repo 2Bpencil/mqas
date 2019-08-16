@@ -313,8 +313,7 @@ function WinMove() {
  * 初始化菜单
  */
 function initPageMenu(){
-    var menuJsonArray = JSON. parse($('#curMenu').val());
-    console.log(menuJsonArray);
+    var menuJsonArray = JSON.parse($('#curMenu').val());
     var lis = '';
     for (var i = 0; i < menuJsonArray.length; i++) {
         var li = '';

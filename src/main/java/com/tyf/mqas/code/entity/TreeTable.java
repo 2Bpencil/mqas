@@ -6,6 +6,7 @@ public class TreeTable {
 	public String pId;
 	public String name;
 	public String[] td;
+	public String icon;
 
 	public TreeTable() {
 		super();
@@ -51,6 +52,11 @@ public class TreeTable {
 		this.td = td;
 	}
 
+	public String getIcon() {
+		return icon;
+	}
 
-
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
 }
