@@ -124,6 +124,24 @@ public class MenuController {
     }
 
     /**
+     * 获取编辑信息
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getEditEntityInfo",method = RequestMethod.POST)
+    public void getEditEntityInfo(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = menuService.getEditInfo(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    /**
      * 判断是否被使用
      * @param request
      * @param response

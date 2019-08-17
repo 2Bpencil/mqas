@@ -1,6 +1,4 @@
 package com.tyf.mqas.code.controller;
-
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Role;
@@ -24,7 +22,7 @@ import java.util.Map;
 
 /**
  * @ClassName RoleController
- * @Description: TODO
+ * @Description: 角色管理
  * @Author tyf
  * @Date 2019/8/7 
  * @Version V1.0
@@ -39,7 +37,7 @@ public class RoleController {
     private RoleService roleService;
     @RequestMapping(value = "roleManage",method = RequestMethod.GET)
     public String roleManage(){
-        return "/system/role";
+        return "system/role";
     }
 
     /**

@@ -3,8 +3,9 @@ package com.tyf.mqas.code.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
+import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Knowledge;
-import com.tyf.mqas.code.service.KnowledgeService;
+import com.tyf.mqas.code.service.ClassesService;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,24 +25,24 @@ import java.util.UUID;
 /**
 
 /**
- * @ClassName KnowledgeController
+ * @ClassName ClassesController
  * @Description: TODO
  * @Author tyf
- * @Date 2019年08月16日
+ * @Date 2019年08月17日
  * @Version V1.0
  **/
 @Controller
-@RequestMapping("/knowledge")
-public class KnowledgeController {
+@RequestMapping("/classes")
+public class ClassesController {
 
-    private final static Logger logger = LoggerFactory.getLogger(KnowledgeController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ClassesController.class);
 
     @Autowired
-    private KnowledgeService knowledgeService;
+    private ClassesService classesService;
 
-    @RequestMapping(value = "knowledgeManage",method = RequestMethod.GET)
-    public String knowledgeManage(){
-        return "service/knowledge";
+    @RequestMapping(value = "classesManage",method = RequestMethod.GET)
+    public String classesManage(){
+        return "service/classes";
     }
 
     /**
@@ -49,9 +50,9 @@ public class KnowledgeController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "getAllKnowledges",method = RequestMethod.POST)
-    public void getAllKnowledges(HttpServletRequest request, HttpServletResponse response){
-        String json = knowledgeService.getAllKnowledges();
+    @RequestMapping(value = "getAllClassess",method = RequestMethod.POST)
+    public void getAllClassess(HttpServletRequest request, HttpServletResponse response){
+        String json = classesService.getAllClassess();
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
@@ -63,35 +64,35 @@ public class KnowledgeController {
     * 保存或者编辑实体
     */
     @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
-    public void saveOrEditEntity(@ModelAttribute("knowledge") Knowledge knowledge, HttpServletRequest request, HttpServletResponse response){
+    public void saveOrEditEntity(@ModelAttribute("classes") Classes classes, HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String oprate = "新增";
-        if(knowledge.getId()!=null){
+        if(classes.getId()!=null){
             oprate = "编辑";
-            Knowledge oldKnowledge = knowledgeService.getKnowledgeById(knowledge.getId());
-            oldKnowledge.setName(knowledge.getName());
-            oldKnowledge.setSort(knowledge.getSort());
-            knowledge = oldKnowledge;
+            Classes oldclasses = classesService.getClassesById(classes.getId());
+            oldclasses.setName(classes.getName());
+            oldclasses.setSort(classes.getSort());
+            classes = oldclasses;
         }else{
-           //新增
-            if(knowledge.getPid()==null){
-                knowledge.setPid(0);
+            //新增
+            if(classes.getPid()==null){
+                classes.setPid(0);
             }
             String uuid = UUID.randomUUID().toString();
-            knowledge.setCode(uuid);
-            if(knowledge.getPid()!=0){
-                Knowledge parentKnowledge = knowledgeService.getKnowledgeById(knowledge.getPid());
-                knowledge.setPath(parentKnowledge.getPath()+"#"+uuid);
+            classes.setCode(uuid);
+            if(classes.getPid()!=0){
+                Classes parentClasses = classesService.getClassesById(classes.getPid());
+                classes.setPath(parentClasses.getPath()+"#"+uuid);
             }else{
-                knowledge.setPath(uuid);
+                classes.setPath(uuid);
             }
         }
         try{
-            knowledgeService.saveEntity(knowledge);
-            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"角色成功");
+            classesService.saveEntity(classes);
+            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"班级信息成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"角色失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"班级信息失败");
         }
         try {
             response.getWriter().print(flag);
@@ -109,23 +110,8 @@ public class KnowledgeController {
     @RequestMapping(value = "getEntityInfo",method = RequestMethod.POST)
     public void getEntityInfo(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("id");
-        Knowledge knowledge = knowledgeService.getKnowledgeById(Integer.parseInt(id));
-        String json = JSONObject.toJSONString(knowledge);
-        try {
-            response.getWriter().print(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    /**
-     * 获取编辑信息
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "getEditEntityInfo",method = RequestMethod.POST)
-    public void getEditEntityInfo(HttpServletRequest request, HttpServletResponse response){
-        String id = request.getParameter("id");
-        String json = knowledgeService.getEditInfo(Integer.parseInt(id));
+        Classes classes = classesService.getClassesById(Integer.parseInt(id));
+        String json = JSONObject.toJSONString(classes);
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
@@ -134,21 +120,37 @@ public class KnowledgeController {
     }
 
     /**
-     * 删除菜单
+     * 获取编辑信息
      * @param request
      * @param response
      */
-    @RequestMapping(value = "deleteKnowledge",method = RequestMethod.POST)
-    public void deleteKnowledge(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "getEditEntityInfo",method = RequestMethod.POST)
+    public void getEditEntityInfo(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = classesService.getEditInfo(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "deleteClasses",method = RequestMethod.POST)
+    public void deleteClasses(HttpServletRequest request, HttpServletResponse response){
         int flag = 1;
         String ids = request.getParameter("ids");
         try{
-            knowledgeService.deleteKnowledge(ids);
-            logger.info(SecurityUtil.getCurUserName()+"---"+"删除菜单成功");
+            classesService.deleteClasses(ids);
+            logger.info(SecurityUtil.getCurUserName()+"---"+"删除班级信息成功");
         }catch (Exception e){
             e.printStackTrace();
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"---"+"删除菜单失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+"删除班级信息失败");
         }
         try {
             response.getWriter().print(flag);
@@ -169,7 +171,8 @@ public class KnowledgeController {
     public void verifyTheRepeat(HttpServletRequest request, HttpServletResponse response){
         String name = request.getParameter("name");
         String id = request.getParameter("id");
-        boolean isExist = knowledgeService.verifyTheRepeat(name, id);
+        String pid = request.getParameter("pid");
+        boolean isExist = classesService.verifyTheRepeat(name, id , pid);
         try {
             response.getWriter().print(isExist);
         } catch (IOException e) {
@@ -182,10 +185,10 @@ public class KnowledgeController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "checkKnowledgeUsed",method = RequestMethod.POST)
-    public void checkKnowledgeUsed(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "checkClassesUsed",method = RequestMethod.POST)
+    public void checkClassesUsed(HttpServletRequest request, HttpServletResponse response){
         String ids = request.getParameter("ids");
-        boolean flag = knowledgeService.checkKnowledgeUsed(ids);
+        boolean flag = classesService.checkClassesUsed(ids);
         try {
             response.getWriter().print(flag);
         } catch (IOException e) {

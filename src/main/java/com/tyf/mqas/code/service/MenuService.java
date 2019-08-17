@@ -1,7 +1,9 @@
 package com.tyf.mqas.code.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.code.dao.MenuRepository;
+import com.tyf.mqas.code.entity.Knowledge;
 import com.tyf.mqas.code.entity.Menu;
 import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.entity.TreeTable;
@@ -109,6 +111,31 @@ public class MenuService  {
     public Menu getMenuById(Integer id){
         return menuRepository.getOne(id);
     }
+
+    /**
+     * 根据id获取编辑信息
+     * @param id
+     * @return
+     */
+    public String getEditInfo(Integer id){
+        Map<String,Object> map = new HashMap<>();
+        Menu menu = menuRepository.getOne(id);
+        map.put("id",menu.getId());
+        map.put("name",menu.getName());
+        map.put("sort",menu.getSort());
+        map.put("pid",menu.getPid());
+        map.put("code",menu.getCode());
+        map.put("type",menu.getType());
+        map.put("icon",menu.getIcon());
+        map.put("url",menu.getUrl());
+        if(menu.getPid()!=0){
+            map.put("parent",menuRepository.getOne(menu.getPid()).getName());
+        }else{
+            map.put("parent","");
+        }
+        return JSONObject.toJSONString(map);
+    }
+
 
     /**
      * 判断菜单是否被使用

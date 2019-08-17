@@ -58,6 +58,10 @@ spring:
         charset: UTF-8
         force: true
         enabled: true
+
+
+
+
 #******************************************应用监控配置*****************************************
 management:
   server:
@@ -69,10 +73,6 @@ management:
  # file: springboot.log
   #level.root: info
 #  level.com.tyf.springbootdemo.config: info
-
-
-
-
 
 
 

@@ -4,9 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
-import com.tyf.mqas.code.dao.KnowledgeRepository;
+import com.tyf.mqas.code.dao.ClassesRepository;
 import com.tyf.mqas.code.entity.Classes;
-import com.tyf.mqas.code.entity.Knowledge;
 import com.tyf.mqas.code.entity.TreeTable;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,46 +20,46 @@ import java.util.stream.Stream;
 
 @Service
 @Transactional
-public class KnowledgeService {
+public class ClassesService {
 
     @Autowired
-    private KnowledgeRepository knowledgeRepository;
+    private ClassesRepository classesRepository;
 
     /**
      * 获取所有菜单
      * @return
      */
-    public String getAllKnowledges(){
-        List<Knowledge> list = knowledgeRepository.findAllBySort();
+    public String getAllClassess(){
+        List<Classes> list = classesRepository.findAllBySort();
         List<TreeTable> treeTables = new ArrayList<TreeTable>();
-        list.forEach(knowledge -> {
+        list.forEach(classes -> {
             TreeTable treeTable = new TreeTable();
-            treeTable.setId(knowledge.getId()+"");
-            treeTable.setpId(knowledge.getPid()==0?"":knowledge.getPid().toString());
-            treeTable.setName(knowledge.getName());
-            String[] td = {knowledge.getSort()==null?"":knowledge.getSort().toString()};
+            treeTable.setId(classes.getId()+"");
+            treeTable.setpId(classes.getPid()==0?"":classes.getPid().toString());
+            treeTable.setName(classes.getName());
+            String[] td = {classes.getSort()==null?"":classes.getSort().toString()};
             treeTable.setTd(td);
             treeTables.add(treeTable);
         });
         return JSONArray.toJSONString(treeTables);
-    }
+        }
 
     /**
      * 保存
-     * @param knowledge
+     * @param classes
      * @return
      */
-    public Knowledge saveEntity(Knowledge knowledge){
-        return knowledgeRepository.save(knowledge);
+    public Classes saveEntity(Classes classes){
+        return classesRepository.save(classes);
     }
 
     /**
     * 删除菜单
     * @param ids
     */
-    public void deleteKnowledge(String ids){
+    public void deleteClasses(String ids){
         Stream.of(ids.split(",")).forEach(id->{
-            knowledgeRepository.deleteById(Integer.parseInt(id));
+            classesRepository.deleteById(Integer.parseInt(id));
         });
     }
 
@@ -69,8 +68,8 @@ public class KnowledgeService {
      * @param id
      * @return
      */
-    public Knowledge getKnowledgeById(Integer id){
-        return knowledgeRepository.getOne(id);
+    public Classes getClassesById(Integer id){
+        return classesRepository.getOne(id);
     }
 
     /**
@@ -80,13 +79,13 @@ public class KnowledgeService {
      */
     public String getEditInfo(Integer id){
         Map<String,Object> map = new HashMap<>();
-        Knowledge knowledge = knowledgeRepository.getOne(id);
-        map.put("id",knowledge.getId());
-        map.put("name",knowledge.getName());
-        map.put("sort",knowledge.getSort());
-        map.put("pid",knowledge.getPid());
-        if(knowledge.getPid()!=0){
-            map.put("parent",knowledgeRepository.getOne(knowledge.getPid()).getName());
+        Classes classes = classesRepository.getOne(id);
+        map.put("id",classes.getId());
+        map.put("name",classes.getName());
+        map.put("sort",classes.getSort());
+        map.put("pid",classes.getPid());
+        if(classes.getPid()!=0){
+            map.put("parent",classesRepository.getOne(classes.getPid()).getName());
         }else{
             map.put("parent","");
         }
@@ -99,12 +98,16 @@ public class KnowledgeService {
      * @param id
      * @return
      */
-    public boolean verifyTheRepeat(String name,String id){
+    public boolean verifyTheRepeat(String name,String id,String pid){
         Integer num = null;
+        Integer pId = 0;
+        if(StringUtils.isNotBlank(pid)){
+            pId = Integer.parseInt(pid);
+        }
         if(StringUtils.isNotBlank(id)){
-            num = knowledgeRepository.getKnowledgeNumByIdAndName(Integer.parseInt(id), name);
+            num = classesRepository.getClassesNumByIdAndName(Integer.parseInt(id), name,pId);
         }else{
-            num = knowledgeRepository.getKnowledgeNumByName( name);
+            num = classesRepository.getClassesNumByName( name,pId);
         }
         return num > 0?false:true;
     }
@@ -114,9 +117,9 @@ public class KnowledgeService {
     * @param ids
     * @return
     */
-    public Boolean checkKnowledgeUsed(String ids){
+    public Boolean checkClassesUsed(String ids){
         //for (String id : ids.split(",")) {
-        //    Integer num = knowledgeRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
+        //    Integer num = classesRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
         //    if(num > 0){
         //        return false;
         //    }

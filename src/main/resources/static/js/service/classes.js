@@ -2,10 +2,12 @@
 // paid = "";
 // meid = "";
 // mename = "";
-var heads=['知识标题','排序'];
+var heads=['年级班级名称','排序'];
 $(document).ready(function(){
     showTreeTable();
     validateData();
+
+
 });
 
 /**
@@ -16,7 +18,7 @@ function showTreeTable() {
     $("#treeTable").empty();
     $.ajax({
         type : 'POST',
-        url : contextPath + 'knowledge/getAllKnowledges',
+        url : contextPath + 'classes/getAllClassess',
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
@@ -40,32 +42,32 @@ function clearPid(){
 /**
  * 新增
  */
-function addKnowledge(){
+function addClasses(){
 
     if(meid == ""){
-        showModal("knowledgeModal");
+        showModal("classesModal");
     }else {
         $("#form_pid").val(meid);
         $("#form_parent").val(mename);
-        showModal("knowledgeModal");
+        showModal("classesModal");
     }
 }
 /**
  * 保存
  */
-function saveKnowledge(){
+function saveClasses(){
 //保存
     $.ajax({
         type : "POST",
-        data : $("#knowledgeForm").serialize(),
-        url : contextPath+"knowledge/saveOrEditEntity",
+        data : $("#classesForm").serialize(),
+        url : contextPath+"classes/saveOrEditEntity",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         dataType : "json",
         success: function(result){
             if(result == 1){
-                hideModal('knowledgeModal');
+                hideModal('classesModal');
                 showTreeTable();
                 clearForm();
                 showAlert("保存成功",'success');
@@ -79,7 +81,7 @@ function saveKnowledge(){
 /**
  * 编辑
  */
-function editKnowledge(){
+function editClasses(){
     if(meid==""){
         swal({
             title: "提示",
@@ -90,7 +92,7 @@ function editKnowledge(){
     $.ajax({
         type : "POST",
         data : {id:meid},
-        url : contextPath+"knowledge/getEditEntityInfo",
+        url : contextPath+"classes/getEditEntityInfo",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
@@ -101,7 +103,7 @@ function editKnowledge(){
             $('#form_name').val(result.name);
             $('#form_pid').val(result.pid);
             $('#form_sort').val(result.sort);
-            showModal("knowledgeModal");
+            showModal("classesModal");
         }
     });
 }
@@ -109,7 +111,7 @@ function editKnowledge(){
 /**
  * 删除
  */
-function deleteKnowledge(){
+function deleteClasses(){
     if(meid == ""){
         swal({
             title: "提示",
@@ -119,49 +121,50 @@ function deleteKnowledge(){
     }
     var node = jQuery('#treeTable').treetable('childs', meid);
     getNodes(node);
-    $.ajax({
-        type : "POST",
-        data : {ids:ids},
-        dataType:"json",
-        url : contextPath+"knowledge/checkKnowledgeUsed",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            if(result){
-                swal({
-                    title: "是否确定删除?",
-                    text: "你将会删除这条记录以及其所有下级记录!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function () {
-                    $.ajax({
-                        type : "POST",
-                        data : {ids:ids},
-                        dataType:"json",
-                        url : contextPath+"knowledge/deleteKnowledge",
-                        beforeSend : function(xhr) {
-                            xhr.setRequestHeader(header, token);
-                        },
-                        success: function(result){
-                            if(result == 1){
-                                ids="";
-                                showTreeTable();
-                                swal("删除成功!", "", "success");
-                            }else{
-                                swal("删除失败!", "", "error");
-                            }
-                        }
-                    });
-                });
-            }else{
-                swal("有菜单被分配，不能删除!", "", "error");
+    swal({
+        title: "是否确定删除?",
+        text: "你将会删除这条记录以及其所有下级记录!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+    }, function () {
+        $.ajax({
+            type : "POST",
+            data : {ids:ids},
+            dataType:"json",
+            url : contextPath+"classes/deleteClasses",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(result){
+                if(result == 1){
+                    ids="";
+                    showTreeTable();
+                    swal("删除成功!", "", "success");
+                }else{
+                    swal("删除失败!", "", "error");
+                }
             }
-        }
+        });
     });
+    // $.ajax({
+    //     type : "POST",
+    //     data : {ids:ids},
+    //     dataType:"json",
+    //     url : contextPath+"classes/checkClassesUsed",
+    //     beforeSend : function(xhr) {
+    //         xhr.setRequestHeader(header, token);
+    //     },
+    //     success: function(result){
+    //         if(result){
+    //
+    //         }else{
+    //             swal("有菜单被分配，不能删除!", "", "error");
+    //         }
+    //     }
+    // });
 }
 //删除用
 var ids="";
@@ -182,13 +185,13 @@ function getNodes(node){
  * 验证数据
  */
 function validateData(){
-     $("#knowledgeForm").validate({
+     $("#classesForm").validate({
         rules: {
             name: {
                 required: true,
                 maxlength: 100,
                 remote : {//远程地址只能输出"true"或"false"
-                    url : contextPath + "knowledge/verifyTheRepeat",
+                    url : contextPath + "classes/verifyTheRepeat",
                     type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
                     beforeSend : function(xhr) {
@@ -197,6 +200,9 @@ function validateData(){
                     data : {
                         id : function(){
                             return $("#form_id").val();
+                        },
+                        pid : function(){
+                            return $("#form_pid").val();
                         }
                     }
                 },
@@ -210,15 +216,14 @@ function validateData(){
             name : {
                 required : "不能为空",
                 maxlength : "不超过100个字符",
-                remote : "该名称已存在",
+                remote : "班级名已存在",
             },
             sort:{
                 digits:"请输入正整数"
             }
         },
         submitHandler : function(form) {
-            saveKnowledge();
-
+            saveClasses();
         }
     });
 }
@@ -226,10 +231,10 @@ function validateData(){
  * 清空表单
  */
 function clearForm(){
-    $('#knowledgeForm')[0].reset();
+    $('#classesForm')[0].reset();
     $('#form_pid').val(null);
     $('#form_id').val(null);
-    $('#knowledgeForm').validate().resetForm();
+    $('#classesForm').validate().resetForm();
     paid = "";
     meid = "";
     mename = "";

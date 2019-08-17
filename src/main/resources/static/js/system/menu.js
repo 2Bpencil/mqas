@@ -108,12 +108,13 @@ function editMenu(){
     $.ajax({
         type : "POST",
         data : {id:meid},
-        url : contextPath+"menu/getEntityInfo",
+        url : contextPath+"menu/getEditEntityInfo",
         dataType : "json",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         success: function(result){
+            $('#form_parent').val(result.parent);
             $('#form_id').val(result.id);
             $('#form_pid').val(result.pid);
             $('#form_name').val(result.name);
