@@ -56,7 +56,8 @@ function initTable(){
                     var buttons = '';
                     buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配角色</button>';
+                    buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配角色</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="assignmentClass('+data.id+')" class="btn btn-primary btn-xs" >分配班级</button>';
                     return buttons;
                 }
             },
@@ -239,6 +240,137 @@ function deleteUser(id){
 }
 
 /**
+ * 分配班级
+ */
+function assignmentClass(id){
+    userId = id;
+    initClassTree();
+}
+/**
+ * 加载分配班级页面
+ */
+function initClassTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : true,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "s",
+                "N" : "ps"
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            url : contextPath+"classes/getAllClassesTree",
+
+        },
+        callback : {
+            onAsyncSuccess : classzTreeOnAsyncSuccess//异步加载树完成后回调函数
+        }
+    };
+    $.fn.zTree.init($("#classGroup"), setting, zNodes);
+
+}
+/*
+ * 异步加载树完成后回调函数
+ */
+function classzTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+    //反填用户已有的菜单
+    $.ajax({
+        type : "POST",
+        data : {
+            id : userId
+        },
+        url : contextPath + "user/getClassesByUserId",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType : "JSON",
+        success : function(result){
+            $("#check3").attr("checked",false);
+            $("#check4").attr("checked",false);
+            var  treeObj = $.fn.zTree.getZTreeObj("classGroup");
+            treeObj.expandAll(true);
+            for (var i = 0; i < result.length; i++) {
+                var node =treeObj.getNodeByParam("id",result[i].id);
+                treeObj.checkNode(node,true,false);
+                treeObj.expandNode(node, true, false, false);
+            }
+            var boole = true;
+            var nodes = treeObj.getNodes();
+            for(var i=0;i<nodes.length;i++){
+                if(!nodes[i].checked){
+                    boole = false;
+                    return;
+                }
+            }
+            if(boole){
+                document.getElementById("check3").checked='checked';
+            }
+        }
+    });
+    showModal("classModal");
+}
+/**
+ * 保存班级配置
+ */
+function saveClassSet(){
+    var treeObj = $.fn.zTree.getZTreeObj("classGroup");
+    var nodes = treeObj.getCheckedNodes(true);
+    var classIds = "";
+    for(var i=0;i<nodes.length;i++){
+        if(i == nodes.length-1){
+            classIds += nodes[i].id;
+        }else{
+            classIds += nodes[i].id+",";
+        }
+    }
+    $.ajax({
+        type : "POST",
+        data : {
+            userId : userId,
+            classIds : classIds,
+        },
+        dataType:'json',
+        url : contextPath + "user/saveClassSet",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success : function(result){
+            hideModal("classModal");
+            if(result == '1'){
+                showAlert("权限分配成功",'success');
+            }else{
+                showAlert("权限分配失败",'error');
+            }
+        }
+    });
+}
+/**
+ * 全选/取消全选
+ */
+function checkClassAll(boo){
+    var treeObj = $.fn.zTree.getZTreeObj('roleGroup');
+    if(boo == "y"){
+        $("#check4").attr("checked",false);
+        treeObj.checkAllNodes(true);
+    }else{
+        $("#check3").attr("checked",false);
+        treeObj.checkAllNodes(false);
+    }
+}
+
+/**
  * 分配角色
  * @param id
  */
@@ -329,7 +461,7 @@ function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
  * 全选/取消全选
  */
 function checkAll(boo){
-    var treeObj = $.fn.zTree.getZTreeObj("roleGroup");
+    var treeObj = $.fn.zTree.getZTreeObj('roleGroup');
     if(boo == "y"){
         $("#check2").attr("checked",false);
         treeObj.checkAllNodes(true);

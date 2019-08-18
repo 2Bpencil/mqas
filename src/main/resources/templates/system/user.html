@@ -147,7 +147,28 @@
     </div>
 </div>
 
+<div class="modal inmodal" id="classModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-bars modal-icon"></i>
+                <h4 class="modal-title">班级分配</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" >
+                    <div class="form-group"><label>班级树</label><ul id="classGroup" class="ztree"></ul> </div>
 
+                    <div class="form-group"><label></label>  <a onclick="checkClassAll('y')" class="selBtn"> <input type="checkbox" id="check3"> 全选  </a><a onclick="checkClassAll('n')" class="selBtn"> <input type="checkbox" id="check4"> 取消全选 </a></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" >关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="saveClassSet();">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div th:replace="layout/default :: js('/js/system/user.js')"></div>
 
 </body>

@@ -2,7 +2,7 @@
 // paid = "";
 // meid = "";
 // mename = "";
-var heads=['知识标题','排序'];
+var heads=['知识标题','知识类型','排序'];
 $(document).ready(function(){
     showTreeTable();
     validateData();
@@ -158,7 +158,8 @@ function deleteKnowledge(){
                     });
                 });
             }else{
-                swal("有菜单被分配，不能删除!", "", "error");
+                ids = "";
+                swal("有知识被分配，不能删除!", "", "error");
             }
         }
     });
@@ -203,7 +204,10 @@ function validateData(){
             },
             sort:{
                 digits:true
-            }
+            },
+            // type:{
+            //     required: true,
+            // }
 
         },
         messages : {
@@ -214,6 +218,9 @@ function validateData(){
             },
             sort:{
                 digits:"请输入正整数"
+            },
+            type:{
+                required: "请选择知识等级",
             }
         },
         submitHandler : function(form) {
@@ -228,6 +235,7 @@ function validateData(){
 function clearForm(){
     $('#knowledgeForm')[0].reset();
     $('#form_pid').val(null);
+    $('#form_type').val("");
     $('#form_id').val(null);
     $('#knowledgeForm').validate().resetForm();
     paid = "";

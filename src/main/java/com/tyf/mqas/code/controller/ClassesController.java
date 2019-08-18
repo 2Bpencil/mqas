@@ -61,6 +61,21 @@ public class ClassesController {
     }
 
     /**
+     * ztree
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllClassesTree",method = RequestMethod.GET)
+    public void getAllClassesTree(HttpServletRequest request, HttpServletResponse response){
+        String json = classesService.getAllClassess();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
     * 保存或者编辑实体
     */
     @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
@@ -196,5 +211,44 @@ public class ClassesController {
         }
     }
 
+    /**
+     * 获取已分配的知识
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getKnowledgeByClassId",method = RequestMethod.POST)
+    public void getKnowledgeByClassId(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = classesService.getKnowledgeByClassId(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 保存知识配置
+     */
+    @RequestMapping(value = "saveKnowledgeSet",method = RequestMethod.POST)
+    public void saveKnowledgeSet(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String id = request.getParameter("id");
+        String knowledgeIds = request.getParameter("knowledgeIds");
+        try{
+            classesService.saveKnowledgeSet(Integer.parseInt(id),knowledgeIds);
+            logger.info(SecurityUtil.getCurUserName()+"保存知识配置成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.info(SecurityUtil.getCurUserName()+"保存知识配置失败");
+            e.printStackTrace();
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
  }

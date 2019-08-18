@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="layout/default :: head('Knowledge Page','/js/plugins/treetable/jquery.treetable.css')"></head>
+<head th:replace="layout/default :: head('Student Page','')"></head>
 
 <body class="">
 
@@ -32,37 +32,68 @@
         <!--面包屑-->
         <div class="row wrapper border-bottom white-bg page-heading" >
             <div class="col-sm-4">
-                <h2>知识库管理</h2>
+                <h2>XX管理</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="#"></a>
+                        <a href="#">XX管理</a>
                     </li>
                     <li class="active">
-                        <strong>知识库管理</strong>
+                        <strong>XX管理</strong>
                     </li>
                 </ol>
             </div>
             <div class="col-sm-8">
                 <div class="title-action">
                     <!--操作按钮-->
-                    <a data-sec-authorize="hasRole('ROLE_ADMIN')" href="#" class="btn btn-success" onclick="clearPid()">清空选中</a>
-                    <a data-sec-authorize="hasRole('ROLE_ADMIN')" href="#" class="btn btn-primary" onclick="addKnowledge()">新增</a>
-                    <a data-sec-authorize="hasRole('ROLE_ADMIN')" href="#" class="btn btn-primary" onclick="editKnowledge()" >编辑</a>
-                    <a data-sec-authorize="hasRole('ROLE_ADMIN')" href="#" class="btn btn-primary" onclick="deleteKnowledge()">删除</a>
-                    <a href="#" class="btn btn-primary" onclick="jQuery('#treeTable').treetable('expandAll'); return false;">展开</a>
-                    <a href="#" class="btn btn-primary" onclick="jQuery('#treeTable').treetable('collapseAll'); return false;">关闭</a>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#roleModal">新增XX</a>
+                    <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
                 </div>
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="ibox ">
+                <div class="col-lg-3">
+                    <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>知识列表</h5>
+                            <h5>班级</h5>
+                            <div class="ibox-tools">
+                            </div>
                         </div>
                         <div class="ibox-content">
-                            <table id="treeTable"  class="ui-jqgrid-htable"></table>
+
+                            班级树
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>XX列表</h5>
+                            <div class="ibox-tools">
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover dataTables-example"  id="student_table">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>角色代码</th>
+                                        <th>角色名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <th>ID</th>
+                                    <th>角色代码</th>
+                                    <th>角色名称</th>
+                                    <th>操作</th>
+                                    </tfoot>
+                                </table>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -72,41 +103,34 @@
     </div>
 </div>
 <!--表单-->
-<div class="modal inmodal" id="knowledgeModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal inmodal" id="studentModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-book modal-icon"></i>
-                <h4 class="modal-title">知识表单</h4>
+                <i class="fa fa-users modal-icon"></i>
+                <h4 class="modal-title">角色表单</h4>
             </div>
             <div class="modal-body">
-                <form role="form" id="knowledgeForm">
+                <form role="form" id="studentForm">
                     <input type="hidden" id="form_id" name="id">
-                    <input type="hidden" id="form_pid" name="pid">
-                        <div class="form-group"><label>上级知识</label> <input type="text" id="form_parent" disabled="disabled"  placeholder="" class="form-control" name="parent"></div>
-						<div class="form-group"><label></label> <input type="text" id="form_name"  placeholder="请填写知识标题" class="form-control" name="name"></div>
-                        <div class="form-group"><label>性别</label>
-                            <select class="form-control m-b"id="form_type"  name="type">
-                                <option value="">请选择等级</option>
-                                <option value="0">非重点</option>
-                                <option value="1">重点</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label></label> <input type="text" id="form_sort"  placeholder="请填写正整数" class="form-control" name="sort"></div>
+						<div class="form-group"><label></label> <input type="text" id="form_age"  placeholder="填写" class="form-control" name="age"></div>
+						<div class="form-group"><label></label> <input type="text" id="form_name"  placeholder="填写" class="form-control" name="name"></div>
+						<div class="form-group"><label></label> <input type="text" id="form_phone"  placeholder="填写" class="form-control" name="phone"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
 
 
 
-<div th:replace="layout/default :: js('/js/plugins/treetable/jquery.treetable.js,/js/service/knowledge.js')"></div>
+<div th:replace="layout/default :: js('/js/student/student.js')"></div>
 
 </body>
 

@@ -6,8 +6,10 @@ import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.base.page.AbstractPagesGetter;
 import com.tyf.mqas.base.page.Page;
 import com.tyf.mqas.base.page.SearchFilter;
+import com.tyf.mqas.code.dao.ClassesRepository;
 import com.tyf.mqas.code.dao.RoleRepository;
 import com.tyf.mqas.code.dao.UserRepository;
+import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.entity.User;
 import com.tyf.mqas.utils.SecurityUtil;
@@ -33,6 +35,8 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private ClassesRepository classesRepository;
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
@@ -114,6 +118,20 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
     }
 
     /**
+     *保存班级配置
+     * @param userId
+     * @param classIds
+     */
+    public void saveClassSet(Integer userId,String classIds){
+        userRepository.deleteClassAndUser(userId);
+        if(StringUtils.isNotBlank(classIds)){
+            Stream.of(classIds.split(",")).forEach(id->{
+                userRepository.saveClassSet(userId,Integer.parseInt(id));
+            });
+        }
+    }
+
+    /**
      * 验证
      * @param username
      * @param id
@@ -150,6 +168,16 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
         User user = userRepository.findUserByUsername(username);
         user.setPassword(password);
         userRepository.save(user);
+    }
+
+    /**
+     * 根据用户id获取班级信息
+     * @param id
+     * @return
+     */
+    public String getClassesByUserId(Integer id){
+        List<Classes> list = classesRepository.getClassesByUserId(id);
+        return JSONArray.toJSONString(list);
     }
 
 }

@@ -20,4 +20,10 @@ public interface KnowledgeRepository extends ExpandJpaRepository<Knowledge,Integ
     @Query(value = "select * from knowledge ORDER BY sort ASC", nativeQuery = true)
     List<Knowledge> findAllBySort();
 
+    @Query(value = "select k.* from knowledge k left join r_classes_knowlwdge rck on k.id = rck.knowledge_id where rck.classes_id = ?1", nativeQuery = true)
+    List<Knowledge> findKnowledgeByClassesId(Integer classesId);
+
+    @Query(value = "select count(*) from r_classes_knowlwdge where knowledge_id = ?1", nativeQuery = true)
+    Integer getRsNumByKnowledgeId(Integer knowledgeId);
+
 }

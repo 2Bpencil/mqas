@@ -29,6 +29,8 @@ public class Knowledge {
     private String path;
     @Column
     private Integer sort;
+    @Column
+    private Integer type;
 
 
     public Integer getId() {
@@ -77,6 +79,14 @@ public class Knowledge {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }
     

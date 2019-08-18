@@ -180,6 +180,7 @@ function deleteMenu(){
                     });
                 });
             }else{
+                ids = "";
                 swal("有菜单被分配，不能删除!", "", "error");
             }
         }

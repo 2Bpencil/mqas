@@ -1,20 +1,19 @@
-var roleTable;//表格对象
-var roleValidator;//表单验证
-var $table = "#role_table";
+var studentTable;//表格对象
+var studentValidator;//表单验证
+var $table = "#student_table";
 $(document).ready(function(){
     initTable();
     validateData();
 });
-
 /**
  * 初始化表格
  */
 function initTable(){
-    roleTable = $($table).DataTable({
+	studentTable = $($table).DataTable({
         dom: '<"html5buttons"B>lTfgitp',
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
-            "url": contextPath+"role/getTableJson",  // 异步传输的后端接口url
+            "url": contextPath+"studentTable/getTableJson",  // 异步传输的后端接口url
             "type": "POST",      // 请求方式
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(header, token);
@@ -77,13 +76,13 @@ function initTable(){
  * 验证数据
  */
 function validateData(){
-    roleValidator= $("#roleForm").validate({
+    studentValidator= $("#studentForm").validate({
         rules: {
             authority: {
                 required: true,
                 maxlength: 50,
                 remote : {//远程地址只能输出"true"或"false"
-                    url : contextPath + "role/verifyTheRepeat",
+                    url : contextPath + "student/verifyTheRepeat",
                     type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
                     beforeSend : function(xhr) {
@@ -113,27 +112,26 @@ function validateData(){
             }
         },
         submitHandler : function(form) {
-            saveRole();
+            saveStudent();
 
         }
     });
 }
-
 /**
- * 保存角色
+ * 保存
  */
-function saveRole(){
+function saveStudent(){
     //保存
     $.ajax({
         type : "POST",
-        data : $("#roleForm").serialize(),
-        url : contextPath+"role/saveOrEditEntity",
+        data : $("#studentForm").serialize(),
+        url : contextPath+"student/saveOrEditEntity",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         success: function(result){
             if(result == 1){
-                hideModal('roleModal');
+                hideModal('studentModal');
                 clearForm();
                 reloadTable();
                 showAlert("保存成功",'success');
@@ -143,217 +141,65 @@ function saveRole(){
         }
     });
 }
-
 /**
- * 编辑角色
+ * 编辑
  * @param id
  */
-function editRole(id){
+function editStudent(id){
     $.ajax({
         type : "POST",
         data : {id:id},
         dataType:"json",
-        url : contextPath+"role/getEntityInfo",
+        url : contextPath+"student/getEntityInfo",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         success: function(result){
-            $('#form_id').val(result.id);
-            $('#form_authority').val(result.authority);
-            $('#form_name').val(result.name);
-            showModal("roleModal");
+                    $('#form_id').val(result.id);
+                    $('#form_age').val(result.age);
+                    $('#form_name').val(result.name);
+                    $('#form_phone').val(result.phone);
+            showModal("studentModal");
         }
     });
 }
-
 /**
  * 刷新表格
  */
 function reloadTable(){
     roleTable.ajax.reload();
 }
-
 /**
  * 删除角色
  * @param id
  */
-function deleteRole(id){
-    $.ajax({
-        type : "POST",
-        data : {id:id},
-        dataType:"json",
-        url : contextPath+"role/checkRoleUsed",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            if(result){
-                swal({
-                    title: "是否确定删除?",
-                    text: "你将会删除这条记录!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function () {
-                    $.ajax({
-                        type : "POST",
-                        data : {id:id},
-                        dataType:"json",
-                        url : contextPath+"role/deleteRole",
-                        beforeSend : function(xhr) {
-                            xhr.setRequestHeader(header, token);
-                        },
-                        success: function(result){
-                            if(result == 1){
-                                reloadTable();
-                                swal("删除成功!", "", "success");
-                            }else{
-                                swal("删除失败!", "", "error");
-                            }
-                        }
-                    });
-                });
-            }else{
-                swal("该角色已被分配不能删除!", "", "error");
-            }
-        }
-    });
-}
-
-/**
- * 分配菜单
- * @param id
- */
-function assignmentMenu(id){
-    roleId = id;
-    initTree();
-
-}
-var roleId;
-/**
- * 加载分配菜单页面
- */
-function initTree(){
-    var zNodes = []; //zTree的数据属性
-    var setting = { //zTree的参数配置
-        check : {
-            enable : true,
-            chkStyle : 'checkbox',
-            chkboxType : {
-                "Y" : "ps",
-                "N" : "ps"
-            }
-        },
-        data : {
-            simpleData : {
-                enable : true
-            }
-        },
-        async : {
-            enable : true,
-            type : "GET",
-            url : contextPath+"menu/getAllMenusForTree",
+function deleteStudent(id){
+    swal({
+        title: "是否确定删除?",
+        text: "你将会删除这条记录!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+    }, function () {
+        $.ajax({
+            type : "POST",
+            data : {id:id},
+            dataType:"json",
+            url : contextPath+"student/deleteStudent",
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(header, token);
             },
-        },
-        callback : {
-            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
-        }
-    };
-    $.fn.zTree.init($("#MenuGroup"), setting, zNodes);
-
-}
-
-/*
- * 异步加载树完成后回调函数
- */
-function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
-    //反填角色已有的菜单
-    $.ajax({
-        type : "POST",
-        data : {
-            id : roleId
-        },
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        url : contextPath + "role/getMenusByRoleId",
-        dataType : "JSON",
-        success : function(result){
-            $("#check2").attr("checked",false);
-            $("#check1").attr("checked",false);
-            var  treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
-            treeObj.expandAll(true);
-            for (var i = 0; i < result.length; i++) {
-                var node =treeObj.getNodeByParam("id",result[i].id);
-                treeObj.checkNode(node,true,false);
-                treeObj.expandNode(node, true, false, false);
-            }
-            var boole = true;
-            var nodes = treeObj.getNodes();
-            for(var i=0;i<nodes.length;i++){
-                if(!nodes[i].checked){
-                    boole = false;
-                    return;
+            success: function(result){
+                if(result == 1){
+                    reloadTable();
+                    swal("删除成功!", "", "success");
+                }else{
+                    swal("删除失败!", "", "error");
                 }
             }
-            if(boole){
-                document.getElementById("check1").checked='checked';
-            }
-        }
-    });
-
-    showModal("menuModal");
-}
-/**
- * 全选/取消全选
- */
-function checkAll(boo){
-    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
-    if(boo == "y"){
-        $("#check2").attr("checked",false);
-        treeObj.checkAllNodes(true);
-    }else{
-        $("#check1").attr("checked",false);
-        treeObj.checkAllNodes(false);
-    }
-}
-
-/**
- * 保存权限
- */
-function saveRoleAndMenu(){
-    var treeObj = $.fn.zTree.getZTreeObj("MenuGroup");
-    var nodes = treeObj.getCheckedNodes(true);
-    var menuIds = "";
-    for(var i=0;i<nodes.length;i++){
-        if(i == nodes.length-1){
-            menuIds += nodes[i].id;
-        }else{
-            menuIds += nodes[i].id+",";
-        }
-    }
-    $.ajax({
-        type : "POST",
-        data : {
-            roleId : roleId,
-            menuIds : menuIds,
-        },
-        url : contextPath + "role/saveRoleAndMenu",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success : function(result){
-            hideModal("menuModal");
-            if(result == 1){
-                showAlert("权限分配成功",'success');
-            }else{
-                showAlert("权限分配失败",'error');
-            }
-        }
+        });
     });
 }
 
@@ -361,9 +207,8 @@ function saveRoleAndMenu(){
  * 清空表单
  */
 function clearForm(){
-    $('#roleForm')[0].reset();
-    $('#roleForm').validate().resetForm();
-    $('#form_id').val(null);
+    $('#studentForm')[0].reset();
+    $('#studentForm').validate().resetForm();
 }
 
 

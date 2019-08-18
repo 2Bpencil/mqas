@@ -3,7 +3,6 @@ package com.tyf.mqas.code.controller;
 
 
 import com.tyf.mqas.base.datapage.DataPage;
-import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.entity.User;
 import com.tyf.mqas.code.service.UserService;
 import com.alibaba.fastjson.JSONObject;
@@ -11,7 +10,6 @@ import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -163,10 +159,10 @@ public class UserController {
         String roleIds = request.getParameter("roleIds");
         try{
             userService.saveUserAndRole(Integer.parseInt(userId),roleIds );
-            logger.info(SecurityUtil.getCurUserName()+"---保存菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"---保存角色配置成功");
         }catch (Exception e){
             flag = 0;
-            logger.info(SecurityUtil.getCurUserName()+"---保存菜单失败");
+            logger.info(SecurityUtil.getCurUserName()+"---保存角色配置失败");
             e.printStackTrace();
         }
         try {
@@ -224,6 +220,44 @@ public class UserController {
     public void checkPassword(HttpServletRequest request, HttpServletResponse response){
         String password = request.getParameter("old_password");
         boolean flag = userService.checkPassword(password);
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *根据id获取所有班级
+     */
+    @RequestMapping(value = "getClassesByUserId",method = RequestMethod.POST)
+    public void getClassesByUserId(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        String json = userService.getClassesByUserId(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     *
+     */
+    @RequestMapping(value = "saveClassSet",method = RequestMethod.POST)
+    public void saveClassSet(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String userId = request.getParameter("userId");
+        String classIds = request.getParameter("classIds");
+        try{
+            userService.saveClassSet(Integer.parseInt(userId),classIds );
+            logger.info(SecurityUtil.getCurUserName()+"---保存班级配置成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.info(SecurityUtil.getCurUserName()+"---保存班级配置失败");
+            e.printStackTrace();
+        }
         try {
             response.getWriter().print(flag);
         } catch (IOException e) {

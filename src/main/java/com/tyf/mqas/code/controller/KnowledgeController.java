@@ -71,6 +71,7 @@ public class KnowledgeController {
             Knowledge oldKnowledge = knowledgeService.getKnowledgeById(knowledge.getId());
             oldKnowledge.setName(knowledge.getName());
             oldKnowledge.setSort(knowledge.getSort());
+            oldKnowledge.setType(knowledge.getType());
             knowledge = oldKnowledge;
         }else{
            //新增
@@ -193,5 +194,19 @@ public class KnowledgeController {
         }
     }
 
+    /**
+     * ztree
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllKnowledgeForTree",method = RequestMethod.GET)
+    public void getAllKnowledgeForTree(HttpServletRequest request, HttpServletResponse response){
+        String json = knowledgeService.getAllKnowledges();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
  }

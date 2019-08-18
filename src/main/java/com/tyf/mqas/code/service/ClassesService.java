@@ -2,10 +2,10 @@ package com.tyf.mqas.code.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.tyf.mqas.base.datapage.DataPage;
-import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.ClassesRepository;
+import com.tyf.mqas.code.dao.KnowledgeRepository;
 import com.tyf.mqas.code.entity.Classes;
+import com.tyf.mqas.code.entity.Knowledge;
 import com.tyf.mqas.code.entity.TreeTable;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,8 @@ public class ClassesService {
 
     @Autowired
     private ClassesRepository classesRepository;
+    @Autowired
+    private KnowledgeRepository knowledgeRepository;
 
     /**
      * 获取所有菜单
@@ -118,13 +120,37 @@ public class ClassesService {
     * @return
     */
     public Boolean checkClassesUsed(String ids){
-        //for (String id : ids.split(",")) {
-        //    Integer num = classesRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
-        //    if(num > 0){
-        //        return false;
-        //    }
-        //}
+//        for (String id : ids.split(",")) {
+//            Integer num = classesRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
+//            if(num > 0){
+//                return false;
+//            }
+//        }
         return true;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public String getKnowledgeByClassId(Integer id){
+        List<Knowledge> list = knowledgeRepository.findKnowledgeByClassesId(id);
+        return JSONArray.toJSONString(list);
+    }
+
+    /**
+     * 保存知识配置
+     * @param classesId
+     * @param knowledgeIds
+     */
+    public void saveKnowledgeSet(Integer classesId,String knowledgeIds){
+        classesRepository.deleteKnowledgeSet(classesId);
+        if(StringUtils.isNotBlank(knowledgeIds)){
+            Stream.of(knowledgeIds.split(",")).forEach(id->{
+                classesRepository.saveKnowledgeSet(classesId,Integer.parseInt(id));
+            });
+        }
     }
 
 }

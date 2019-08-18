@@ -38,7 +38,7 @@ public class KnowledgeService {
             treeTable.setId(knowledge.getId()+"");
             treeTable.setpId(knowledge.getPid()==0?"":knowledge.getPid().toString());
             treeTable.setName(knowledge.getName());
-            String[] td = {knowledge.getSort()==null?"":knowledge.getSort().toString()};
+            String[] td = {knowledge.getType()!= null?(knowledge.getType()==0?"非重点":"重点"):"",knowledge.getSort()==null?"":knowledge.getSort().toString()};
             treeTable.setTd(td);
             treeTables.add(treeTable);
         });
@@ -110,17 +110,17 @@ public class KnowledgeService {
     }
 
     /**
-    * 判断菜单是否被使用
+    * 判断是否被使用
     * @param ids
     * @return
     */
     public Boolean checkKnowledgeUsed(String ids){
-        //for (String id : ids.split(",")) {
-        //    Integer num = knowledgeRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
-        //    if(num > 0){
-        //        return false;
-        //    }
-        //}
+        for (String id : ids.split(",")) {
+            Integer num = knowledgeRepository.getRsNumByKnowledgeId(Integer.parseInt(id));
+            if(num > 0){
+                return false;
+            }
+        }
         return true;
     }
 

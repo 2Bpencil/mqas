@@ -180,6 +180,158 @@ function getNodes(node){
         }
     }
 }
+
+/**
+ * 知识配置
+ */
+function knowledgeSet() {
+    if(meid == ""){
+        swal({
+            title: "提示",
+            text: "请选中要配置的项！"
+        });
+        return;
+    }
+    if(mename.indexOf("班")==-1){
+        swal({
+            title: "提示",
+            text: "请选择班级进行配置！"
+        });
+        return;
+    }
+    initTree();
+
+
+}
+
+/**
+ * 加载分配菜单页面
+ */
+function initTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : true,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "s",
+                "N" : "ps"
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            url : contextPath+"knowledge/getAllKnowledgeForTree",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+        },
+        callback : {
+            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
+        }
+    };
+    $.fn.zTree.init($("#knowledgeGroup"), setting, zNodes);
+
+}
+
+/*
+ * 异步加载树完成后回调函数
+ */
+function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+    //反填角色已有的菜单
+    $.ajax({
+        type : "POST",
+        data : {
+            id : meid
+        },
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        url : contextPath + "classes/getKnowledgeByClassId",
+        dataType : "JSON",
+        success : function(result){
+            $("#check2").attr("checked",false);
+            $("#check1").attr("checked",false);
+            var  treeObj = $.fn.zTree.getZTreeObj("knowledgeGroup");
+            treeObj.expandAll(true);
+            for (var i = 0; i < result.length; i++) {
+                var node =treeObj.getNodeByParam("id",result[i].id);
+                treeObj.checkNode(node,true,false);
+                treeObj.expandNode(node, true, false, false);
+            }
+            var boole = true;
+            var nodes = treeObj.getNodes();
+            for(var i=0;i<nodes.length;i++){
+                if(!nodes[i].checked){
+                    boole = false;
+                    return;
+                }
+            }
+            if(boole){
+                document.getElementById("check1").checked='checked';
+            }
+        }
+    });
+
+    showModal("knowledgeModal");
+}
+/**
+ * 全选/取消全选
+ */
+function checkAll(boo){
+    var treeObj = $.fn.zTree.getZTreeObj("knowledgeGroup");
+    if(boo == "y"){
+        $("#check2").attr("checked",false);
+        treeObj.checkAllNodes(true);
+    }else{
+        $("#check1").attr("checked",false);
+        treeObj.checkAllNodes(false);
+    }
+}
+
+/**
+ * 保存知识配置
+ */
+function saveKnowledgeSet(){
+
+    var treeObj = $.fn.zTree.getZTreeObj("knowledgeGroup");
+    var nodes = treeObj.getCheckedNodes(true);
+    var knowledgeIds = "";
+    for(var i=0;i<nodes.length;i++){
+        if(i == nodes.length-1){
+            knowledgeIds += nodes[i].id;
+        }else{
+            knowledgeIds += nodes[i].id+",";
+        }
+    }
+    $.ajax({
+        type : "POST",
+        data : {
+            id : meid,
+            knowledgeIds : knowledgeIds,
+        },
+        url : contextPath + "classes/saveKnowledgeSet",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success : function(result){
+            hideModal("knowledgeModal");
+            if(result == 1){
+                showAlert("权限分配成功",'success');
+            }else{
+                showAlert("权限分配失败",'error');
+            }
+        }
+    });
+
+
+}
+
 //******************************************************表单验证*****************************************************************
 /**
  * 验证数据
