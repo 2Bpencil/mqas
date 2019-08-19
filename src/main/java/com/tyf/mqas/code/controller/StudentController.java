@@ -5,6 +5,7 @@ import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.service.StudentService;
 import com.tyf.mqas.utils.SecurityUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,10 @@ public class StudentController {
     @RequestMapping(value = "getTableJson",method = RequestMethod.POST)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
         String classesId = request.getParameter("classesId");
+        //如果id为空，赋值0避免查询报错
+        if(StringUtils.isBlank(classesId)){
+            classesId = "0";
+        }
         Map<String,String[]> parameterMap = request.getParameterMap();
         DataPage<Student> pages = studentService.getDataPage(parameterMap,classesId);
         String json = JSONObject.toJSONString(pages);

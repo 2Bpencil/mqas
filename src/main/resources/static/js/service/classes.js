@@ -43,10 +43,16 @@ function clearPid(){
  * 新增
  */
 function addClasses(){
-
     if(meid == ""){
         showModal("classesModal");
     }else {
+        if(paid != 0){
+            swal({
+                title: "提示",
+                text: "不能新增第三级！"
+            });
+            return;
+        }
         $("#form_pid").val(meid);
         $("#form_parent").val(mename);
         showModal("classesModal");
