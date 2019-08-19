@@ -17,6 +17,8 @@ public class Student {
     private String phone;
     @Column
     private Integer age;
+    @Column
+    private Integer sex;
     @Transient
     private String className;
 
@@ -58,5 +60,13 @@ public class Student {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
     }
 }

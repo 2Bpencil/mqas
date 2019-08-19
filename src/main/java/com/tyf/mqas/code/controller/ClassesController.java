@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Knowledge;
+import com.tyf.mqas.code.entity.User;
 import com.tyf.mqas.code.service.ClassesService;
+import com.tyf.mqas.code.service.UserService;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,6 +251,21 @@ public class ClassesController {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 学生管理班级树
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getClassTreeForStudent",method = RequestMethod.GET)
+    public void getClassTreeForStudent(HttpServletRequest request, HttpServletResponse response){
+        String json = classesService.getClassTreeJsonForStudent();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
  }

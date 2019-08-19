@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.code.dao.ClassesRepository;
 import com.tyf.mqas.code.dao.KnowledgeRepository;
-import com.tyf.mqas.code.entity.Classes;
-import com.tyf.mqas.code.entity.Knowledge;
-import com.tyf.mqas.code.entity.TreeTable;
+import com.tyf.mqas.code.dao.UserRepository;
+import com.tyf.mqas.code.entity.*;
+import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,8 @@ public class ClassesService {
     private ClassesRepository classesRepository;
     @Autowired
     private KnowledgeRepository knowledgeRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * 获取所有菜单
@@ -44,7 +46,7 @@ public class ClassesService {
             treeTables.add(treeTable);
         });
         return JSONArray.toJSONString(treeTables);
-        }
+    }
 
     /**
      * 保存
@@ -120,12 +122,16 @@ public class ClassesService {
     * @return
     */
     public Boolean checkClassesUsed(String ids){
-//        for (String id : ids.split(",")) {
-//            Integer num = classesRepository.getRsRoleMenuNumByMenuId(Integer.parseInt(id));
-//            if(num > 0){
-//                return false;
-//            }
-//        }
+        for (String id : ids.split(",")) {
+            Integer userNum = classesRepository.getUserRsNumByClassesId(Integer.parseInt(id));
+            Integer studentNum = classesRepository.getStudentRsNumByClassesId(Integer.parseInt(id));
+            if(userNum > 0){
+                return false;
+            }
+            if(studentNum > 0){
+                return false;
+            }
+        }
         return true;
     }
 
@@ -151,6 +157,21 @@ public class ClassesService {
                 classesRepository.saveKnowledgeSet(classesId,Integer.parseInt(id));
             });
         }
+    }
+
+    /**
+     * 学生管理班级树json
+     * @return
+     */
+    public String getClassTreeJsonForStudent(){
+        User user = userRepository.findUserByUsername(SecurityUtil.getCurUserName());
+        List<Classes> list = classesRepository.getClassesByUserId(user.getId());
+        List<Tree> trees = new ArrayList<Tree>();
+        list.forEach(classes -> {
+            Tree tree = new Tree(classes.getId().toString(),classes.getName(),classes.getPid().toString());
+            trees.add(tree);
+        });
+        return JSONArray.toJSONString(trees);
     }
 
 }

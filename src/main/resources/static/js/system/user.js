@@ -256,7 +256,7 @@ function initClassTree(){
             enable : true,
             chkStyle : 'checkbox',
             chkboxType : {
-                "Y" : "s",
+                "Y" : "ps",
                 "N" : "ps"
             }
         },
@@ -360,7 +360,7 @@ function saveClassSet(){
  * 全选/取消全选
  */
 function checkClassAll(boo){
-    var treeObj = $.fn.zTree.getZTreeObj('roleGroup');
+    var treeObj = $.fn.zTree.getZTreeObj('classGroup');
     if(boo == "y"){
         $("#check4").attr("checked",false);
         treeObj.checkAllNodes(true);

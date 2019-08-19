@@ -32,20 +32,20 @@
         <!--面包屑-->
         <div class="row wrapper border-bottom white-bg page-heading" >
             <div class="col-sm-4">
-                <h2>XX管理</h2>
+                <h2>学生管理</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="#">XX管理</a>
+                        <a href="#"></a>
                     </li>
                     <li class="active">
-                        <strong>XX管理</strong>
+                        <strong>学生管理</strong>
                     </li>
                 </ol>
             </div>
             <div class="col-sm-8">
                 <div class="title-action">
                     <!--操作按钮-->
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#roleModal">新增XX</a>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" onclick="addStudent()">新增学生</a>
                     <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="ibox-content">
 
-                            班级树
+                            <ul id="classesGroup" class="ztree"></ul>
 
                         </div>
                     </div>
@@ -80,16 +80,20 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>角色代码</th>
-                                        <th>角色名称</th>
+                                        <th>姓名</th>
+                                        <th>年龄</th>
+                                        <th>性别</th>
+                                        <th>联系方式</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
-                                    <th>ID</th>
-                                    <th>角色代码</th>
-                                    <th>角色名称</th>
-                                    <th>操作</th>
+                                        <th>ID</th>
+                                        <th>姓名</th>
+                                        <th>年龄</th>
+                                        <th>性别</th>
+                                        <th>联系方式</th>
+                                        <th>操作</th>
                                     </tfoot>
                                 </table>
                             </div>
@@ -114,9 +118,16 @@
             <div class="modal-body">
                 <form role="form" id="studentForm">
                     <input type="hidden" id="form_id" name="id">
-						<div class="form-group"><label></label> <input type="text" id="form_age"  placeholder="填写" class="form-control" name="age"></div>
-						<div class="form-group"><label></label> <input type="text" id="form_name"  placeholder="填写" class="form-control" name="name"></div>
-						<div class="form-group"><label></label> <input type="text" id="form_phone"  placeholder="填写" class="form-control" name="phone"></div>
+                        <div class="form-group"><label>姓名</label> <input type="text" id="form_name"  placeholder="" class="form-control" name="name"></div>
+						<div class="form-group"><label>年龄</label> <input type="text" id="form_age"  placeholder="" class="form-control" name="age"></div>
+                        <div class="form-group"><label>性别</label>
+                            <select class="form-control m-b"id="form_sex"  name="sex">
+                                <option value="">请选择性别</option>
+                                <option value="0">女</option>
+                                <option value="1">男</option>
+                            </select>
+                        </div>
+						<div class="form-group"><label>联系方式</label> <input type="text" id="form_phone"  placeholder="" class="form-control" name="phone"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
@@ -130,7 +141,7 @@
 
 
 
-<div th:replace="layout/default :: js('/js/student/student.js')"></div>
+<div th:replace="layout/default :: js('/js/service/student.js')"></div>
 
 </body>
 

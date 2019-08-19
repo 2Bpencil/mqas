@@ -121,50 +121,51 @@ function deleteClasses(){
     }
     var node = jQuery('#treeTable').treetable('childs', meid);
     getNodes(node);
-    swal({
-        title: "是否确定删除?",
-        text: "你将会删除这条记录以及其所有下级记录!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        closeOnConfirm: false
-    }, function () {
-        $.ajax({
-            type : "POST",
-            data : {ids:ids},
-            dataType:"json",
-            url : contextPath+"classes/deleteClasses",
-            beforeSend : function(xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            success: function(result){
-                if(result == 1){
-                    ids="";
-                    showTreeTable();
-                    swal("删除成功!", "", "success");
-                }else{
-                    swal("删除失败!", "", "error");
-                }
+
+    $.ajax({
+        type : "POST",
+        data : {ids:ids},
+        dataType:"json",
+        url : contextPath+"classes/checkClassesUsed",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(result){
+            if(result){
+                swal({
+                    title: "是否确定删除?",
+                    text: "你将会删除这条记录以及其所有下级记录!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type : "POST",
+                        data : {ids:ids},
+                        dataType:"json",
+                        url : contextPath+"classes/deleteClasses",
+                        beforeSend : function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function(result){
+                            if(result == 1){
+                                ids="";
+                                showTreeTable();
+                                swal("删除成功!", "", "success");
+                            }else{
+                                swal("删除失败!", "", "error");
+                            }
+                        }
+                    });
+                });
+            }else{
+                ids="";
+                swal("有班级被分配，不能删除!", "", "error");
             }
-        });
+        }
     });
-    // $.ajax({
-    //     type : "POST",
-    //     data : {ids:ids},
-    //     dataType:"json",
-    //     url : contextPath+"classes/checkClassesUsed",
-    //     beforeSend : function(xhr) {
-    //         xhr.setRequestHeader(header, token);
-    //     },
-    //     success: function(result){
-    //         if(result){
-    //
-    //         }else{
-    //             swal("有菜单被分配，不能删除!", "", "error");
-    //         }
-    //     }
-    // });
 }
 //删除用
 var ids="";

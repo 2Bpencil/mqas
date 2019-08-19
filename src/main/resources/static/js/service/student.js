@@ -2,7 +2,7 @@ var studentTable;//表格对象
 var studentValidator;//表单验证
 var $table = "#student_table";
 $(document).ready(function(){
-    initTable();
+    initTree()
     validateData();
 });
 /**
@@ -13,7 +13,7 @@ function initTable(){
         dom: '<"html5buttons"B>lTfgitp',
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
-            "url": contextPath+"studentTable/getTableJson",  // 异步传输的后端接口url
+            "url": contextPath+"student/getTableJson",  // 异步传输的后端接口url
             "type": "POST",      // 请求方式
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(header, token);
@@ -24,24 +24,33 @@ function initTable(){
                 "visible": false ,
                 "searchable":false,
             },
-            { "data": "authority",
+            { "data": "name",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
-                width: '40%'
+                width: '20%'
 
             },
-            { "data": "name",
-                width: '40%'
+            { "data": "age",
+                width: '20%'
+            },
+            { "data": "sex",
+                "searchable":false,
+                width: '20%'
+            },
+            { "data": "phone",
+                "searchable":false,
+                'orderable' : false ,
+                width: '20%'
             },
             { "data": null,
                 "searchable":false,
                 'orderable' : false ,
-                width: '15%',
+                width: '20%',
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
-                    buttons+='<button type="button" onclick="editRole('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="deleteRole('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="assignmentMenu('+data.id+')" class="btn btn-primary btn-xs" >分配菜单</button>';
+                    buttons+='<button type="button" onclick="editStudent('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button"  class="btn btn-primary btn-xs" >分配菜单</button>';
                     return buttons;
                 }
             },
@@ -76,40 +85,64 @@ function initTable(){
  * 验证数据
  */
 function validateData(){
+    jQuery.validator.addMethod("cellPhone", function(value, element) {
+        return this.optional(element)
+            || /^1[0-9]\d{1}\d{4}\d{4}( x\d{1,6})?$/.test(value);
+    }, "联系方式无效");
     studentValidator= $("#studentForm").validate({
         rules: {
-            authority: {
-                required: true,
-                maxlength: 50,
-                remote : {//远程地址只能输出"true"或"false"
-                    url : contextPath + "student/verifyTheRepeat",
-                    type : "POST",
-                    dataType : "json",//如果要在页面输出其它语句此处需要改为json
-                    beforeSend : function(xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    data : {
-                        id : function(){
-                            return $("#form_id").val();
-                        }
-                    }
-                },
-            },
+            // authority: {
+            //     required: true,
+            //     maxlength: 50,
+            //     remote : {//远程地址只能输出"true"或"false"
+            //         url : contextPath + "student/verifyTheRepeat",
+            //         type : "POST",
+            //         dataType : "json",//如果要在页面输出其它语句此处需要改为json
+            //         beforeSend : function(xhr) {
+            //             xhr.setRequestHeader(header, token);
+            //         },
+            //         data : {
+            //             id : function(){
+            //                 return $("#form_id").val();
+            //             }
+            //         }
+            //     },
+            // },
             name: {
                 required: true,
                 maxlength: 50
             },
+            age:{
+                digits:true,
+            },
+            sex:{
+                required: true,
+            },
+            phone: {
+                cellPhone : 'required'
+            },
+
+
         },
         messages : {
-            authority : {
-                required : "不能为空",
-                maxlength : "不超过50个字符",
-                remote : "角色名已存在",
-            },
+            // authority : {
+            //     required : "不能为空",
+            //     maxlength : "不超过50个字符",
+            //     remote : "角色名已存在",
+            // },
             name : {
                 required: "不能为空",
                 maxlength : "不超过50个字符",
-            }
+            },
+            age:{
+                digits:"请输入正整数",
+            },
+            sex:{
+                required: "请选择性别",
+            },
+            phone: {
+
+            },
         },
         submitHandler : function(form) {
             saveStudent();
@@ -140,6 +173,10 @@ function saveStudent(){
             }
         }
     });
+}
+
+function addStudent(){
+    showModal("studentModal");
 }
 /**
  * 编辑
@@ -204,10 +241,46 @@ function deleteStudent(id){
 }
 
 /**
+ * 加载分配菜单页面
+ */
+function initTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            url : contextPath+"classes/getClassTreeForStudent",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+        },
+        callback : {
+            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
+        }
+    };
+    $.fn.zTree.init($("#classesGroup"), setting, zNodes);
+
+}
+/*
+ * 异步加载树完成后回调函数
+ */
+function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+    // var nodes = treeObj.getNodes();
+    initTable();
+
+}
+
+/**
  * 清空表单
  */
 function clearForm(){
     $('#studentForm')[0].reset();
+    $('#form_id').val(null);
     $('#studentForm').validate().resetForm();
 }
 

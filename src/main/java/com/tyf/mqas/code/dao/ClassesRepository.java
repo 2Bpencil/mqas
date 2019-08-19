@@ -32,10 +32,13 @@ public interface ClassesRepository extends ExpandJpaRepository<Classes,Integer>{
     @Transactional
     void deleteKnowledgeSet(Integer calssesId);
 
-//    @Query(value = "select count(*) from classes where name = ?1 and pid = ?2", nativeQuery = true)
-//    Integer getRsNumByClassesId();
+    @Query(value = "select count(*) from r_classes_user where classes_id = ?1", nativeQuery = true)
+    Integer getUserRsNumByClassesId(Integer classesId);
+    @Query(value = "select count(*) from r_classes_student where classes_id = ?1", nativeQuery = true)
+    Integer getStudentRsNumByClassesId(Integer classesId);
 
-    @Query(value = "select c.* from classes c left join r_classes_user rcu on c.id = rcu.classes_id where user_id = ?1", nativeQuery = true)
+    @Query(value = "select c.* from classes c left join r_classes_user rcu on c.id = rcu.classes_id where user_id = ?1 ORDER BY sort ASC ", nativeQuery = true)
     List<Classes> getClassesByUserId(Integer userId);
+
 
 }
