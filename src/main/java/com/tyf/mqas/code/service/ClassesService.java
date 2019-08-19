@@ -169,6 +169,11 @@ public class ClassesService {
         List<Tree> trees = new ArrayList<Tree>();
         list.forEach(classes -> {
             Tree tree = new Tree(classes.getId().toString(),classes.getName(),classes.getPid().toString());
+            if(classes.getPid()==0){//年级
+                tree.setValue("0");
+            }else{
+                tree.setValue("1");
+            }
             trees.add(tree);
         });
         return JSONArray.toJSONString(trees);

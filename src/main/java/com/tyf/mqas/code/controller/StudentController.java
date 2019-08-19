@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * @ClassName StudentController
- * @Description: TODO
+ * @Description: 学生
  * @Author tyf
  * @Date 2019年08月18日
  * @Version V1.0
@@ -49,8 +49,9 @@ public class StudentController {
      */
     @RequestMapping(value = "getTableJson",method = RequestMethod.POST)
     public void getTableJson(HttpServletRequest request, HttpServletResponse response){
+        String classesId = request.getParameter("classesId");
         Map<String,String[]> parameterMap = request.getParameterMap();
-        DataPage<Student> pages = studentService.getDataPage(parameterMap);
+        DataPage<Student> pages = studentService.getDataPage(parameterMap,classesId);
         String json = JSONObject.toJSONString(pages);
         try {
             response.getWriter().print(json);
@@ -64,17 +65,18 @@ public class StudentController {
     */
     @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("student") Student student, HttpServletRequest request, HttpServletResponse response){
+        String classesId = request.getParameter("classesId");
         int flag = 1;
         String oprate = "新增";
         if(student.getId()!=null){
             oprate = "编辑";
         }
         try{
-            studentService.saveEntity(student);
-            logger.info(SecurityUtil.getCurUserName()+oprate+"XX成功");
+            studentService.saveEntity(student,Integer.parseInt(classesId));
+            logger.info(SecurityUtil.getCurUserName()+oprate+"学生成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+oprate+"XX失败");
+            logger.error(SecurityUtil.getCurUserName()+oprate+"学生失败");
         }
         try {
             response.getWriter().print(flag);
@@ -112,10 +114,10 @@ public class StudentController {
         String id = request.getParameter("id");
         try{
             studentService.deleteStudent(Integer.parseInt(id));
-            logger.info(SecurityUtil.getCurUserName()+"删除XX成功");
+            logger.info(SecurityUtil.getCurUserName()+"删除学生成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"删除XX失败");
+            logger.error(SecurityUtil.getCurUserName()+"删除学生失败");
         }
         try {
             response.getWriter().print(flag);

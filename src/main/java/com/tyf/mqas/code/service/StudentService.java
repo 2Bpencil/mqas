@@ -28,8 +28,10 @@ public class StudentService extends PageGetter<Student>{
      * @param parameterMap
      * @return
      */
-    public DataPage<Student> getDataPage(Map<String,String[]> parameterMap){
-        return super.getPages(parameterMap);
+    public DataPage<Student> getDataPage(Map<String,String[]> parameterMap,String calssesId){
+        String sql = "SELECT student.* FROM student  LEFT JOIN r_classes_student rck ON student.id = rck.student_id WHERE rck.classes_id = "+calssesId;
+        String countSql = "SELECT COUNT(*) FROM student  LEFT JOIN r_classes_student rck ON student.id = rck.student_id WHERE rck.classes_id = "+calssesId;
+        return super.getPages(parameterMap,sql,countSql);
     }
 
     /**
@@ -37,8 +39,11 @@ public class StudentService extends PageGetter<Student>{
      * @param student
      * @return
      */
-    public Student saveEntity(Student student){
-        return studentRepository.save(student);
+    public Student saveEntity(Student student,Integer classesId){
+        student = studentRepository.save(student);
+        studentRepository.deleteRsClassesAndStudent(student.getId());
+        studentRepository.saveRsClassesAndStudent(student.getId(),classesId);
+        return student;
     }
 
     /**
@@ -46,6 +51,7 @@ public class StudentService extends PageGetter<Student>{
      * @param id
      */
     public void deleteStudent(Integer id){
+        studentRepository.deleteRsClassesAndStudent(id);
         studentRepository.deleteById(id);
     }
 

@@ -1,3 +1,4 @@
+var classesId = '';
 var studentTable;//表格对象
 var studentValidator;//表单验证
 var $table = "#student_table";
@@ -18,6 +19,7 @@ function initTable(){
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(header, token);
             },
+            data:{classesId:classesId},
         },
         "columns": [
             { "data": "id",
@@ -30,10 +32,14 @@ function initTable(){
 
             },
             { "data": "age",
+                "searchable":false,
                 width: '20%'
             },
             { "data": "sex",
                 "searchable":false,
+                render : function(data,type, row, meta) {
+                    return ( parseInt(data) === 1?"男":"女");
+                },
                 width: '20%'
             },
             { "data": "phone",
@@ -50,7 +56,7 @@ function initTable(){
                     var buttons = '';
                     buttons+='<button type="button" onclick="editStudent('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button"  class="btn btn-primary btn-xs" >分配菜单</button>';
+                    buttons+='<button type="button"  class="btn btn-primary btn-xs" >上传错题</button>';
                     return buttons;
                 }
             },
@@ -75,7 +81,7 @@ function initTable(){
         ],
         language:CONSTANT.DATA_TABLES.DEFAULT_OPTION.language,
         autoWidth:false,
-        processing: false,
+        processing: true,
     });
     $($table).on( 'error.dt', function ( e, settings, techNote, message ){
         //这里可以接管错误处理，也可以不做任何处理
@@ -113,6 +119,7 @@ function validateData(){
                 maxlength: 50
             },
             age:{
+                required: true,
                 digits:true,
             },
             sex:{
@@ -135,6 +142,7 @@ function validateData(){
                 maxlength : "不超过50个字符",
             },
             age:{
+                required: "不能为空",
                 digits:"请输入正整数",
             },
             sex:{
@@ -154,6 +162,7 @@ function validateData(){
  * 保存
  */
 function saveStudent(){
+    $('#form_classesId').val(classesId);
     //保存
     $.ajax({
         type : "POST",
@@ -175,7 +184,17 @@ function saveStudent(){
     });
 }
 
+/**
+ * 新增学生
+ */
 function addStudent(){
+    if(classesId == ""){
+        swal({
+            title: "提示",
+            text: "请选选择班级！"
+        });
+        return;
+    }
     showModal("studentModal");
 }
 /**
@@ -192,10 +211,10 @@ function editStudent(id){
             xhr.setRequestHeader(header, token);
         },
         success: function(result){
-                    $('#form_id').val(result.id);
-                    $('#form_age').val(result.age);
-                    $('#form_name').val(result.name);
-                    $('#form_phone').val(result.phone);
+            $('#form_id').val(result.id);
+            $('#form_age').val(result.age);
+            $('#form_name').val(result.name);
+            $('#form_phone').val(result.phone);
             showModal("studentModal");
         }
     });
@@ -204,7 +223,7 @@ function editStudent(id){
  * 刷新表格
  */
 function reloadTable(){
-    roleTable.ajax.reload();
+    studentTable.ajax.reload();
 }
 /**
  * 删除角色
@@ -241,7 +260,7 @@ function deleteStudent(id){
 }
 
 /**
- * 加载分配菜单页面
+ * 初始化班级树
  */
 function initTree(){
     var zNodes = []; //zTree的数据属性
@@ -260,19 +279,63 @@ function initTree(){
             },
         },
         callback : {
-            onAsyncSuccess : zTreeOnAsyncSuccess//异步加载树完成后回调函数
+            onAsyncSuccess : zTreeOnAsyncSuccess,//异步加载树完成后回调函数
+            onClick: zTreeOnClick
         }
     };
     $.fn.zTree.init($("#classesGroup"), setting, zNodes);
 
 }
+
+/**
+ * 树节点点击事件
+ * @param event
+ * @param treeId
+ * @param treeNode
+ */
+function zTreeOnClick(event, treeId, treeNode) {
+    if(treeNode.value == 1){
+        classesId =treeNode.id;
+        var parentNode = treeNode.getParentNode();
+        $('#className').html(parentNode.name+treeNode.name+"学生列表");
+        studentTable.settings()[0].ajax.data={classesId:classesId};
+        reloadTable();
+    }
+}
+
 /*
  * 异步加载树完成后回调函数
  */
 function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
-    // var nodes = treeObj.getNodes();
+    var  treeObj = $.fn.zTree.getZTreeObj("classesGroup");
+    treeObj.expandAll(true);
+    var nodes = treeObj.getNodes();
+    var nodeArr = [];
+    for (var i = 0; i <nodes.length ; i++) {
+        nodeArr = getAllNodes(nodes[i],nodeArr);
+    }
+    if(nodeArr.length>0){
+        classesId= nodeArr[0].id;
+        var parentNode = nodeArr[0].getParentNode();
+        $('#className').html(parentNode.name+nodeArr[0].name+"学生列表");
+    }
     initTable();
+}
 
+/**
+ * 获取所有叶子节点
+ */
+function getAllNodes(node,nodeArr){
+    if(node.isParent){//是父节点
+        for (var i = 0; i <node.children.length ; i++) {
+            getAllNodes(node.children[i],nodeArr);
+        }
+    }else{
+        if(node.value==1){
+            nodeArr.push(node);
+        }
+    }
+    return nodeArr;
 }
 
 /**
@@ -281,6 +344,7 @@ function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
 function clearForm(){
     $('#studentForm')[0].reset();
     $('#form_id').val(null);
+    $('#form_classesId').val(null);
     $('#studentForm').validate().resetForm();
 }
 
