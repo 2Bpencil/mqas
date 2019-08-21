@@ -46,6 +46,7 @@
                 <div class="title-action">
                     <!--操作按钮-->
                     <a href="#" class="btn btn-primary" data-toggle="modal" onclick="addStudent()">新增学生</a>
+                    <a th:href="@{/student/downloadTemplates}"  class="btn btn-primary" >下载错题模板</a>
                     <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
                 </div>
             </div>
@@ -139,8 +140,6 @@
         </div>
     </div>
 </div>
-
-
 
 <div th:replace="layout/default :: js('/js/service/student.js')"></div>
 

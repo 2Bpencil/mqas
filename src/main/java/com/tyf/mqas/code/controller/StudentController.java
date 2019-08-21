@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 
 
@@ -158,6 +160,39 @@ public class StudentController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 下载导入模板
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "downloadTemplates",method = RequestMethod.GET)
+    public void downloadTemplates(HttpServletRequest request, HttpServletResponse response){
+        Resource resource =  new ClassPathResource("static/download_file/test.xls");
+        try {
+            InputStream is = resource.getInputStream();
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            // 设置在下载框默认显示的文件名
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(("test.xls").getBytes(), "iso-8859-1"));
+            // 指明response的返回对象是文件流
+            response.setContentType("application/octet-stream");
+            // 读出文件到response
+            // 这里是先需要把要把文件内容先读到缓冲区
+            // 再把缓冲区的内容写到response的输出流供用户下载
+            byte[] b = new byte[bufferedInputStream.available()];
+            bufferedInputStream.read(b);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(b);
+            // 人走带门
+            bufferedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 
