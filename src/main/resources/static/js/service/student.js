@@ -56,7 +56,7 @@ function initTable(){
                     var buttons = '';
                     buttons+='<button type="button" onclick="editStudent('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button"  class="btn btn-primary btn-xs" >上传错题</button>';
+                    buttons+='<button type="button" onclick="uploadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >上传错题</button>';
                     return buttons;
                 }
             },
@@ -338,6 +338,8 @@ function getAllNodes(node,nodeArr){
     return nodeArr;
 }
 
+
+
 /**
  * 清空表单
  */
@@ -347,7 +349,75 @@ function clearForm(){
     $('#form_classesId').val(null);
     $('#studentForm').validate().resetForm();
 }
+/**
+ * 清空表单
+ */
+function clearWrongForm(){
+    $('#wrongQuestionForm')[0].reset();
+}
 
+/**
+ * 上传错题
+ */
+function uploadWrongQuestion(id) {
+    $('#form_student_id').val(id);
+    showModal('wrongQuestionModal')
+}
+/**
+ * 保存错题
+ */
+function saveWrongQuestion() {
+
+    // $('#wrongQuestionForm')[0].submit();
+    // clearWrongForm();
+    // showAlert("保存成功",'success');
+
+    var formData = new FormData();
+    formData.append("file",$("#form_file")[0].files[0]);
+    formData.append("studentId",$('#form_student_id').val());
+    $.ajax({
+        type : "POST",
+        data : formData,
+        contentType : false, //必须
+        processData : false,
+        dataType:"json",
+        url : contextPath+"student/saveWrongQuestion",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(result){
+            if(result == 1){
+                hideModal('wrongQuestionModal');
+                clearWrongForm();
+                showAlert("保存成功",'success');
+            }else{
+                showAlert("保存失败",'error');
+            }
+        }
+    });
+
+    // $.ajaxFileUpload({  //Jquery插件上传文件
+    //     url: contextPath+"student/saveWrongQuestion",
+    //     beforeSend : function(xhr) {
+    //         xhr.setRequestHeader(header, token);
+    //     },
+    //     type : "POST",
+    //     secureuri: false, //是否需要安全协议，一般设置为false
+    //     fileElementId: "form_file", //type="file"的id
+    //     dataType: "json",  //返回值类型
+    //     data:{studentId:$('#form_student_id').val()},
+    //     success: function (result){
+    //
+    //         if(result == 1){
+    //             hideModal('wrongQuestionModal');
+    //             clearWrongForm();
+    //             showAlert("保存成功",'success');
+    //         }else{
+    //             showAlert("保存失败",'error');
+    //         }
+    //     },
+    // });
+}
 
 /*常量*/
 var CONSTANT = {

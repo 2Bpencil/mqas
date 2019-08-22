@@ -5,15 +5,17 @@ import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.StudentRepository;
 import com.tyf.mqas.code.entity.Student;
+import com.tyf.mqas.utils.PoiUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -78,6 +80,28 @@ public class StudentService extends PageGetter<Student>{
             num = studentRepository.getStudentNumByAuthority( authority);
         }
         return num > 0?false:true;
+    }
+
+    /**
+     * 保存错题信息
+     * @param request
+     * @param id
+     */
+    public void saveWrongQuestion(HttpServletRequest request,Integer id){
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
+            Iterator iter = mr.getFileMap().values().iterator();
+            if (iter.hasNext()) {
+                MultipartFile file = (MultipartFile) iter.next();
+                List<String[]> dataList = PoiUtil.readImportFile(file,1);
+                dataList.forEach(data->{
+
+                    System.out.println(data[0]+"---"+data[1]);
+
+                });
+            }
+        }
+
     }
 
 }

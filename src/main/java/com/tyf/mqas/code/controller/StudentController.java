@@ -140,10 +140,6 @@ public class StudentController {
 
     }
 
-
-
-
-
     /**
     * 验证重复
     * @param request
@@ -173,7 +169,7 @@ public class StudentController {
             InputStream is = resource.getInputStream();
             BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
             // 设置在下载框默认显示的文件名
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(("test.xls").getBytes(), "iso-8859-1"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(("错题模板.xls").getBytes(), "iso-8859-1"));
             // 指明response的返回对象是文件流
             response.setContentType("application/octet-stream");
             // 读出文件到response
@@ -192,7 +188,29 @@ public class StudentController {
         }
     }
 
+    /**
+     * 保存错题
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "saveWrongQuestion",method = RequestMethod.POST)
+    public void saveWrongQuestion(HttpServletRequest request, HttpServletResponse response) {
+        int flag = 1;
+        String id = request.getParameter("studentId");
+        try{
+            studentService.saveWrongQuestion(request,Integer.parseInt(id));
+            logger.info(SecurityUtil.getCurUserName()+"保存错题信息成功");
+        }catch (Exception e){
+            flag = 0;
+            logger.error(SecurityUtil.getCurUserName()+"保存错题信息失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
 
 
 
