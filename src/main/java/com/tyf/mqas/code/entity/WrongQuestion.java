@@ -16,7 +16,7 @@ public class WrongQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 100)
+    @Column(length = 225)
     private String name;
     @Column(length = 100)
     //知识编码
@@ -25,6 +25,8 @@ public class WrongQuestion {
     private String time;
     @Column
     private Integer studentId;
+    @Column(length = 100)
+    private String knowledgeName;
 
 
     public Integer getId() {
@@ -65,6 +67,14 @@ public class WrongQuestion {
 
     public void setStudentId(Integer studentId) {
         this.studentId = studentId;
+    }
+
+    public String getKnowledgeName() {
+        return knowledgeName;
+    }
+
+    public void setKnowledgeName(String knowledgeName) {
+        this.knowledgeName = knowledgeName;
     }
 }
     

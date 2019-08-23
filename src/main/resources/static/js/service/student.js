@@ -40,7 +40,7 @@ function initTable(){
                 render : function(data,type, row, meta) {
                     return ( parseInt(data) === 1?"男":"女");
                 },
-                width: '20%'
+                width: '15%'
             },
             { "data": "phone",
                 "searchable":false,
@@ -50,13 +50,15 @@ function initTable(){
             { "data": null,
                 "searchable":false,
                 'orderable' : false ,
-                width: '20%',
+                width: '25%',
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
                     buttons+='<button type="button" onclick="editStudent('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="uploadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >上传错题</button>';
+                    buttons+='<button type="button" onclick="uploadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >上传错题</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="manageWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题管理</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="manageWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题统计</button>';
                     return buttons;
                 }
             },
@@ -396,27 +398,13 @@ function saveWrongQuestion() {
         }
     });
 
-    // $.ajaxFileUpload({  //Jquery插件上传文件
-    //     url: contextPath+"student/saveWrongQuestion",
-    //     beforeSend : function(xhr) {
-    //         xhr.setRequestHeader(header, token);
-    //     },
-    //     type : "POST",
-    //     secureuri: false, //是否需要安全协议，一般设置为false
-    //     fileElementId: "form_file", //type="file"的id
-    //     dataType: "json",  //返回值类型
-    //     data:{studentId:$('#form_student_id').val()},
-    //     success: function (result){
-    //
-    //         if(result == 1){
-    //             hideModal('wrongQuestionModal');
-    //             clearWrongForm();
-    //             showAlert("保存成功",'success');
-    //         }else{
-    //             showAlert("保存失败",'error');
-    //         }
-    //     },
-    // });
+}
+
+/**
+ * 错题管理页面
+ */
+function manageWrongQuestion(id) {
+    window.location.href=contextPath+"wrongQuestion/wrongQuestionManage?id="+id;
 }
 
 /*常量*/

@@ -29,5 +29,7 @@ public interface StudentRepository extends ExpandJpaRepository<Student,Integer>{
     @Query(value = "delete from r_classes_student where student_id = ?1", nativeQuery = true)
     void deleteRsClassesAndStudent(Integer studentId);
 
+    Student getStudentById(Integer id);
+
 
 }

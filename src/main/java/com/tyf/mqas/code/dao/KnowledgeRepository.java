@@ -26,4 +26,6 @@ public interface KnowledgeRepository extends ExpandJpaRepository<Knowledge,Integ
     @Query(value = "select count(*) from r_classes_knowlwdge where knowledge_id = ?1", nativeQuery = true)
     Integer getRsNumByKnowledgeId(Integer knowledgeId);
 
+    Knowledge findByCode(String code);
+
 }

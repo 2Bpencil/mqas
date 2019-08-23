@@ -2,7 +2,7 @@
 // paid = "";
 // meid = "";
 // mename = "";
-var heads=['知识标题','知识类型','排序'];
+var heads=['知识标题','知识类型','知识代码','排序'];
 $(document).ready(function(){
     showTreeTable();
     validateData();

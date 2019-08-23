@@ -3,8 +3,11 @@ package com.tyf.mqas.code.service;
 import com.alibaba.fastjson.JSONArray;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
+import com.tyf.mqas.code.dao.KnowledgeRepository;
 import com.tyf.mqas.code.dao.StudentRepository;
+import com.tyf.mqas.code.dao.WrongQuestionRepository;
 import com.tyf.mqas.code.entity.Student;
+import com.tyf.mqas.code.entity.WrongQuestion;
 import com.tyf.mqas.utils.PoiUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -24,6 +28,11 @@ public class StudentService extends PageGetter<Student>{
 
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private WrongQuestionRepository wrongQuestionRepository;
+    @Autowired
+    private KnowledgeRepository knowledgeRepository;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 分页查询
@@ -63,7 +72,7 @@ public class StudentService extends PageGetter<Student>{
      * @return
      */
     public Student getStudentById(Integer id){
-        return studentRepository.getOne(id);
+        return studentRepository.getStudentById(id);
     }
 
     /**
@@ -93,12 +102,19 @@ public class StudentService extends PageGetter<Student>{
             Iterator iter = mr.getFileMap().values().iterator();
             if (iter.hasNext()) {
                 MultipartFile file = (MultipartFile) iter.next();
-                List<String[]> dataList = PoiUtil.readImportFile(file,1);
+                List<String[]> dataList = PoiUtil.readImportFile(file,2);
+                List<WrongQuestion> list = new ArrayList<>();
+                Date date = new Date();
                 dataList.forEach(data->{
-
-                    System.out.println(data[0]+"---"+data[1]);
-
+                    WrongQuestion wrongQuestion = new WrongQuestion();
+                    wrongQuestion.setName(data[1]);
+                    wrongQuestion.setKnowledgeCode(data[2]);
+                    wrongQuestion.setTime(sdf.format(date));
+                    wrongQuestion.setStudentId(id);
+                    wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(data[2]).getName());
+                   list.add(wrongQuestion);
                 });
+                wrongQuestionRepository.saveAll(list);
             }
         }
 

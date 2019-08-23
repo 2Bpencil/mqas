@@ -38,7 +38,7 @@ public class KnowledgeService {
             treeTable.setId(knowledge.getId()+"");
             treeTable.setpId(knowledge.getPid()==0?"":knowledge.getPid().toString());
             treeTable.setName(knowledge.getName());
-            String[] td = {knowledge.getType()!= null?(knowledge.getType()==0?"非重点":"重点"):"",knowledge.getSort()==null?"":knowledge.getSort().toString()};
+            String[] td = {knowledge.getType()!= null?(knowledge.getType()==0?"非重点":"重点"):"",knowledge.getCode(),knowledge.getSort()==null?"":knowledge.getSort().toString()};
             treeTable.setTd(td);
             treeTables.add(treeTable);
         });
