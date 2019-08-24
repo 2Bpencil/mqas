@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2019-08-18 22:30:06
+Date: 2019-08-24 11:38:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -183,11 +183,13 @@ CREATE TABLE `r_classes_student` (
   `classes_id` int(11) DEFAULT NULL,
   `student_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of r_classes_student
 -- ----------------------------
+INSERT INTO `r_classes_student` VALUES ('1', '7', '1');
+INSERT INTO `r_classes_student` VALUES ('2', '7', '2');
 
 -- ----------------------------
 -- Table structure for r_classes_user
@@ -198,7 +200,7 @@ CREATE TABLE `r_classes_user` (
   `classes_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of r_classes_user
@@ -212,6 +214,38 @@ INSERT INTO `r_classes_user` VALUES ('9', '10', '19');
 INSERT INTO `r_classes_user` VALUES ('10', '20', '19');
 INSERT INTO `r_classes_user` VALUES ('11', '21', '19');
 INSERT INTO `r_classes_user` VALUES ('12', '28', '19');
+INSERT INTO `r_classes_user` VALUES ('77', '1', '1');
+INSERT INTO `r_classes_user` VALUES ('78', '7', '1');
+INSERT INTO `r_classes_user` VALUES ('79', '18', '1');
+INSERT INTO `r_classes_user` VALUES ('80', '2', '1');
+INSERT INTO `r_classes_user` VALUES ('81', '8', '1');
+INSERT INTO `r_classes_user` VALUES ('82', '19', '1');
+INSERT INTO `r_classes_user` VALUES ('83', '3', '1');
+INSERT INTO `r_classes_user` VALUES ('84', '9', '1');
+INSERT INTO `r_classes_user` VALUES ('85', '10', '1');
+INSERT INTO `r_classes_user` VALUES ('86', '20', '1');
+INSERT INTO `r_classes_user` VALUES ('87', '21', '1');
+INSERT INTO `r_classes_user` VALUES ('88', '28', '1');
+INSERT INTO `r_classes_user` VALUES ('89', '4', '1');
+INSERT INTO `r_classes_user` VALUES ('90', '11', '1');
+INSERT INTO `r_classes_user` VALUES ('91', '12', '1');
+INSERT INTO `r_classes_user` VALUES ('92', '22', '1');
+INSERT INTO `r_classes_user` VALUES ('93', '23', '1');
+INSERT INTO `r_classes_user` VALUES ('94', '29', '1');
+INSERT INTO `r_classes_user` VALUES ('95', '5', '1');
+INSERT INTO `r_classes_user` VALUES ('96', '13', '1');
+INSERT INTO `r_classes_user` VALUES ('97', '14', '1');
+INSERT INTO `r_classes_user` VALUES ('98', '15', '1');
+INSERT INTO `r_classes_user` VALUES ('99', '24', '1');
+INSERT INTO `r_classes_user` VALUES ('100', '25', '1');
+INSERT INTO `r_classes_user` VALUES ('101', '31', '1');
+INSERT INTO `r_classes_user` VALUES ('102', '6', '1');
+INSERT INTO `r_classes_user` VALUES ('103', '16', '1');
+INSERT INTO `r_classes_user` VALUES ('104', '17', '1');
+INSERT INTO `r_classes_user` VALUES ('105', '32', '1');
+INSERT INTO `r_classes_user` VALUES ('106', '26', '1');
+INSERT INTO `r_classes_user` VALUES ('107', '27', '1');
+INSERT INTO `r_classes_user` VALUES ('108', '30', '1');
 
 -- ----------------------------
 -- Table structure for r_role_menu
@@ -224,7 +258,7 @@ CREATE TABLE `r_role_menu` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FK3sq5xkthr6icwcyohtdoje586` (`menu_id`) USING BTREE,
   KEY `FK65h6sd1kud5klymygbfs9crnn` (`role_id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 -- ----------------------------
 -- Records of r_role_menu
@@ -233,6 +267,10 @@ INSERT INTO `r_role_menu` VALUES ('34', '3', '13');
 INSERT INTO `r_role_menu` VALUES ('33', '3', '9');
 INSERT INTO `r_role_menu` VALUES ('32', '3', '8');
 INSERT INTO `r_role_menu` VALUES ('31', '3', '1');
+INSERT INTO `r_role_menu` VALUES ('62', '17', '13');
+INSERT INTO `r_role_menu` VALUES ('61', '17', '9');
+INSERT INTO `r_role_menu` VALUES ('60', '17', '8');
+INSERT INTO `r_role_menu` VALUES ('59', '17', '1');
 INSERT INTO `r_role_menu` VALUES ('58', '2', '13');
 INSERT INTO `r_role_menu` VALUES ('29', '1', '11');
 INSERT INTO `r_role_menu` VALUES ('28', '1', '10');
@@ -279,12 +317,15 @@ CREATE TABLE `student` (
   `age` int(11) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
+  `sex` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of student
 -- ----------------------------
+INSERT INTO `student` VALUES ('1', '9', 'test1', '', '1');
+INSERT INTO `student` VALUES ('2', '9', 'hahah', '', '0');
 
 -- ----------------------------
 -- Table structure for user
@@ -311,4 +352,32 @@ CREATE TABLE `user` (
 INSERT INTO `user` VALUES ('1', '', '', '', '', 'admin', '$2a$10$L.K2WsuT1.Za1LRKTNYwOuDIgkmFSJ6O.IKjhKVRhDDle3jHmvO9S', 'aaa', '18734859657', '1', '超级管理员');
 INSERT INTO `user` VALUES ('18', '', '', '', '', 'tyf', '$2a$10$DUocwdaRIMR0j1u09ipC7uiefNQ6mr0gtq7h8qxf1opR2T/YUzk.G', null, '18734859657', '1', '覃亚峰');
 INSERT INTO `user` VALUES ('19', '', '', '', '', 'test', '$2a$10$yKll5fgYLzvTYCylqyMpQOeb9KT3Chl4clmeYRVEzJV7/iPNiB.NG', null, '18734859657', '0', '测试2');
+
+-- ----------------------------
+-- Table structure for wrong_question
+-- ----------------------------
+DROP TABLE IF EXISTS `wrong_question`;
+CREATE TABLE `wrong_question` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowledge_code` varchar(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `time` varchar(255) DEFAULT NULL,
+  `knowledge_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of wrong_question
+-- ----------------------------
+INSERT INTO `wrong_question` VALUES ('1', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test1', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('3', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test3', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('4', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test4', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('5', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test5', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('6', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test6', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('7', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test7', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('8', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test8', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('9', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test9', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('10', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test10', '1', '2019-08-23 11:26:36', '分数型');
+INSERT INTO `wrong_question` VALUES ('11', '67a74d7e-8990-41a8-9569-5a6e8af3a8cb', 'test11', '1', '2019-08-23 11:26:36', '分数型');
 SET FOREIGN_KEY_CHECKS=1;
