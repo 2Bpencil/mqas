@@ -12,6 +12,8 @@ public class TestQuestion {
     private String name;
     @Column(length = 100)
     private String knowledgeCode;
+    @Column(length = 100)
+    private String knowledgeName;
     @Column
     private Integer testPaperTypeId;
 
@@ -45,5 +47,13 @@ public class TestQuestion {
 
     public void setTestPaperTypeId(Integer testPaperTypeId) {
         this.testPaperTypeId = testPaperTypeId;
+    }
+
+    public String getKnowledgeName() {
+        return knowledgeName;
+    }
+
+    public void setKnowledgeName(String knowledgeName) {
+        this.knowledgeName = knowledgeName;
     }
 }

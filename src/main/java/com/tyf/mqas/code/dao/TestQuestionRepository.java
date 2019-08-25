@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TestQuestionRepository extends ExpandJpaRepository<TestQuestion,Integer> {
 
-
+    void deleteByTestPaperTypeId(Integer testPaperTypeId);
 
 }

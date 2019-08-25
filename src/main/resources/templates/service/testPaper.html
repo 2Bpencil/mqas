@@ -44,22 +44,24 @@
             </div>
             <div class="col-sm-8">
                 <div class="title-action">
-                    <!--操作按钮-->
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#userModal">新增试卷</a>
-                    <a href="#"  class="btn btn-primary" onclick="addTestPaperType()">新增试卷大题</a>
-                    <a href="#"   class="btn btn-primary" onclick="addTestQuestion()">新增试卷小题</a>
-                    <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
                 </div>
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>试卷</h5>
                             <div class="ibox-tools">
-                                <button class="btn btn-primary btn-xs" type="button"  onclick="reloadTable()"><i class="fa fa-bar-chart-o"></i>统计 </button>
+                                <button class="btn btn-default btn-xs" type="button"  onclick="expandAll()">展开 </button>
+                                <button class="btn btn-default btn-xs" type="button"  onclick="closeAll()">关闭 </button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="addTestPaper()">新增试卷 </button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="editTestPaper()">编辑试卷</button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="deleteTestPaper()">删除试卷</button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="addTestPaperType()">新增题型 </button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="editTestPaperType()">编辑题型</button>
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="deleteTestPaperType()">删除题型</button>
                             </div>
                         </div>
                         <div class="ibox-content">
@@ -69,11 +71,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5 id="className">试题列表</h5>
                             <div class="ibox-tools">
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="addTestQuestion()">新增试题</button>
                             </div>
                         </div>
                         <div class="ibox-content">
@@ -83,19 +86,15 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>姓名</th>
-                                        <th>年龄</th>
-                                        <th>性别</th>
-                                        <th>联系方式</th>
+                                        <th>试题信息</th>
+                                        <th>知识点</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                         <th>ID</th>
-                                        <th>姓名</th>
-                                        <th>年龄</th>
-                                        <th>性别</th>
-                                        <th>联系方式</th>
+                                        <th>试题信息</th>
+                                        <th>知识点</th>
                                         <th>操作</th>
                                     </tfoot>
                                 </table>
@@ -114,8 +113,8 @@
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-user modal-icon"></i>
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearTestPaperForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-files-o modal-icon"></i>
                 <h4 class="modal-title">试卷表单</h4>
             </div>
             <div class="modal-body">
@@ -123,7 +122,7 @@
                         <input type="hidden" id="testPaperForm_id" name="id">
                         <div class="form-group"><label>试卷名称</label> <input type="text" id="testPaperForm_name"  placeholder="" class="form-control" name="name"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearTestPaperForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
                     </div>
                 </form>
@@ -136,17 +135,17 @@
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-user modal-icon"></i>
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearTestPaperTypeForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-files-o modal-icon"></i>
                 <h4 class="modal-title">试题类型表单</h4>
             </div>
             <div class="modal-body">
                 <form role="form" id="testPaperTypeForm">
                     <input type="hidden" id="testPaperTypeForm_id" name="id">
-                    <input type="hidden" id="form_testPaperId" name="testPaperId">
-                    <div class="form-group"><label>姓名</label> <input type="text" id="testPaperTypeForm_name"  placeholder="" class="form-control" name="name"></div>
+                    <input type="hidden" id="testPaperTypeForm_testPaperId" name="testPaperId">
+                    <div class="form-group"><label>题型名称</label> <input type="text" id="testPaperTypeForm_name"  placeholder="" class="form-control" name="name"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearTestPaperTypeForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
                     </div>
                 </form>
@@ -159,18 +158,18 @@
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"  onclick="clearForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-user modal-icon"></i>
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearTestQuestionForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-files-o modal-icon"></i>
                 <h4 class="modal-title">试题表单</h4>
             </div>
             <div class="modal-body">
                 <form role="form" id="testQuestionForm">
-                    <input type="hidden" id="form_id" name="id">
-                    <input type="hidden" id="form_classesId" name="classesId">
+                    <input type="hidden" id="testQuestionForm_id" name="id">
+                    <input type="hidden" id="testQuestionForm_testPaperTypeId" name="testPaperTypeId">
                     <div class="form-group"><label>试题信息</label> <input type="text" id="testQuestionForm_name"  placeholder="" class="form-control" name="name"></div>
                     <div class="form-group"><label>知识点</label> <input type="text" id="testQuestionForm_knowledgeCode"  placeholder="请对照知识管理填写" class="form-control" name="knowledgeCode"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearForm();">关闭</button>
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearTestQuestionForm();">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
                     </div>
                 </form>
@@ -183,7 +182,7 @@
 
 
 
-<div th:replace="layout/default :: js('/js/service/student.js')"></div>
+<div th:replace="layout/default :: js('/js/service/testPaper.js')"></div>
 
 </body>
 
