@@ -7,6 +7,7 @@
 
 
 $(document).ready(function () {
+
     //初始化菜单
     initPageMenu();
 
@@ -21,6 +22,7 @@ $(document).ready(function () {
 
     // MetsiMenu
     $('#side-menu').metisMenu();
+
 
     // Collapse ibox function
     $('.collapse-link').click(function () {
@@ -313,18 +315,30 @@ function WinMove() {
  * 初始化菜单
  */
 function initPageMenu(){
+    var url = window.location.href;
+    url = url.split("8085")[1].replace("#","");
     var menuJsonArray = JSON.parse($('#curMenu').val());
     var lis = '';
     for (var i = 0; i < menuJsonArray.length; i++) {
         var li = '';
         var menu = menuJsonArray[i];
         if(menu.type == 0){
-            li+='<li><a href="#"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span><span class="fa arrow"></span></a> ';
+            var clazz = '';
             var children = menu.children;
+            for (var j = 0; j <children.length ; j++) {
+                if(children[j].url==url){
+                    clazz = 'active';
+                }
+            }
+            li+='<li class="'+clazz+'"><a href="#"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span><span class="fa arrow"></span></a> ';
             if(children.length>0){
                 var childrenLu = '<ul class="nav nav-second-level collapse">';
                 for (var j = 0; j <children.length ; j++) {
-                    childrenLu+='<li><a href="'+children[j].url+'"><i class="'+children[j].icon+'"></i>'+children[j].name+'</a></li>';
+                    clazz = '';
+                    if(children[j].url==url){
+                        clazz = 'active';
+                    }
+                    childrenLu+='<li class="'+clazz+'" ><a href="'+children[j].url+'"><i class="'+children[j].icon+'"></i>'+children[j].name+'</a></li>';
                 }
                 childrenLu+='</ul>';
                 li+=childrenLu;
@@ -332,7 +346,11 @@ function initPageMenu(){
             li+='</li>';
 
         }else{
-            li +='<li><a href="'+menu.url+'"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span></a></li>';
+            var clazz = '';
+            if(menu.url==url){
+                clazz = 'active';
+            }
+            li +='<li class="'+clazz+'" ><a href="'+menu.url+'"><i class="'+menu.icon+'"></i> <span class="nav-label">'+menu.name+'</span></a></li>';
         }
         lis+=li;
     }

@@ -2,12 +2,11 @@ package com.tyf.mqas.code.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
-import com.tyf.mqas.code.entity.Role;
 import com.tyf.mqas.code.entity.TestPaper;
 import com.tyf.mqas.code.entity.TestPaperType;
 import com.tyf.mqas.code.entity.TestQuestion;
 import com.tyf.mqas.code.service.TestPaperService;
-import com.tyf.mqas.utils.DateUtil;
+import com.tyf.mqas.utils.PoiUtil;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -88,7 +87,7 @@ public class TestPaperController {
         if(testPaper.getId()!=null){
             oprate = "编辑";
         }else{
-            testPaper.setTime(DateUtil.sdf.format(new Date()));
+            testPaper.setTime(PoiUtil.DATEFORMAT_TIME.format(new Date()));
         }
         try{
             testPaperService.saveOrEditTestPaper(testPaper);
