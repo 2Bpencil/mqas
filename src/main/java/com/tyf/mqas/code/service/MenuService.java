@@ -3,10 +3,7 @@ package com.tyf.mqas.code.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.code.dao.MenuRepository;
-import com.tyf.mqas.code.entity.Knowledge;
-import com.tyf.mqas.code.entity.Menu;
-import com.tyf.mqas.code.entity.Role;
-import com.tyf.mqas.code.entity.TreeTable;
+import com.tyf.mqas.code.entity.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +72,24 @@ public class MenuService  {
             treeTables.add(treeTable);
         });
         return JSONArray.toJSONString(treeTables);
+    }
+
+    public String getAllMenusForTree(){
+        List<Menu> list = menuRepository.findAllBySort();
+        List<Tree> treeList = new ArrayList<>();
+        list.forEach(menu -> {
+            Tree tree = new Tree();
+            tree.setId(menu.getId()+"");
+            tree.setpId(menu.getPid()==0?"":menu.getPid().toString());
+            tree.setName(menu.getName());
+            if(menu.getType()==0){
+                tree.setIcon("/img/icon/menus.png");
+            }else{
+                tree.setIcon("/img/icon/menu.png");
+            }
+            treeList.add(tree);
+        });
+        return JSONArray.toJSONString(treeList);
     }
 
 

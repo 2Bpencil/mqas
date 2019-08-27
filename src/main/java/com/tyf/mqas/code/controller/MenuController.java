@@ -52,7 +52,7 @@ public class MenuController {
      */
     @RequestMapping(value = "getAllMenusForTree",method = RequestMethod.GET)
     public void getAllMenusForTree(HttpServletRequest request, HttpServletResponse response){
-        String json = menuService.getAllMenus();
+        String json = menuService.getAllMenusForTree();
         try {
             response.getWriter().print(json);
         } catch (IOException e) {

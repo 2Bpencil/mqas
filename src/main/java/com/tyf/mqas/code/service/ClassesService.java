@@ -49,6 +49,29 @@ public class ClassesService {
     }
 
     /**
+     * ztree data
+     * @return
+     */
+    public String getAllClassesTree(){
+        List<Classes> list = classesRepository.findAllBySort();
+        List<Tree> treeList = new ArrayList<Tree>();
+        list.forEach(classes -> {
+            Tree tree = new Tree();
+            tree.setId(classes.getId()+"");
+            tree.setpId(classes.getPid()==0?"":classes.getPid().toString());
+            tree.setName(classes.getName());
+            if(classes.getPid()==0){//年级
+                tree.setIcon("/img/icon/grade.png");
+            }else{
+                tree.setIcon("/img/icon/class.png");
+            }
+            treeList.add(tree);
+        });
+        return JSONArray.toJSONString(treeList);
+    }
+
+
+    /**
      * 保存
      * @param classes
      * @return
@@ -171,8 +194,10 @@ public class ClassesService {
             Tree tree = new Tree(classes.getId().toString(),classes.getName(),classes.getPid().toString());
             if(classes.getPid()==0){//年级
                 tree.setValue("0");
+                tree.setIcon("/img/icon/grade.png");
             }else{
                 tree.setValue("1");
+                tree.setIcon("/img/icon/class.png");
             }
             trees.add(tree);
         });

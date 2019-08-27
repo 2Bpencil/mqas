@@ -28,7 +28,7 @@ import java.util.UUID;
 
 /**
  * @ClassName ClassesController
- * @Description: TODO
+ * @Description:
  * @Author tyf
  * @Date 2019年08月17日
  * @Version V1.0
@@ -63,13 +63,13 @@ public class ClassesController {
     }
 
     /**
-     * ztree
+     * ztree  分配给用户
      * @param request
      * @param response
      */
     @RequestMapping(value = "getAllClassesTree",method = RequestMethod.GET)
     public void getAllClassesTree(HttpServletRequest request, HttpServletResponse response){
-        String json = classesService.getAllClassess();
+        String json = classesService.getAllClassesTree();
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
