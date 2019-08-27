@@ -31,5 +31,13 @@ public interface StudentRepository extends ExpandJpaRepository<Student,Integer>{
 
     Student getStudentById(Integer id);
 
+    /**
+     * 根据班级id获取班级学生数量
+     * @param id
+     * @return
+     */
+    @Query(value = "select count(*) from student stu LEFT JOIN r_classes_student rcs on stu.id = rcs.student_id where rcs.classes_id = ?1", nativeQuery = true)
+    Integer getStudentNumByClassesId(Integer id);
+
 
 }

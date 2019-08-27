@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.code.dao.ClassesRepository;
 import com.tyf.mqas.code.dao.KnowledgeRepository;
+import com.tyf.mqas.code.dao.StudentRepository;
 import com.tyf.mqas.code.dao.UserRepository;
 import com.tyf.mqas.code.entity.*;
 import com.tyf.mqas.utils.SecurityUtil;
@@ -28,6 +29,8 @@ public class ClassesService {
     private KnowledgeRepository knowledgeRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
     /**
      * 获取所有菜单
@@ -35,7 +38,7 @@ public class ClassesService {
      */
     public String getAllClassess(){
         List<Classes> list = classesRepository.findAllBySort();
-        List<TreeTable> treeTables = new ArrayList<TreeTable>();
+        List<TreeTable> treeTables = new ArrayList<>();
         list.forEach(classes -> {
             TreeTable treeTable = new TreeTable();
             treeTable.setId(classes.getId()+"");
@@ -54,7 +57,7 @@ public class ClassesService {
      */
     public String getAllClassesTree(){
         List<Classes> list = classesRepository.findAllBySort();
-        List<Tree> treeList = new ArrayList<Tree>();
+        List<Tree> treeList = new ArrayList<>();
         list.forEach(classes -> {
             Tree tree = new Tree();
             tree.setId(classes.getId()+"");
@@ -202,6 +205,28 @@ public class ClassesService {
             trees.add(tree);
         });
         return JSONArray.toJSONString(trees);
+    }
+
+    /**
+     * 获取所有年级班级信息
+     * @return
+     */
+    public String getAllClassesInfo(){
+        List<Map<String,Object>> dataList = new ArrayList<>();
+        List<Classes> grades = classesRepository.getAllGrade();
+        grades.forEach(grade -> {
+            Map<String,Object> map = new HashMap<>();
+            map.put("gradeName",grade.getName());
+            List<Classes> classesList = classesRepository.findAllByPid(grade.getId());
+            int studentsNum = 0;
+            for (Classes classes:classesList ) {
+                studentsNum += studentRepository.getStudentNumByClassesId(classes.getId());
+            }
+            map.put("studentsNum",studentsNum);
+            map.put("classesNum",classesList.size());
+            dataList.add(map);
+        });
+        return JSONArray.toJSONString(dataList);
     }
 
 }

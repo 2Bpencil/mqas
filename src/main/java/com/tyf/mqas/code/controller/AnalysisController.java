@@ -18,13 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/analysis")
 public class AnalysisController {
 
-    /**
-     * 获取首页班级信息
-     */
-    @RequestMapping(value = "getClassesInfo",method = RequestMethod.POST)
-    public void getClassesInfo(HttpServletRequest request, HttpServletResponse response){
 
-    }
 
 
 

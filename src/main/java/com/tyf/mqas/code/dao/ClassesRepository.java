@@ -40,5 +40,17 @@ public interface ClassesRepository extends ExpandJpaRepository<Classes,Integer>{
     @Query(value = "select c.* from classes c left join r_classes_user rcu on c.id = rcu.classes_id where user_id = ?1 ORDER BY sort ASC ", nativeQuery = true)
     List<Classes> getClassesByUserId(Integer userId);
 
+    /**
+     * 获取所有年级
+     * @return
+     */
+    @Query(value = "select * from classes where pid = 0 ORDER BY sort ASC", nativeQuery = true)
+    List<Classes> getAllGrade();
+
+    /**
+     * 获取年级下的班级
+     * @return
+     */
+    List<Classes> findAllByPid(Integer pid);
 
 }
