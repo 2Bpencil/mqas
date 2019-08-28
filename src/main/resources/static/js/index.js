@@ -2,177 +2,18 @@ $(document).ready(function() {
 
 
     initGradeInfo();
+    radarMap();
+    teacherInfo();
+    studentNumTrend();
 
 
 
-
-
-    $('.chart').easyPieChart({
-        barColor: '#f8ac59',
-//                scaleColor: false,
-        scaleLength: 5,
-        lineWidth: 4,
-        size: 80
-    });
-
-    $('.chart2').easyPieChart({
-        barColor: '#1c84c6',
-//                scaleColor: false,
-        scaleLength: 5,
-        lineWidth: 4,
-        size: 80
-    });
-
-    var data2 = [
-        [gd(2012, 1, 1), 7], [gd(2012, 1, 2), 6], [gd(2012, 1, 3), 4], [gd(2012, 1, 4), 8],
-        [gd(2012, 1, 5), 9], [gd(2012, 1, 6), 7], [gd(2012, 1, 7), 5], [gd(2012, 1, 8), 4],
-        [gd(2012, 1, 9), 7], [gd(2012, 1, 10), 8], [gd(2012, 1, 11), 9], [gd(2012, 1, 12), 6],
-        [gd(2012, 1, 13), 4], [gd(2012, 1, 14), 5], [gd(2012, 1, 15), 11], [gd(2012, 1, 16), 8],
-        [gd(2012, 1, 17), 8], [gd(2012, 1, 18), 11], [gd(2012, 1, 19), 11], [gd(2012, 1, 20), 6],
-        [gd(2012, 1, 21), 6], [gd(2012, 1, 22), 8], [gd(2012, 1, 23), 11], [gd(2012, 1, 24), 13],
-        [gd(2012, 1, 25), 7], [gd(2012, 1, 26), 9], [gd(2012, 1, 27), 9], [gd(2012, 1, 28), 8],
-        [gd(2012, 1, 29), 5], [gd(2012, 1, 30), 8], [gd(2012, 1, 31), 25]
-    ];
-
-    var data3 = [
-        [gd(2012, 1, 1), 800], [gd(2012, 1, 2), 500], [gd(2012, 1, 3), 600], [gd(2012, 1, 4), 700],
-        [gd(2012, 1, 5), 500], [gd(2012, 1, 6), 456], [gd(2012, 1, 7), 800], [gd(2012, 1, 8), 589],
-        [gd(2012, 1, 9), 467], [gd(2012, 1, 10), 876], [gd(2012, 1, 11), 689], [gd(2012, 1, 12), 700],
-        [gd(2012, 1, 13), 500], [gd(2012, 1, 14), 600], [gd(2012, 1, 15), 700], [gd(2012, 1, 16), 786],
-        [gd(2012, 1, 17), 345], [gd(2012, 1, 18), 888], [gd(2012, 1, 19), 888], [gd(2012, 1, 20), 888],
-        [gd(2012, 1, 21), 987], [gd(2012, 1, 22), 444], [gd(2012, 1, 23), 999], [gd(2012, 1, 24), 567],
-        [gd(2012, 1, 25), 786], [gd(2012, 1, 26), 666], [gd(2012, 1, 27), 888], [gd(2012, 1, 28), 900],
-        [gd(2012, 1, 29), 178], [gd(2012, 1, 30), 555], [gd(2012, 1, 31), 993]
-    ];
-
-
-    var dataset = [
-        {
-            label: "Number of orders",
-            data: data3,
-            color: "#1ab394",
-            bars: {
-                show: true,
-                align: "center",
-                barWidth: 24 * 60 * 60 * 600,
-                lineWidth:0
-            }
-
-        }, {
-            label: "Payments",
-            data: data2,
-            yaxis: 2,
-            color: "#1C84C6",
-            lines: {
-                lineWidth:1,
-                show: true,
-                fill: true,
-                fillColor: {
-                    colors: [{
-                        opacity: 0.2
-                    }, {
-                        opacity: 0.4
-                    }]
-                }
-            },
-            splines: {
-                show: false,
-                tension: 0.6,
-                lineWidth: 1,
-                fill: 0.1
-            },
-        }
-    ];
-
-
-    var options = {
-        xaxis: {
-            mode: "time",
-            tickSize: [3, "day"],
-            tickLength: 0,
-            axisLabel: "Date",
-            axisLabelUseCanvas: true,
-            axisLabelFontSizePixels: 12,
-            axisLabelFontFamily: 'Arial',
-            axisLabelPadding: 10,
-            color: "#d5d5d5"
-        },
-        yaxes: [{
-            position: "left",
-            max: 1070,
-            color: "#d5d5d5",
-            axisLabelUseCanvas: true,
-            axisLabelFontSizePixels: 12,
-            axisLabelFontFamily: 'Arial',
-            axisLabelPadding: 3
-        }, {
-            position: "right",
-            clolor: "#d5d5d5",
-            axisLabelUseCanvas: true,
-            axisLabelFontSizePixels: 12,
-            axisLabelFontFamily: ' Arial',
-            axisLabelPadding: 67
-        }
-        ],
-        legend: {
-            noColumns: 1,
-            labelBoxBorderColor: "#000000",
-            position: "nw"
-        },
-        grid: {
-            hoverable: false,
-            borderWidth: 0
-        }
-    };
-
-    function gd(year, month, day) {
-        return new Date(year, month - 1, day).getTime();
-    }
-
-    var previousPoint = null, previousLabel = null;
-
-    $.plot($("#flot-dashboard-chart"), dataset, options);
-
-    var mapData = {
-        "US": 298,
-        "SA": 200,
-        "DE": 220,
-        "FR": 540,
-        "CN": 120,
-        "AU": 760,
-        "BR": 550,
-        "IN": 200,
-        "GB": 120,
-    };
-
-    $('#world-map').vectorMap({
-        map: 'world_mill_en',
-        backgroundColor: "transparent",
-        regionStyle: {
-            initial: {
-                fill: '#e4e4e4',
-                "fill-opacity": 0.9,
-                stroke: 'none',
-                "stroke-width": 0,
-                "stroke-opacity": 0
-            }
-        },
-
-        series: {
-            regions: [{
-                values: mapData,
-                scale: ["#1ab394", "#22d6b1"],
-                normalizeFunction: 'polynomial'
-            }]
-        },
-    });
 });
 
 /**
  * 初始化年级信息
  */
 function initGradeInfo() {
-
     $.ajax({
         type : "POST",
         data : {},
@@ -183,26 +24,206 @@ function initGradeInfo() {
         dataType:"json",
         success : function(result){
             $('#gradeInfo').html(null);
-            console.log(result);
             var divs = '';
             for (var i = 0; i <result.length ; i++) {
-                console.log(result[i]);
                 var div = '<div class="col-lg-2">\n' +
                     '                        <div class="ibox float-e-margins">' +
                     '                            <div class="ibox-title">' +
-                    '                                <span class="label label-success pull-right">Monthly</span>' +
+                    '                                <span class="label label-success pull-right"><i class="fa fa-tags"></i></span>' +
                     '                                <h5>'+result[i].gradeName+'</h5>\n' +
                     '                            </div>' +
                     '                            <div class="ibox-content">' +
                     '                                <div class="stat-percent font-bold text-success">'+result[i].classesNum+'</div>' +
                     '                                <small>班级数量</small>' +
-                    '                                <h2 class="no-margins">'+result[i].studentsNum+'人</h2>' +
+                    '                                <h2 class="no-margins">学生人数：'+result[i].studentsNum+'人</h2>' +
                     '                            </div>' +
                     '                        </div>' +
                     '                    </div>';
                 divs += div;
             }
             $('#gradeInfo').html(divs);
+        }
+    });
+}
+//雷达
+var radarOption = {
+    title: {
+        text: ''
+    },
+    tooltip: {},
+    legend: {
+        data: ['语文','数学', '英语']
+    },
+    radar: {
+        // shape: 'circle',
+        name: {
+            textStyle: {
+                color: '#fff',
+                backgroundColor: '#999',
+                borderRadius: 3,
+                padding: [3, 5]
+            }
+        },
+        indicator: [
+            { name: '一年级', max: 100},
+            { name: '二年级', max: 120},
+            { name: '三年级', max: 130},
+            { name: '四年级', max: 140},
+            { name: '五年级', max: 150},
+            { name: '六年级', max: 160}
+        ]
+    },
+    series: [{
+        name: '预算 vs 开销（Budget vs spending）',
+        type: 'radar',
+        // areaStyle: {normal: {}},
+        data : [
+            {
+                value : [20, 38, 69, 58, 80, 50],
+                name : '语文'
+            },
+            {
+                value : [30, 94, 68, 91, 120, 110],
+                name : '数学'
+            },
+            {
+                value : [68, 65, 120, 34, 89, 158],
+                name : '英语'
+            }
+        ]
+    }]
+};
+
+/**
+ * 雷达图
+ */
+function radarMap() {
+    var radarMap = echarts.init(document.getElementById('radarMap'));
+    radarMap.setOption(radarOption);
+}
+
+var teacherOption = {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data: ['语文', '数学', '英语'],
+        align: 'right',
+        right: 10
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: [{
+        type: 'category',
+        data: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
+    }],
+    yAxis: [{
+        type: 'value',
+        name: '人数',
+        minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
+        axisLabel: {
+            formatter: '{value}'
+        }
+    }],
+    series: [{
+        name: '语文',
+        type: 'bar',
+        data: [3, 4, 3, 2, 2,3]
+    }, {
+        name: '数学',
+        type: 'bar',
+        data: [2, 1, 5, 2, 1,6]
+    }, {
+        name: '英语',
+        type: 'bar',
+        data: [1, 4, 2, 1,3,6]
+    }]
+};
+
+/**
+ * 老师信息
+ */
+function teacherInfo() {
+
+    $.ajax({
+        type : "POST",
+        data : {},
+        url : contextPath + "index/getTeacherInfo",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            var teacher = echarts.init(document.getElementById('teacherInfo'));
+            teacherOption.series=result;
+            teacher.setOption(teacherOption);
+        }
+    });
+
+}
+
+var studentNumTrendOption = {
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data: ['学生总人数']
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6', '2019-7', '2019-8', '2019-9', '2019-10', '2019-11', '2019-12',]
+    },
+    yAxis: {
+        type: 'value',
+        name: '人数',
+        minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
+        axisLabel: {
+            formatter: '{value}'
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    series: [{
+        name:'学生总人数',
+        data: [200, 251, 302, 500, 213, 247, 400, 251, 302, 500, 213, 247],
+        type: 'line',
+        areaStyle: {}
+    }]
+};
+
+/**
+ * 学生走势图
+ */
+function studentNumTrend(){
+    $.ajax({
+        type : "POST",
+        data : {},
+        url : contextPath + "index/studentNumTrend",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            var studentNumTrend = echarts.init(document.getElementById('studentNumTrend'));
+            // teacherOption.series=result;
+            studentNumTrend.setOption(studentNumTrendOption);
         }
     });
 }

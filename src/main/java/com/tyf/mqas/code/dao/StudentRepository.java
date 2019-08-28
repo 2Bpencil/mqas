@@ -20,14 +20,7 @@ public interface StudentRepository extends ExpandJpaRepository<Student,Integer>{
 
 
 
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO r_classes_student(student_id,classes_id) VALUES(?1,?2)", nativeQuery = true)
-    void saveRsClassesAndStudent(Integer studentId,Integer classesId);
-    @Transactional
-    @Modifying
-    @Query(value = "delete from r_classes_student where student_id = ?1", nativeQuery = true)
-    void deleteRsClassesAndStudent(Integer studentId);
+
 
     Student getStudentById(Integer id);
 
@@ -36,7 +29,7 @@ public interface StudentRepository extends ExpandJpaRepository<Student,Integer>{
      * @param id
      * @return
      */
-    @Query(value = "select count(*) from student stu LEFT JOIN r_classes_student rcs on stu.id = rcs.student_id where rcs.classes_id = ?1", nativeQuery = true)
+    @Query(value = "select count(*) from student  where classes_id = ?1", nativeQuery = true)
     Integer getStudentNumByClassesId(Integer id);
 
 

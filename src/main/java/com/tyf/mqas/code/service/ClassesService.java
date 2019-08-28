@@ -32,6 +32,7 @@ public class ClassesService {
     @Autowired
     private StudentRepository studentRepository;
 
+
     /**
      * 获取所有菜单
      * @return
@@ -150,7 +151,7 @@ public class ClassesService {
     public Boolean checkClassesUsed(String ids){
         for (String id : ids.split(",")) {
             Integer userNum = classesRepository.getUserRsNumByClassesId(Integer.parseInt(id));
-            Integer studentNum = classesRepository.getStudentRsNumByClassesId(Integer.parseInt(id));
+            Integer studentNum = classesRepository.getStudentNumByClassesId(Integer.parseInt(id));
             if(userNum > 0){
                 return false;
             }
@@ -226,6 +227,28 @@ public class ClassesService {
             map.put("classesNum",classesList.size());
             dataList.add(map);
         });
+        return JSONArray.toJSONString(dataList);
+    }
+
+    /**
+     * 获取各个年级老师信息
+     * @return
+     */
+    public String getTeacherInfo(){
+        List<Map<String,Object>> dataList = new ArrayList<>();
+        List<Classes> grades = classesRepository.getAllGrade();
+        String[] subjects = {"语文","数学","英语"};
+        for(String subject:subjects){
+            Map<String,Object> dataMap = new HashMap<>();
+            dataMap.put("name",subject);
+            dataMap.put("type","bar");
+            List<Integer> numList = new ArrayList<>();
+            grades.forEach(grade->{
+                numList.add(userRepository.getUserNumByClassPid(grade.getId(),subject));
+            });
+            dataMap.put("data",numList);
+            dataList.add(dataMap);
+        }
         return JSONArray.toJSONString(dataList);
     }
 

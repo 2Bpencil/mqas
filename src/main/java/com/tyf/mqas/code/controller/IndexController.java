@@ -36,5 +36,34 @@ public class IndexController {
         }
     }
 
+    /**
+     * 获取各年级老师信息
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getTeacherInfo",method = RequestMethod.POST)
+    public void getTeacherInfo(HttpServletRequest request, HttpServletResponse response){
+        String json = classesService.getTeacherInfo();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 学生走势图
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "studentNumTrend",method = RequestMethod.POST)
+    public void studentNumTrend(HttpServletRequest request, HttpServletResponse response){
+        String json = classesService.getTeacherInfo();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
     

@@ -1,6 +1,7 @@
 package com.tyf.mqas;
 
 import com.tyf.mqas.code.dao.StudentRepository;
+import com.tyf.mqas.code.dao.UserRepository;
 import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.service.StudentService;
 import org.junit.Test;
@@ -15,16 +16,13 @@ import java.util.List;
 @SpringBootTest
 public class MqasApplicationTests {
     @Autowired
-    private StudentService service;
-    @Autowired
-    private StudentRepository repository;
+    private UserRepository userRepository;
 
     @Test
     public void contextLoads() {
 
+        System.out.println(userRepository.getUserNumByClassPid(6,"数学"));
 
-        Student student = repository.getStudentById(1);
-        System.out.println(student.getName());
 
     }
 

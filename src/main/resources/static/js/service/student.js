@@ -33,24 +33,28 @@ function initTable(){
             },
             { "data": "age",
                 "searchable":false,
-                width: '20%'
+                width: '10%'
             },
             { "data": "sex",
                 "searchable":false,
                 render : function(data,type, row, meta) {
                     return ( parseInt(data) === 1?"男":"女");
                 },
-                width: '15%'
+                width: '10%'
             },
             { "data": "phone",
                 "searchable":false,
                 'orderable' : false ,
-                width: '20%'
+                width: '10%'
+            },
+            { "data": "time",
+                "searchable":false,
+                width: '15%'
             },
             { "data": null,
                 "searchable":false,
                 'orderable' : false ,
-                width: '25%',
+                width: '35%',
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
@@ -216,6 +220,7 @@ function editStudent(id){
             $('#form_id').val(result.id);
             $('#form_age').val(result.age);
             $('#form_name').val(result.name);
+            $('#form_sex').val(result.sex);
             $('#form_phone').val(result.phone);
             showModal("studentModal");
         }

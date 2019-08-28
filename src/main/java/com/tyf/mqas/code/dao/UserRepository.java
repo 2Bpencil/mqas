@@ -4,6 +4,7 @@ import com.tyf.mqas.base.repository.ExpandJpaRepository;
 import com.tyf.mqas.code.entity.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -41,5 +42,8 @@ public interface UserRepository extends ExpandJpaRepository<User,Integer> {
     Integer getRoleNumByUsername(String username);
 
     User findUserByUsername(String username);
+
+    @Query(value = "SELECT COUNT(*) FROM (SELECT DISTINCT rcu.user_id FROM  r_classes_user rcu WHERE rcu.classes_id in ( SELECT c.id FROM classes c  WHERE pid = ?1 AND c.name LIKE  CONCAT('%',?2,'%')  )) a", nativeQuery = true)
+    Integer getUserNumByClassPid(Integer id,String subject);
 
 }

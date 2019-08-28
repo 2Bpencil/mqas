@@ -19,8 +19,13 @@ public class Student {
     private Integer age;
     @Column
     private Integer sex;
+    @Column
+    private Integer classesId;
+    @Column(length = 20)
+    private String time;
     @Transient
     private String className;
+
 
     public Integer getId() {
         return id;
@@ -68,5 +73,21 @@ public class Student {
 
     public void setSex(Integer sex) {
         this.sex = sex;
+    }
+
+    public Integer getClassesId() {
+        return classesId;
+    }
+
+    public void setClassesId(Integer classesId) {
+        this.classesId = classesId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

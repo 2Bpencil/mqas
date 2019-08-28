@@ -93,6 +93,7 @@ public class TestPaperService extends PageGetter<TestQuestion> {
             tree.setId("testPaper"+testPaper.getId());
             tree.setValue("0");
             tree.setpId("");
+            tree.setIcon("/img/icon/test.png");
             treeList.add(tree);
             List<TestPaperType> testPaperTypeList = testPaperTypeRepository.findAllByTestPaperId(testPaper.getId());
             testPaperTypeList.forEach(testPaperType -> {
@@ -100,6 +101,7 @@ public class TestPaperService extends PageGetter<TestQuestion> {
                 tree2.setName(testPaperType.getName());
                 tree2.setId(testPaperType.getId().toString());
                 tree2.setValue("1");
+                tree2.setIcon("/img/icon/testType.png");
                 tree2.setpId("testPaper"+testPaper.getId());
                 treeList.add(tree2);
             });

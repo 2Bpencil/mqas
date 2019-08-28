@@ -1,9 +1,11 @@
 package com.tyf.mqas.code.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.service.StudentService;
+import com.tyf.mqas.utils.PoiUtil;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -65,7 +68,7 @@ public class StudentController {
         }
         Map<String,String[]> parameterMap = request.getParameterMap();
         DataPage<Student> pages = studentService.getDataPage(parameterMap,classesId);
-        String json = JSONObject.toJSONString(pages);
+        String json = JSONObject.toJSONStringWithDateFormat(pages, "yyyy-MM-dd HH:mm:ss");
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
@@ -78,14 +81,17 @@ public class StudentController {
     */
     @RequestMapping(value = "saveOrEditEntity",method = RequestMethod.POST)
     public void saveOrEditEntity(@ModelAttribute("student") Student student, HttpServletRequest request, HttpServletResponse response){
-        String classesId = request.getParameter("classesId");
         int flag = 1;
         String oprate = "新增";
         if(student.getId()!=null){
+            Student old = studentService.getStudentById(student.getId());
+            student.setTime(old.getTime());
             oprate = "编辑";
+        }else{
+            student.setTime(PoiUtil.DATEFORMAT_TIME.format(new Date()));
         }
         try{
-            studentService.saveEntity(student,Integer.parseInt(classesId));
+            studentService.saveEntity(student);
             logger.info(SecurityUtil.getCurUserName()+oprate+"学生成功");
         }catch (Exception e){
             flag = 0;

@@ -64,7 +64,7 @@ public class WrongQuestionController {
         String endTime = request.getParameter("endTime");
         Map<String,String[]> parameterMap = request.getParameterMap();
         DataPage<WrongQuestion> pages = wrongQuestionService.getDataPage(parameterMap,Integer.parseInt(id),startTime,endTime);
-        String json = JSONObject.toJSONString(pages);
+        String json = JSONObject.toJSONStringWithDateFormat(pages, "yyyy-MM-dd HH:mm:ss");
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
