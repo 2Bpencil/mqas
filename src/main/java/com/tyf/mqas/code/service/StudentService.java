@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.KnowledgeRepository;
+import com.tyf.mqas.code.dao.StudentRecordsRepository;
 import com.tyf.mqas.code.dao.StudentRepository;
 import com.tyf.mqas.code.dao.WrongQuestionRepository;
 import com.tyf.mqas.code.entity.Student;
+import com.tyf.mqas.code.entity.StudentRecords;
 import com.tyf.mqas.code.entity.WrongQuestion;
 import com.tyf.mqas.utils.PoiUtil;
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -32,6 +35,8 @@ public class StudentService extends PageGetter<Student>{
     private WrongQuestionRepository wrongQuestionRepository;
     @Autowired
     private KnowledgeRepository knowledgeRepository;
+    @Autowired
+    private StudentRecordsRepository studentRecordsRepository;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -115,6 +120,36 @@ public class StudentService extends PageGetter<Student>{
             }
         }
 
+    }
+
+    /**
+     * 获取学生数量走势信息
+     * @return
+     */
+    public String getStudentTotalNumInfo(Integer year){
+        LocalDate localDate = LocalDate.now();
+        if(year == 0){
+            year = localDate.getYear();
+        }
+        Map<String,Object> dataMap = new HashMap<>();
+        List<String> xAxisList = new ArrayList<>();
+        List<Integer> dataList = new ArrayList<>();
+        List<StudentRecords> list = studentRecordsRepository.findAllByYear(year);
+        for (StudentRecords record : list) {
+            xAxisList.add(record.getYear()+"-"+record.getMonth());
+            dataList.add(record.getTotal());
+        }
+        dataMap.put("xAxis",xAxisList);
+        dataMap.put("data",dataList);
+        return JSONArray.toJSONString(dataMap);
+    }
+
+    /**
+     * 初始化年份下拉选
+     * @return
+     */
+    public String initYearSelect(){
+        return JSONArray.toJSONString(studentRecordsRepository.getAllYear());
     }
 
 }

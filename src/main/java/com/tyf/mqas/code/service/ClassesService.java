@@ -252,4 +252,24 @@ public class ClassesService {
         return JSONArray.toJSONString(dataList);
     }
 
+    /**
+     * 各年级个科目学生数量情况
+     */
+    public String learningSituation(){
+        List<Map<String,Object>> dataList = new ArrayList<>();
+        String[] subjects = {"语文","数学","英语"};
+        List<Classes> grades = classesRepository.getAllGrade();
+        for (String subject:subjects){
+            Map<String,Object> dataMap = new HashMap<>();
+            dataMap.put("name",subject);
+            List<Integer> numList = new ArrayList<>();
+            grades.forEach(grade->{
+                numList.add(studentRepository.getStudentNumByClassesIdAndSubject(grade.getId(),subject));
+            });
+            dataMap.put("data",numList);
+            dataList.add(dataMap);
+        }
+        return JSONArray.toJSONString(dataList);
+    }
+
 }

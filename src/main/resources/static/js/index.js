@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 
 
@@ -5,6 +6,7 @@ $(document).ready(function() {
     radarMap();
     teacherInfo();
     studentNumTrend();
+    initYearSelect();
 
 
 
@@ -71,35 +73,53 @@ var radarOption = {
             { name: '四年级', max: 140},
             { name: '五年级', max: 150},
             { name: '六年级', max: 160}
-        ]
+        ],
+        radius: "70%",
     },
     series: [{
-        name: '预算 vs 开销（Budget vs spending）',
+        name: '',
         type: 'radar',
-        // areaStyle: {normal: {}},
+        areaStyle: {
+            opacity: 0.3
+        },
         data : [
             {
                 value : [20, 38, 69, 58, 80, 50],
-                name : '语文'
+                name : '语文',
             },
             {
                 value : [30, 94, 68, 91, 120, 110],
-                name : '数学'
+                name : '数学',
             },
             {
                 value : [68, 65, 120, 34, 89, 158],
-                name : '英语'
+                name : '英语',
+
             }
         ]
     }]
 };
 
 /**
- * 雷达图
+ * 雷达图  各年级个科目学生数量情况
  */
 function radarMap() {
-    var radarMap = echarts.init(document.getElementById('radarMap'));
-    radarMap.setOption(radarOption);
+
+
+    $.ajax({
+        type : "POST",
+        data : {},
+        url : contextPath + "index/getTeacherInfo",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            var radarMap = echarts.init(document.getElementById('radarMap'));
+            radarOption.series[0].data=result;
+            radarMap.setOption(radarOption);
+        }
+    });
 }
 
 var teacherOption = {
@@ -168,7 +188,7 @@ function teacherInfo() {
     });
 
 }
-
+var studentNumTrend;
 var studentNumTrendOption = {
     tooltip: {
         trigger: 'axis'
@@ -195,11 +215,11 @@ var studentNumTrendOption = {
         bottom: '3%',
         containLabel: true
     },
-    toolbox: {
-        feature: {
-            saveAsImage: {}
-        }
-    },
+    // toolbox: {
+    //     feature: {
+    //         saveAsImage: {}
+    //     }
+    // },
     series: [{
         name:'学生总人数',
         data: [200, 251, 302, 500, 213, 247, 400, 251, 302, 500, 213, 247],
@@ -214,15 +234,62 @@ var studentNumTrendOption = {
 function studentNumTrend(){
     $.ajax({
         type : "POST",
-        data : {},
+        data : {year:selectYear},
         url : contextPath + "index/studentNumTrend",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         dataType:"json",
         success : function(result){
-            var studentNumTrend = echarts.init(document.getElementById('studentNumTrend'));
-            // teacherOption.series=result;
+            studentNumTrend = echarts.init(document.getElementById('studentNumTrend'));
+            studentNumTrendOption.xAxis.data = result.xAxis;
+            studentNumTrendOption.series[0].data=result.data;
+            studentNumTrend.setOption(studentNumTrendOption);
+        }
+    });
+}
+
+/**
+ * 初始化年份下拉选
+ */
+function initYearSelect(){
+    $.ajax({
+        type : "POST",
+        data : {},
+        url : contextPath + "index/initYearSelect",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            var options = '';
+            for (let i = 0; i <result.length ; i++) {
+                options += '<option value="'+result[i]+'">'+result[i]+'</option>';
+            }
+            $('#year_select').html(options);
+
+            var date = new Date();
+            var year = date.getFullYear();
+            $('#year_select').val(year);
+
+        }
+    });
+}
+var selectYear = '';
+function changeYear() {
+    selectYear = $("#year_select").val();
+    console.log(selectYear);
+    $.ajax({
+        type : "POST",
+        data : {year:selectYear},
+        url : contextPath + "index/studentNumTrend",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            studentNumTrendOption.xAxis.data = result.xAxis;
+            studentNumTrendOption.series[0].data=result.data;
             studentNumTrend.setOption(studentNumTrendOption);
         }
     });
