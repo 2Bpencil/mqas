@@ -37,7 +37,7 @@ public class StudentService extends PageGetter<Student>{
     private KnowledgeRepository knowledgeRepository;
     @Autowired
     private StudentRecordsRepository studentRecordsRepository;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 分页查询

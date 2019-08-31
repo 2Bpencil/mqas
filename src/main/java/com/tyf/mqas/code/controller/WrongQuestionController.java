@@ -43,11 +43,30 @@ public class WrongQuestionController {
     @Autowired
     private StudentService studentService;
 
+    /**
+     * 错题管理
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "wrongQuestionManage",method = RequestMethod.GET)
     public ModelAndView wrongQuestionManage(HttpServletRequest request){
         String id = request.getParameter("id");
         Student student = studentService.getStudentById(Integer.parseInt(id));
         ModelAndView modelAndView = new ModelAndView("/service/wrongQuestion");
+        modelAndView.addObject("student",student);
+        return modelAndView;
+    }
+
+    /**
+     * 错题分析
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "analysisOfMistakenQuestion",method = RequestMethod.GET)
+    public ModelAndView analysisOfMistakenQuestion(HttpServletRequest request){
+        String id = request.getParameter("id");
+        Student student = studentService.getStudentById(Integer.parseInt(id));
+        ModelAndView modelAndView = new ModelAndView("service/analysisOfMistakenQuestion");
         modelAndView.addObject("student",student);
         return modelAndView;
     }
@@ -64,7 +83,7 @@ public class WrongQuestionController {
         String endTime = request.getParameter("endTime");
         Map<String,String[]> parameterMap = request.getParameterMap();
         DataPage<WrongQuestion> pages = wrongQuestionService.getDataPage(parameterMap,Integer.parseInt(id),startTime,endTime);
-        String json = JSONObject.toJSONStringWithDateFormat(pages, "yyyy-MM-dd HH:mm:ss");
+        String json = JSONObject.toJSONStringWithDateFormat(pages, "yyyy-MM-dd");
         try {
             response.getWriter().print(json);
         } catch (IOException e) {
@@ -97,7 +116,52 @@ public class WrongQuestionController {
 
     }
 
+    /**
+     * 知识点错误次数
+     */
+    @RequestMapping(value = "knowledgePointErrorNum",method = RequestMethod.POST)
+    public void knowledgePointErrorNum(HttpServletRequest request, HttpServletResponse response){
+        String studentId = request.getParameter("studentId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String json = wrongQuestionService.getknowledgePointErrorNumJson(Integer.parseInt(studentId),startDate,endDate);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * 获取该学生所有错误知识点
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllKnowledge",method = RequestMethod.POST)
+    public void getAllKnowledge(HttpServletRequest request, HttpServletResponse response){
+        String studentId = request.getParameter("studentId");
+        String json = wrongQuestionService.getAllKnowledge(Integer.parseInt(studentId));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-
+    /**
+     * 知识点频次分析
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "knowledgeFrequency",method = RequestMethod.POST)
+    public void knowledgeFrequency(HttpServletRequest request, HttpServletResponse response){
+        String studentId = request.getParameter("studentId");
+        String code = request.getParameter("code");
+        String json =  wrongQuestionService.knowledgeFrequency(Integer.parseInt(studentId),code);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
  }

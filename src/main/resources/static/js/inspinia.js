@@ -316,7 +316,7 @@ function WinMove() {
  */
 function initPageMenu(){
     var url = window.location.href;
-    url = url.split("8085")[1].replace("#","");
+    url = url.split("9527")[1].replace("#","");
     var menuJsonArray = JSON.parse($('#curMenu').val());
     var lis = '';
     for (var i = 0; i < menuJsonArray.length; i++) {

@@ -62,7 +62,7 @@ function initTable(){
                     buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="uploadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >上传错题</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="manageWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题管理</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="manageWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题统计</button>';
+                    buttons+='<button type="button" onclick="analysisOfMistakenQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题统计</button>';
                     return buttons;
                 }
             },
@@ -410,6 +410,13 @@ function saveWrongQuestion() {
  */
 function manageWrongQuestion(id) {
     window.location.href=contextPath+"wrongQuestion/wrongQuestionManage?id="+id;
+}
+
+/**
+ * 错题分析页面
+ */
+function analysisOfMistakenQuestion(id) {
+    window.location.href=contextPath+"wrongQuestion/analysisOfMistakenQuestion?id="+id;
 }
 
 /*常量*/

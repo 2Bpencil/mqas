@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="layout/default :: head('首页','')"></head>
+<head th:replace="layout/default :: head('学生错题分析','')"></head>
 
 <body class="">
 
@@ -30,90 +30,85 @@
                 </nav>
             </div >
             <!--面包屑-->
+            <input id="studentId" th:value="${student.id}" type="hidden">
             <div class="row wrapper border-bottom white-bg page-heading" >
                 <div class="col-sm-4">
-                    <h2>首页</h2>
+                    <h2 ><span th:text="${student.name}"></span>的错题分析</h2>
                     <ol class="breadcrumb">
                         <li>
+                            <a href="#">学生管理</a>
                         </li>
                         <li class="active">
-                            <strong>首页</strong>
+                            <strong>错题分析</strong>
                         </li>
                     </ol>
                 </div>
                 <div class="col-sm-8">
                     <div class="title-action">
-
+                        <a href="#" class="btn btn-primary" onclick="backPrevious()" >返回</a>
                     </div>
                 </div>
             </div>
             <div class="wrapper wrapper-content">
-                <!--年级信息-->
-                <div class="row" id="gradeInfo">
-
-                </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                                <h5>全年学生人数走势</h5>
+                                <h5> 知识点错误次数统计</h5>
                                 <div class="ibox-tools">
-                                    <select id="year_select" onchange="changeYear();">
-                                    </select>
+                                    <input class="Wdate " name="start_time" id="start_time" readonly="readonly" type="text"  onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})" >&nbsp;&nbsp;至&nbsp;
+                                    <input class="Wdate " name="end_time" id="end_time" readonly="readonly" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"  >
+                                    <button class="btn btn-primary btn-xs" type="button"  onclick="reloadTable()"><i class="fa fa-search"></i> </button>
                                     <a class="collapse-link">
                                         <i class="fa fa-chevron-up"></i>
                                     </a>
                                 </div>
                             </div>
-                            <div class="ibox-content">
-                                <div class="row">
-                                    <div class="col-lg-12" id="studentNumTrend" style="height:425px ">
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                                <h5>各年级各类型班级老师人数统计</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ibox-content"  id="teacherInfo" style="height:425px ">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                                <h5>各年级各科目学生人数分布情况</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ibox-content"  id="radarMap" style="height:425px ">
+                            <div class="ibox-content"  id="knowledgeWrongNum" style="height:325px ">
 
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                <div class="col-lg-9">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>知识点频次分析</h5>
+                            <div class="ibox-tools">
+                                <select id="knowledgeSelect" style="width:150px;" onchange="changeKnowledgeSelect();">
+                                </select>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content"  id="knowledgeFrequency" style="height:325px ">
 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>重点知识统计</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content"  id="keyKnowledge" style="height:325px ">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
             <div th:replace="layout/default :: foot"></div>
         </div>
     </div>
-    <div th:replace="layout/default :: js('/js/index.js,/js/plugins/echart/echarts.js,')"></div>
+    <div th:replace="layout/default :: js('/js/service/analysisOfMistakenQuestion.js,/js/plugins/echart/echarts.js')"></div>
 </body>
 
 </html>

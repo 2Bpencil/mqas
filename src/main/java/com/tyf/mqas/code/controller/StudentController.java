@@ -1,7 +1,6 @@
 package com.tyf.mqas.code.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.service.StudentService;
@@ -48,11 +47,7 @@ public class StudentController {
     public String studentManage(){
         return "service/student";
     }
-    @RequestMapping(value = "studentWrongQuestions",method = RequestMethod.GET)
-    public ModelAndView studentWrongQuestions(HttpServletRequest request){
-        ModelAndView modelAndView = new ModelAndView("service/detail");
-        return modelAndView;
-    }
+
 
     /**
      * 分页查询
@@ -170,7 +165,7 @@ public class StudentController {
      */
     @RequestMapping(value = "downloadTemplates",method = RequestMethod.GET)
     public void downloadTemplates(HttpServletRequest request, HttpServletResponse response){
-        Resource resource =  new ClassPathResource("static/download_file/test.xls");
+        Resource resource =  new ClassPathResource("static/download_file/wrongQuestion.xlsx");
         try {
             InputStream is = resource.getInputStream();
             BufferedInputStream bufferedInputStream = new BufferedInputStream(is);

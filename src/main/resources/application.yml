@@ -1,6 +1,6 @@
 #访问端口
 server:
-  port: 8085
+  port: 9527
   tomcat:
     uri-encoding: UTF-8
   servlet:

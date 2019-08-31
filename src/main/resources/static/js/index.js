@@ -278,7 +278,6 @@ function initYearSelect(){
 var selectYear = '';
 function changeYear() {
     selectYear = $("#year_select").val();
-    console.log(selectYear);
     $.ajax({
         type : "POST",
         data : {year:selectYear},
