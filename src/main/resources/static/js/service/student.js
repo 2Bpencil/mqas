@@ -419,6 +419,17 @@ function analysisOfMistakenQuestion(id) {
     window.location.href=contextPath+"wrongQuestion/analysisOfMistakenQuestion?id="+id;
 }
 
+/**
+ * 班级分析
+ */
+function analysisOfClass(){
+    if(classesId==""||classesId==null){
+        swal("请选择班级!", "", "error");
+        return;
+    }
+    window.location.href=contextPath+"classes/classAnalysis?id="+classesId;
+}
+
 /*常量*/
 var CONSTANT = {
     DATA_TABLES : {

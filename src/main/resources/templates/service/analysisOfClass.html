@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="layout/default :: head('学生错题分析','')"></head>
+<head th:replace="layout/default :: head('班级知识点掌握分析','')"></head>
 
 <body class="">
 
@@ -30,16 +30,16 @@
                 </nav>
             </div >
             <!--面包屑-->
-            <input id="studentId" th:value="${student.id}" type="hidden">
+            <input id="classId" th:value="${classId}" type="hidden">
             <div class="row wrapper border-bottom white-bg page-heading" >
                 <div class="col-sm-4">
-                    <h2 ><span th:text="${student.name}"></span>的错题分析</h2>
+                    <h2 ><span th:text="${className}"></span>分析</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a href="#">学生管理</a>
                         </li>
                         <li class="active">
-                            <strong>错题分析</strong>
+                            <strong>班级分析</strong>
                         </li>
                     </ol>
                 </div>
@@ -108,7 +108,7 @@
             <div th:replace="layout/default :: foot"></div>
         </div>
     </div>
-    <div th:replace="layout/default :: js('/js/service/analysisOfMistakenQuestion.js,/js/plugins/echart/echarts.js')"></div>
+    <div th:replace="layout/default :: js('/js/service/analysisOfClass.js,/js/plugins/echart/echarts.js')"></div>
 </body>
 
 </html>

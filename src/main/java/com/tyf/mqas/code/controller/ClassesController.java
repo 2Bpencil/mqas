@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Knowledge;
+import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.entity.User;
 import com.tyf.mqas.code.service.ClassesService;
 import com.tyf.mqas.code.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +47,18 @@ public class ClassesController {
     @RequestMapping(value = "classesManage",method = RequestMethod.GET)
     public String classesManage(){
         return "service/classes";
+    }
+
+    @RequestMapping(value = "classAnalysis",method = RequestMethod.GET)
+    public ModelAndView classAnalysis(HttpServletRequest request){
+        String id = request.getParameter("id");
+        Classes classes = classesService.getClassesById(Integer.parseInt(id));
+        Classes parent = classesService.getClassesById(classes.getPid());
+
+        ModelAndView modelAndView = new ModelAndView("/service/analysisOfClass");
+        modelAndView.addObject("classId",id);
+        modelAndView.addObject("className",parent.getName()+"-"+classes.getName());
+        return modelAndView;
     }
 
     /**

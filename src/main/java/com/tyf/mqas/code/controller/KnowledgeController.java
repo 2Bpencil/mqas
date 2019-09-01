@@ -89,10 +89,10 @@ public class KnowledgeController {
         }
         try{
             knowledgeService.saveEntity(knowledge);
-            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"角色成功");
+            logger.info(SecurityUtil.getCurUserName()+"---"+oprate+"知识成功");
         }catch (Exception e){
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"角色失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+oprate+"知识失败");
         }
         try {
             response.getWriter().print(flag);
@@ -135,7 +135,7 @@ public class KnowledgeController {
     }
 
     /**
-     * 删除菜单
+     * 删除
      * @param request
      * @param response
      */
@@ -145,11 +145,11 @@ public class KnowledgeController {
         String ids = request.getParameter("ids");
         try{
             knowledgeService.deleteKnowledge(ids);
-            logger.info(SecurityUtil.getCurUserName()+"---"+"删除菜单成功");
+            logger.info(SecurityUtil.getCurUserName()+"---"+"删除知识成功");
         }catch (Exception e){
             e.printStackTrace();
             flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"---"+"删除菜单失败");
+            logger.error(SecurityUtil.getCurUserName()+"---"+"删除知识失败");
         }
         try {
             response.getWriter().print(flag);

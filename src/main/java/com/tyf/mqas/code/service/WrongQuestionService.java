@@ -107,5 +107,32 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         return JSONObject.toJSONString(dataMap);
     }
 
+    /**
+     *重点知识统计
+     * @param studentId
+     * @return
+     */
+    public String keyKnowledge(Integer studentId){
+        Map<String,Object> dataMap = new HashMap<>();
+        List<String> legend = new ArrayList<>();
+        List<Map<String,String>> dataList = new ArrayList<>();
+        List<Map<String,String>> keyKnowledgeInfoList = wrongQuestionRepository.getKeyKnowledgeWrongNum(studentId);
+        Integer unKeyNum = wrongQuestionRepository.getUnKeyKnowledgeWrongNum(studentId);
+        keyKnowledgeInfoList.forEach(map->{
+            legend.add(map.get("name"));
+            dataList.add(map);
+        });
+        legend.add("非重点知识");
+        Map<String,String> unKeyMap = new HashMap<>();
+        unKeyMap.put("value",unKeyNum.toString());
+        unKeyMap.put("name","非重点知识");
+        dataList.add(unKeyMap);
+        dataMap.put("legend",legend);
+        dataMap.put("data",dataList);
+        return JSONObject.toJSONString(dataMap);
+    }
+
+
+
 
 }

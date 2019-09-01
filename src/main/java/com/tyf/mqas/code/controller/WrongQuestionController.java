@@ -164,4 +164,20 @@ public class WrongQuestionController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 重点知识统计
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "keyKnowledge",method = RequestMethod.POST)
+    public void keyKnowledge(HttpServletRequest request, HttpServletResponse response){
+        String studentId = request.getParameter("studentId");
+        String json =  wrongQuestionService.keyKnowledge(Integer.parseInt(studentId));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
  }

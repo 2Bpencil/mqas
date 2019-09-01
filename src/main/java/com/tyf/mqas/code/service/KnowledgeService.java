@@ -85,6 +85,7 @@ public class KnowledgeService {
         map.put("name",knowledge.getName());
         map.put("sort",knowledge.getSort());
         map.put("pid",knowledge.getPid());
+        map.put("type",knowledge.getType());
         if(knowledge.getPid()!=0){
             map.put("parent",knowledgeRepository.getOne(knowledge.getPid()).getName());
         }else{

@@ -1,5 +1,6 @@
 var knowledgeWrongNumEchart;
 var  knowledgeFrequencyEchart;
+var keyKnowledgeEchart;
 var studentId;
 var startDate;//当前日期
 var endDate;//前七天日期
@@ -7,6 +8,7 @@ $(document).ready(function(){
     studentId = $('#studentId').val();
     knowledgeWrongNumEchart = echarts.init(document.getElementById('knowledgeWrongNum'));
     knowledgeFrequencyEchart = echarts.init(document.getElementById('knowledgeFrequency'));
+    keyKnowledgeEchart = echarts.init(document.getElementById('keyKnowledge'));
     //当前时间
     var curDate = new Date();
     //前七天
@@ -18,7 +20,7 @@ $(document).ready(function(){
 
     initKnowledgeSelect();
     knowledgeWrongNum();
-
+    keyKnowledge();
 
 
 
@@ -63,6 +65,12 @@ function changeKnowledgeSelect(){
  * 知识点错误次数统计
  */
 function knowledgeWrongNum() {
+    startDate = $("#start_time").val();
+    endDate = $("#end_time").val();
+    if((startDate==''||startDate==null)||(endDate==''||endDate==null)){
+        swal("时间不能为空!", "", "error");
+        return;
+    }
     $.ajax({
         type : "POST",
         data : {studentId:studentId,startDate:startDate,endDate:endDate},
@@ -129,7 +137,6 @@ function knowledgeFrequency(){
         },
         dataType:"json",
         success : function(result){
-            console.log(result);
             knowledgeFrequencyOption.xAxis.data = result.xAxis;
             knowledgeFrequencyOption.series[0].data = result.data;
             knowledgeFrequencyEchart.setOption(knowledgeFrequencyOption);
@@ -169,6 +176,7 @@ var knowledgeFrequencyOption = {
         ]
     },
     yAxis: {
+        minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
         axisLine: {
             show: false
         },
@@ -216,7 +224,69 @@ var knowledgeFrequencyOption = {
     }]
 };
 
+/**
+ * 重点知识统计
+ */
+function keyKnowledge(){
 
+    $.ajax({
+        type : "POST",
+        data : {studentId:studentId},
+        url : contextPath + "wrongQuestion/keyKnowledge",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            keyKnowledgeOption.legend.data = result.legend;
+            keyKnowledgeOption.series[0].data = result.data;
+            keyKnowledgeEchart.setOption(keyKnowledgeOption);
+        }
+    });
+}
+var keyKnowledgeOption = {
+    tooltip: {
+        trigger: 'item',
+        formatter: "{a} <br/>{b}: {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        x: 'left',
+        data:['重点知识1','重点知识2','重点知识3','非重点知识']
+    },
+    series: [
+        {
+            name:'错题数',
+            type:'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '20',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data:[
+                {value:25, name:'重点知识1'},
+                {value:310, name:'重点知识2'},
+                {value:234, name:'重点知识3'},
+                {value:135, name:'非重点知识'}
+            ]
+        }
+    ]
+};
 
 
 //时间格式化

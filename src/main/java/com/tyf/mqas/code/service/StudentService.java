@@ -66,6 +66,7 @@ public class StudentService extends PageGetter<Student>{
      */
     public void deleteStudent(Integer id){
         studentRepository.deleteById(id);
+        wrongQuestionRepository.deleteAllByStudentId(id);
     }
 
     /**

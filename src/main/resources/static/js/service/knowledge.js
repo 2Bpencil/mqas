@@ -101,6 +101,7 @@ function editKnowledge(){
             $('#form_name').val(result.name);
             $('#form_pid').val(result.pid);
             $('#form_sort').val(result.sort);
+            $('#form_type').val(result.type);
             showModal("knowledgeModal");
         }
     });
