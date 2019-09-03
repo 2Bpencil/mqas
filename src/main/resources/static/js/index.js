@@ -67,12 +67,12 @@ var radarOption = {
             }
         },
         indicator: [
-            { name: '一年级', max: 100},
-            { name: '二年级', max: 120},
-            { name: '三年级', max: 130},
-            { name: '四年级', max: 140},
-            { name: '五年级', max: 150},
-            { name: '六年级', max: 160}
+            { name: '一年级', max: 0},
+            { name: '二年级', max: 0},
+            { name: '三年级', max: 0},
+            { name: '四年级', max: 0},
+            { name: '五年级', max: 0},
+            { name: '六年级', max: 0}
         ],
         radius: "70%",
     },
@@ -109,14 +109,16 @@ function radarMap() {
     $.ajax({
         type : "POST",
         data : {},
-        url : contextPath + "index/getTeacherInfo",
+        url : contextPath + "index/learningSituation",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
         },
         dataType:"json",
         success : function(result){
+            console.log(result);
             var radarMap = echarts.init(document.getElementById('radarMap'));
-            radarOption.series[0].data=result;
+            radarOption.series[0].data=result.dataList;
+            radarOption.radar.indicator = result.indicatorList;
             radarMap.setOption(radarOption);
         }
     });

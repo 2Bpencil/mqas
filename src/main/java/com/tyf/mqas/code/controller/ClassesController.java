@@ -54,7 +54,6 @@ public class ClassesController {
         String id = request.getParameter("id");
         Classes classes = classesService.getClassesById(Integer.parseInt(id));
         Classes parent = classesService.getClassesById(classes.getPid());
-
         ModelAndView modelAndView = new ModelAndView("/service/analysisOfClass");
         modelAndView.addObject("classId",id);
         modelAndView.addObject("className",parent.getName()+"-"+classes.getName());
@@ -282,4 +281,13 @@ public class ClassesController {
         }
     }
 
+    /**
+     * 班级知识点错误分布统计图
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "wrongQuestionDistribution",method = RequestMethod.POST)
+    public void wrongQuestionDistribution(HttpServletRequest request, HttpServletResponse response){
+
+    }
  }

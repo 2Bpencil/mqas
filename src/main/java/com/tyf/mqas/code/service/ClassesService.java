@@ -2,21 +2,17 @@ package com.tyf.mqas.code.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.tyf.mqas.code.dao.ClassesRepository;
-import com.tyf.mqas.code.dao.KnowledgeRepository;
-import com.tyf.mqas.code.dao.StudentRepository;
-import com.tyf.mqas.code.dao.UserRepository;
+import com.tyf.mqas.code.dao.*;
 import com.tyf.mqas.code.entity.*;
+import com.tyf.mqas.utils.PoiUtil;
 import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -31,6 +27,8 @@ public class ClassesService {
     private UserRepository userRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private WrongQuestionRepository wrongQuestionRepository;
 
 
     /**
@@ -256,9 +254,19 @@ public class ClassesService {
      * 各年级个科目学生数量情况
      */
     public String learningSituation(){
+        Map<String,Object> resultMap = new HashMap<>();
         List<Map<String,Object>> dataList = new ArrayList<>();
         String[] subjects = {"语文","数学","英语"};
         List<Classes> grades = classesRepository.getAllGrade();
+        List<Map<String,Object>> indicatorList = new ArrayList<>();
+        grades.forEach(grade->{
+            Map<String,Object> map = new HashMap<>();
+            Integer num = studentRepository.getStudentNumByGradeId(grade.getId());
+            map.put("name",grade.getName());
+            map.put("max",num);
+            indicatorList.add(map);
+        });
+
         for (String subject:subjects){
             Map<String,Object> dataMap = new HashMap<>();
             dataMap.put("name",subject);
@@ -266,10 +274,63 @@ public class ClassesService {
             grades.forEach(grade->{
                 numList.add(studentRepository.getStudentNumByClassesIdAndSubject(grade.getId(),subject));
             });
-            dataMap.put("data",numList);
+            dataMap.put("value",numList);
             dataList.add(dataMap);
         }
-        return JSONArray.toJSONString(dataList);
+        resultMap.put("dataList",dataList);
+        resultMap.put("indicatorList",indicatorList);
+        return JSONObject.toJSONString(resultMap);
+    }
+
+    /**
+     * 班级知识点错误分布统计图
+     * @return
+     */
+    public String wrongQuestionDistribution(Integer classId){
+        Map<String,Object> dataMap = new HashMap<>();
+        List<String> legendList = new ArrayList<>();
+        List<Object> dataList = new ArrayList<>();
+        List<Map<String,String>> wrongKnowledgeList = classesRepository.findWrongKnowledgeByClassId(classId);
+        wrongKnowledgeList.forEach(map -> {
+            String kName = map.get("name");
+            String code = map.get("code");
+            legendList.add(kName);
+            List<Object> wrongKnowledgeDataList = new ArrayList<>();
+            List<Student> studentList = studentRepository.findAllByClassesId(classId);
+            studentList.forEach(student -> {
+                List<Object> studentData = new ArrayList<>();
+                //某个知识点的错题数
+                Integer num = studentRepository.getWrongNumByStudentIdAndCode(student.getId(),code);
+                if(num>0){
+                //如果大于零则计入统计
+                    //计算出错间隔时长
+                    List<WrongQuestion> wrongQuestionList = wrongQuestionRepository.findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(student.getId(),code);
+                    if(wrongQuestionList.size()==1){
+                        studentData.add(0);
+                    }else{
+                        String lastDate = wrongQuestionList.get(wrongQuestionList.size()-1).getTime();
+                        String firstDate = wrongQuestionList.get(0).getTime();
+                        try {
+                            Date last = PoiUtil.DATEFORMAT_DATE.parse(lastDate);
+                            Date first =PoiUtil.DATEFORMAT_DATE.parse(firstDate);
+                            long daysBetween=(last.getTime()-first.getTime()+1000000)/(60*60*24*1000);
+                            studentData.add(daysBetween);
+                        } catch (ParseException e) {
+                            studentData.add(0);
+                            e.printStackTrace();
+                        }
+                    }
+                    studentData.add(num);
+                    studentData.add(student.getName());
+                    studentData.add(kName);
+                }
+                wrongKnowledgeDataList.add(studentData);
+            });
+            dataList.add(wrongKnowledgeDataList);
+        });
+        dataMap.put("legend",legendList);
+        dataMap.put("data",dataList);
+        return JSONObject.toJSONString(dataMap);
     }
 
 }

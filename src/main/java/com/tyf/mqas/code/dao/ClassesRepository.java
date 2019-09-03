@@ -3,11 +3,13 @@ package com.tyf.mqas.code.dao;
 import com.tyf.mqas.base.repository.ExpandJpaRepository;
 import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Knowledge;
+import com.tyf.mqas.code.entity.WrongQuestion;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -52,5 +54,12 @@ public interface ClassesRepository extends ExpandJpaRepository<Classes,Integer>{
      * @return
      */
     List<Classes> findAllByPid(Integer pid);
+
+    /**
+     * 根据班级id获取全班所有学生错题的知识点
+     * @return
+     */
+    @Query(value = "select DISTINCT wq.knowledge_name name,wq.knowledge_code code from wrong_question wq WHERE wq.student_id IN (SELECT stu.id FROM student stu WHERE stu.classes_id = ?1 )", nativeQuery = true)
+    List<Map<String,String>> findWrongKnowledgeByClassId(Integer id);
 
 }

@@ -44,4 +44,11 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
     @Query(value = "SELECT COUNT(*)  FROM wrong_question wq LEFT JOIN knowledge kn ON kn.`code` = wq.knowledge_code WHERE kn.type = 0 AND wq.student_id = ?1  ", nativeQuery = true)
     Integer getUnKeyKnowledgeWrongNum(Integer studentId);
 
+    /**
+     * 通过学生id查找并且按照时间倒序
+     * @param id
+     * @return
+     */
+    List<WrongQuestion> findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(Integer id,String code);
+
 }
