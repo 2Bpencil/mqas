@@ -24,4 +24,6 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
 
     @Query(value = "SELECT COUNT(*) num,time FROM wrong_question WHERE student_id = ?1 AND knowledge_code = ?2 GROUP BY time ORDER BY time ASC", nativeQuery = true)
     List<Map<String,String>>  knowledgeFrequency(Integer studentId,String knowledgeCode);
+
+    void deleteAllByStudentId(Integer StudentId);
 }
