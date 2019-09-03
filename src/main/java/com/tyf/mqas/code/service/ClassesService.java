@@ -256,9 +256,19 @@ public class ClassesService {
      * 各年级个科目学生数量情况
      */
     public String learningSituation(){
+        Map<String,Object> resultMap = new HashMap<>();
         List<Map<String,Object>> dataList = new ArrayList<>();
         String[] subjects = {"语文","数学","英语"};
         List<Classes> grades = classesRepository.getAllGrade();
+        List<Map<String,Object>> indicatorList = new ArrayList<>();
+        grades.forEach(grade->{
+            Map<String,Object> map = new HashMap<>();
+            Integer num = studentRepository.getStudentNumByGradeId(grade.getId());
+            map.put("name",grade.getName());
+            map.put("max",num);
+            indicatorList.add(map);
+        });
+
         for (String subject:subjects){
             Map<String,Object> dataMap = new HashMap<>();
             dataMap.put("name",subject);
@@ -266,10 +276,12 @@ public class ClassesService {
             grades.forEach(grade->{
                 numList.add(studentRepository.getStudentNumByClassesIdAndSubject(grade.getId(),subject));
             });
-            dataMap.put("data",numList);
+            dataMap.put("value",numList);
             dataList.add(dataMap);
         }
-        return JSONArray.toJSONString(dataList);
+        resultMap.put("dataList",dataList);
+        resultMap.put("indicatorList",indicatorList);
+        return JSONObject.toJSONString(resultMap);
     }
 
 }
