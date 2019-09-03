@@ -26,9 +26,6 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
     List<Map<String,String>> knowledgeFrequency(Integer studentId,String knowledgeCode);
 
 
-    /**
-     *删除学生所有错题
-     */
     void deleteAllByStudentId(Integer studentId);
 
     /**
