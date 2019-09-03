@@ -25,7 +25,7 @@ import java.util.UUID;
 
 /**
  * @ClassName KnowledgeController
- * @Description: TODO
+ * @Description:
  * @Author tyf
  * @Date 2019年08月16日
  * @Version V1.0
