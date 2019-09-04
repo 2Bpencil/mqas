@@ -298,18 +298,18 @@ public class ClassesService {
             List<Object> wrongKnowledgeDataList = new ArrayList<>();
             List<Student> studentList = studentRepository.findAllByClassesId(classId);
             studentList.forEach(student -> {
-                List<Object> studentData = new ArrayList<>();
                 //某个知识点的错题数
                 Integer num = studentRepository.getWrongNumByStudentIdAndCode(student.getId(),code);
                 if(num>0){
-                //如果大于零则计入统计
+                    List<Object> studentData = new ArrayList<>();
+                    //如果大于零则计入统计
                     //计算出错间隔时长
                     List<WrongQuestion> wrongQuestionList = wrongQuestionRepository.findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(student.getId(),code);
                     if(wrongQuestionList.size()==1){
                         studentData.add(0);
                     }else{
-                        String lastDate = wrongQuestionList.get(wrongQuestionList.size()-1).getTime();
-                        String firstDate = wrongQuestionList.get(0).getTime();
+                        String firstDate = wrongQuestionList.get(wrongQuestionList.size()-1).getTime();
+                        String lastDate = wrongQuestionList.get(0).getTime();
                         try {
                             Date last = PoiUtil.DATEFORMAT_DATE.parse(lastDate);
                             Date first =PoiUtil.DATEFORMAT_DATE.parse(firstDate);
@@ -323,8 +323,8 @@ public class ClassesService {
                     studentData.add(num);
                     studentData.add(student.getName());
                     studentData.add(kName);
+                    wrongKnowledgeDataList.add(studentData);
                 }
-                wrongKnowledgeDataList.add(studentData);
             });
             dataList.add(wrongKnowledgeDataList);
         });

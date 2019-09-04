@@ -288,6 +288,12 @@ public class ClassesController {
      */
     @RequestMapping(value = "wrongQuestionDistribution",method = RequestMethod.POST)
     public void wrongQuestionDistribution(HttpServletRequest request, HttpServletResponse response){
-
+        String id = request.getParameter("classId");
+        String json = classesService.wrongQuestionDistribution(Integer.parseInt(id));
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
  }
