@@ -59,7 +59,13 @@ public interface ClassesRepository extends ExpandJpaRepository<Classes,Integer>{
      * 根据班级id获取全班所有学生错题的知识点
      * @return
      */
-    @Query(value = "select DISTINCT wq.knowledge_name name,wq.knowledge_code code from wrong_question wq WHERE wq.student_id IN (SELECT stu.id FROM student stu WHERE stu.classes_id = ?1 )", nativeQuery = true)
-    List<Map<String,String>> findWrongKnowledgeByClassId(Integer id);
+    @Query(value = "select DISTINCT wq.knowledge_name name,wq.knowledge_code code from wrong_question wq WHERE wq.student_id IN (SELECT stu.id FROM student stu WHERE stu.classes_id = ?1 ) AND wq.time BETWEEN ?2 AND ?3 LIMIT 0,5 ", nativeQuery = true)
+    List<Map<String,String>> findWrongKnowledgeByClassId(Integer id,String startDate,String endDate);
+
+    @Query(value = "SELECT COUNT(*) FROM student stu WHERE stu.id IN (SELECT wq.student_id FROM wrong_question wq WHERE wq.knowledge_code = ?2 AND wq.time BETWEEN ?3 AND ?4) AND stu.classes_id = ?1", nativeQuery = true)
+    Integer findStudentNumByClassIdAnAndCode(Integer id,String code,String startDate,String endDate);
+
+    @Query(value = "select COUNT(*) from student where classes_id = ?1 ", nativeQuery = true)
+    Integer findAllStudentNumByClassId(Integer id);
 
 }

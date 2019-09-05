@@ -21,6 +21,9 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
     @Query(value = "SELECT DISTINCT knowledge_name,knowledge_code FROM wrong_question WHERE student_id = ?1", nativeQuery = true)
     List<Map<String,Object>> getAllKnowledgeInfoByStudentId(Integer studentId);
 
+    @Query(value = "SELECT DISTINCT wq.knowledge_name,wq.knowledge_code FROM wrong_question wq WHERE wq.student_id IN (SELECT stu.id FROM student stu WHERE classes_id = ?1) AND wq.time BETWEEN ?2 AND ?3", nativeQuery = true)
+    List<Map<String,Object>> getAllKnowledgeInfoByClassId(Integer classId,String startDate,String endDate);
+
 
     @Query(value = "SELECT COUNT(*) num,time FROM wrong_question WHERE student_id = ?1 AND knowledge_code = ?2 GROUP BY time ORDER BY time ASC", nativeQuery = true)
     List<Map<String,String>> knowledgeFrequency(Integer studentId,String knowledgeCode);
@@ -49,6 +52,18 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
      * @param id
      * @return
      */
-    List<WrongQuestion> findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(Integer id,String code);
+    @Query(value = "SELECT * FROM wrong_question  WHERE student_id = ?1 AND knowledge_code = ?2 AND time BETWEEN ?3 AND ?4 ORDER BY time DESC", nativeQuery = true)
+    List<WrongQuestion> findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(Integer id,String code,String startDate,String endDate);
+
+    /**
+     * 根据知识点和班级获取犯错学生的数量
+     * @param id
+     * @param code
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query(value = "SELECT COUNT(*) FROM student stu  WHERE stu.id IN (SELECT DISTINCT wq.student_id FROM wrong_question wq WHERE  wq.knowledge_code = ?2 AND wq.time BETWEEN ?3 AND ?4 ) AND stu.classes_id = ?1", nativeQuery = true)
+    Integer findStudentNumByCodeAndTime(Integer id,String code,String startDate,String endDate);
 
 }

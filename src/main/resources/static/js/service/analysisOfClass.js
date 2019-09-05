@@ -1,4 +1,6 @@
 var distributionEchart;
+var wrongKnowledgeTop5Echart;
+var wrongProportionEchart;
 var classId;
 var startDate;//当前日期
 var endDate;//前七天日期
@@ -14,11 +16,12 @@ $(document).ready(function(){
     classId = $('#classId').val();
 
     distributionEchart = echarts.init(document.getElementById('distribution'));
+    wrongKnowledgeTop5Echart = echarts.init(document.getElementById('wrongKnowledgeTop5'));
+    wrongProportionEchart = echarts.init(document.getElementById('wrongProportion'));
 
     initWrongQuestionDistribution();
-
-
-
+    initTop5();
+    initKnowledgeSelect();
 
 });
 
@@ -37,7 +40,7 @@ function backPrevious() {
 function initWrongQuestionDistribution(){
     $.ajax({
         type : "POST",
-        data : {classId:classId},
+        data : {classId:classId,startDate:startDate,endDate:endDate},
         url : contextPath + "classes/wrongQuestionDistribution",
         beforeSend : function(xhr) {
             xhr.setRequestHeader(header, token);
@@ -66,24 +69,19 @@ function initWrongQuestionDistribution(){
                 seriesData.push(seriesObj);
             }
             distributionOption.series = seriesData;
-
             distributionEchart.setOption(distributionOption);
         }
     });
 
 
 }
-var distributionData = [
-    [[2,10,'张三','整数型'],[5,9,'哈哈','整数型']],
-    [[5,6,'李四','小数型']],
-    [[7,15,'王二','负数']]
-];
+var distributionData = [];
 
 var distributionOption = {
 
     legend: {
         right: 5,
-        data: ['整数型', '小数型','负数']
+        data: []
     },
     xAxis: {
         name:'错题间隔时间（天）',
@@ -120,51 +118,170 @@ var distributionOption = {
 
         }
     },
+    series: []
+};
+//top 5
+function initTop5(){
+    $.ajax({
+        type : "POST",
+        data : {classId:classId,startDate:startDate,endDate:endDate},
+        url : contextPath + "classes/wrongQuestionTop5",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            wrongKnowledgeTop5Option.yAxis[0].data = result.yAxisData;
+            wrongKnowledgeTop5Option.series[0].data = result.seriesData;
+            wrongKnowledgeTop5Echart.setOption(wrongKnowledgeTop5Option);
+        }
+    });
+
+}
+var wrongKnowledgeTop5Option = {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: null // 默认为直线，可选为：'line' | 'shadow'
+        },
+        formatter: '<div style="text-align: center;">犯错学生数量</div>{b} : {c}'
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        top: '10%',
+        height: 280, //设置grid高度
+        containLabel: true
+    },
+    xAxis: [{
+        type: 'value',
+        axisLabel: {
+            show: false
+        },
+        axisTick: {
+            show: false
+        },
+        axisLine: {
+            show: false
+        },
+        splitLine: {
+            show: false
+        }
+
+    }],
+    yAxis: [{
+        type: 'category',
+        boundaryGap: true,
+        axisTick: {
+            show: true
+        },
+        axisLabel: {
+            interval: null
+        },
+        data: ['北京', '长沙', '天津', '太原', '石家庄', '广州', '重庆'],
+        splitLine: {
+            show: false
+        }
+    }],
     series: [{
-        name: '整数型',
-        data: distributionData[0],
-        type: 'scatter',
-        symbolSize: function (data) {
-            return 20;
-        },
-        itemStyle: {
+        name: '流量',
+        type: 'bar',
+        barWidth: 25,
+        label: {
             normal: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(120, 36, 50, 0.5)',
-                shadowOffsetY: 5,
+                show: true,
+                position: 'right'
             }
-        }
-    }, {
-        name: '小数型',
-        data: distributionData[1],
-        type: 'scatter',
-        symbolSize: function (data) {
-            return 20;
+
         },
-        itemStyle: {
-            normal: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(25, 100, 150, 0.5)',
-                shadowOffsetY: 5,
+        data: [160, 170, 240, 264, 300, 520, 610]
+    }]
+};
+
+/**
+ * 初始化图表
+ */
+function initChart(){
+    startDate = $("#start_time").val();
+    endDate = $("#end_time").val();
+    if((startDate==''||startDate==null)||(endDate==''||endDate==null)){
+        swal("时间不能为空!", "", "error");
+        return;
+    }
+    initWrongQuestionDistribution();
+    initTop5();
+    initKnowledgeSelect();
+}
+
+/**
+ * 初始化下拉选
+ */
+function initKnowledgeSelect(){
+    $.ajax({
+        type : "POST",
+        data : {classId:classId,startDate:startDate,endDate:endDate},
+        url : contextPath + "classes/getAllWrongKnowledge",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        dataType:"json",
+        success : function(result){
+            let options = '';
+            for (let i = 0; i < result.length; i++) {
+                options += '<option value="'+result[i].knowledge_code+'">'+result[i].knowledge_name+'</option>';
             }
+            $("#knowledgeSelect").html(options)
+            $("#knowledgeSelect").select2();
+            initWrongProportion();
         }
-    }, {
-        name: '负数',
-        data: distributionData[2],
-        type: 'scatter',
-        symbolSize: function (data) {
-            return 20;
+    });
+}
+
+/**
+ * 选择
+ */
+function changeKnowledgeSelect(){
+    initWrongProportion();
+}
+/**
+ * 初始化知识点错题人数占比
+ */
+function initWrongProportion(){
+    var code = $("#knowledgeSelect").val();
+    $.ajax({
+        type : "POST",
+        data : {classId:classId,code:code,startDate:startDate,endDate:endDate},
+        url : contextPath + "classes/wrongProportion",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
         },
-        itemStyle: {
+        dataType:"json",
+        success : function(result){
+            wrongProportionOption.title.text = '错误人数：'+result.wrongNum +' / 全班人数：'+result.allNum;
+            wrongProportionOption.series[0].data = [result.proportion];
+            wrongProportionEchart.setOption(wrongProportionOption);
+        }
+    });
+}
+var wrongProportionOption = {
+    title: {
+        text: '2017全球手机市场份额',
+    },
+    series: [{
+        type: 'liquidFill',
+        radius: '80%',
+        data: [0.5, 0.45, 0.4],
+        label: {
             normal: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(25, 100, 150, 0.5)',
-                shadowOffsetY: 5,
+                // textStyle: {
+                color: 'red',
+                insideColor: 'yellow',
+                fontSize: 50
+                // }
             }
         }
     }]
 };
-
 
 //时间格式化
 Date.prototype.format = function (format) {

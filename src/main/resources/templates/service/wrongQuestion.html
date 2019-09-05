@@ -58,8 +58,8 @@
                         <div class="ibox-title">
                             <h5>错题列表</h5>
                             <div class="ibox-tools">
-                                <input class="Wdate " name="start_time" id="start_time" readonly="readonly" type="text"  onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'end_time\')}'})" >&nbsp;&nbsp;至&nbsp;
-                                <input class="Wdate " name="end_time" id="end_time" readonly="readonly" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'start_time\')}'})"  >
+                                <input class="Wdate " name="start_time" id="start_time" readonly="readonly" type="text"  onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})" >&nbsp;&nbsp;至&nbsp;
+                                <input class="Wdate " name="end_time" id="end_time" readonly="readonly" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"  >
                                 <button class="btn btn-primary btn-xs" type="button"  onclick="reloadTable()"><i class="fa fa-search"></i> </button>
                             </div>
                         </div>

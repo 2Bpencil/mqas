@@ -289,7 +289,64 @@ public class ClassesController {
     @RequestMapping(value = "wrongQuestionDistribution",method = RequestMethod.POST)
     public void wrongQuestionDistribution(HttpServletRequest request, HttpServletResponse response){
         String id = request.getParameter("classId");
-        String json = classesService.wrongQuestionDistribution(Integer.parseInt(id));
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String json = classesService.wrongQuestionDistribution(Integer.parseInt(id),startDate,endDate);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 知识点错误TOP5
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "wrongQuestionTop5",method = RequestMethod.POST)
+    public void wrongQuestionTop5(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("classId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String json = classesService.wrongQuestionTop5Json(Integer.parseInt(id),startDate,endDate);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *知识点错题人数占比（下拉选初始化）
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "getAllWrongKnowledge",method = RequestMethod.POST)
+    public void getAllWrongKnowledge(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("classId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String json = classesService.getAllWrongKnowledgeJson(Integer.parseInt(id),startDate,endDate);
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 知识点错题人数占比
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "wrongProportion",method = RequestMethod.POST)
+    public void wrongProportion(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("classId");
+        String code = request.getParameter("code");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String json = classesService.wrongProportionJson(Integer.parseInt(id),code,startDate,endDate);
         try {
             response.getWriter().print(json);
         } catch (IOException e) {

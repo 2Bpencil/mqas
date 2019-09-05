@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Stream;
@@ -286,11 +287,11 @@ public class ClassesService {
      * 班级知识点错误分布统计图
      * @return
      */
-    public String wrongQuestionDistribution(Integer classId){
+    public String wrongQuestionDistribution(Integer classId,String startDate,String endDate){
         Map<String,Object> dataMap = new HashMap<>();
         List<String> legendList = new ArrayList<>();
         List<Object> dataList = new ArrayList<>();
-        List<Map<String,String>> wrongKnowledgeList = classesRepository.findWrongKnowledgeByClassId(classId);
+        List<Map<String,String>> wrongKnowledgeList = classesRepository.findWrongKnowledgeByClassId(classId,startDate,endDate);
         wrongKnowledgeList.forEach(map -> {
             String kName = map.get("name");
             String code = map.get("code");
@@ -299,12 +300,12 @@ public class ClassesService {
             List<Student> studentList = studentRepository.findAllByClassesId(classId);
             studentList.forEach(student -> {
                 //某个知识点的错题数
-                Integer num = studentRepository.getWrongNumByStudentIdAndCode(student.getId(),code);
+                Integer num = studentRepository.getWrongNumByStudentIdAndCode(student.getId(),code,startDate,endDate);
                 if(num>0){
                     List<Object> studentData = new ArrayList<>();
                     //如果大于零则计入统计
                     //计算出错间隔时长
-                    List<WrongQuestion> wrongQuestionList = wrongQuestionRepository.findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(student.getId(),code);
+                    List<WrongQuestion> wrongQuestionList = wrongQuestionRepository.findAllByStudentIdAndKnowledgeCodeOrderByTimeDesc(student.getId(),code,startDate,endDate);
                     if(wrongQuestionList.size()==1){
                         studentData.add(0);
                     }else{
@@ -330,6 +331,71 @@ public class ClassesService {
         });
         dataMap.put("legend",legendList);
         dataMap.put("data",dataList);
+        return JSONObject.toJSONString(dataMap);
+    }
+
+    /**
+     * 知识点错误TOP5
+     * @param classId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public String wrongQuestionTop5Json(Integer classId,String startDate,String endDate){
+        Map<String,Object> dataMap = new HashMap<>();
+        List<String> yAxisData = new ArrayList<>();
+        List<Integer> seriesData = new ArrayList<>();
+        List<Map<String,String>> wrongKnowledgeList = classesRepository.findWrongKnowledgeByClassId(classId,startDate,endDate);
+        List<Map<String,String>> dataTempList = new ArrayList<>();
+        wrongKnowledgeList.forEach(map->{
+            String code = map.get("code");
+            String kName = map.get("name");
+            Integer num = wrongQuestionRepository.findStudentNumByCodeAndTime(classId,code,startDate,endDate);
+            Map<String,String> data = new HashMap<>();
+            data.put("name",kName);
+            data.put("num",num.toString());
+            dataTempList.add(data);
+        });
+        dataTempList.stream().sorted((x,y)->{
+            return Integer.compare(Integer.parseInt(x.get("num")),Integer.parseInt(y.get("num")));
+        }).forEach(e->{
+            yAxisData.add(e.get("name"));
+            seriesData.add(Integer.parseInt(e.get("num")));
+        });
+        dataMap.put("yAxisData",yAxisData);
+        dataMap.put("seriesData",seriesData);
+        return JSONObject.toJSONString(dataMap);
+    }
+
+    /**
+     *知识点错题人数占比（下拉选初始化）
+     * @param classId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public String getAllWrongKnowledgeJson(Integer classId,String startDate,String endDate){
+        List<Map<String,Object>> list = wrongQuestionRepository.getAllKnowledgeInfoByClassId(classId,startDate,endDate);
+        return JSONArray.toJSONString(list);
+    }
+
+    /**
+     *知识点错题人数占比 json
+     * @return
+     */
+    public String wrongProportionJson(Integer classId,String code,String startDate,String endDate){
+        Map<String,Object> dataMap = new HashMap<>();
+        Integer wrongNum = classesRepository.findStudentNumByClassIdAnAndCode(classId,code,startDate,endDate);
+        Integer allNum =classesRepository.findAllStudentNumByClassId(classId);
+        dataMap.put("wrongNum",wrongNum);
+        dataMap.put("allNum",allNum);
+        if(allNum == 0){
+            dataMap.put("proportion",0.0);
+        }else {
+            DecimalFormat df=new DecimalFormat("0.00");
+            String proportion = df.format((float)wrongNum/allNum);
+            dataMap.put("proportion",proportion);
+        }
         return JSONObject.toJSONString(dataMap);
     }
 

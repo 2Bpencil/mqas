@@ -49,8 +49,8 @@ public interface StudentRepository extends ExpandJpaRepository<Student,Integer>{
      * 该学生某个知识点的错题数
      * @return
      */
-    @Query(value = "SELECT COUNT(*) FROM wrong_question wq WHERE wq.student_id = ?1 AND wq.knowledge_code = ?2", nativeQuery = true)
-    Integer getWrongNumByStudentIdAndCode(Integer studentId,String code);
+    @Query(value = "SELECT COUNT(*) FROM wrong_question wq WHERE wq.student_id = ?1 AND wq.knowledge_code = ?2 AND wq.time BETWEEN ?3 AND ?4", nativeQuery = true)
+    Integer getWrongNumByStudentIdAndCode(Integer studentId,String code,String startDate,String endDate);
 
 
 
