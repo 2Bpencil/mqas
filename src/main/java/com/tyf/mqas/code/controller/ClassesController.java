@@ -54,7 +54,7 @@ public class ClassesController {
         String id = request.getParameter("id");
         Classes classes = classesService.getClassesById(Integer.parseInt(id));
         Classes parent = classesService.getClassesById(classes.getPid());
-        ModelAndView modelAndView = new ModelAndView("/service/analysisOfClass");
+        ModelAndView modelAndView = new ModelAndView("service/analysisOfClass");
         modelAndView.addObject("classId",id);
         modelAndView.addObject("className",parent.getName()+"-"+classes.getName());
         return modelAndView;

@@ -180,4 +180,14 @@ public class UserService extends PageGetter<User> implements UserDetailsService 
         return JSONArray.toJSONString(list);
     }
 
+    /**
+     * 重置密码
+     * @param id
+     */
+    public void reSetPassword(Integer id){
+        User user = userRepository.getOne(id);
+        user.setPassword("123456");
+        userRepository.save(user);
+    }
+
 }

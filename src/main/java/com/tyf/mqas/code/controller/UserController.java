@@ -243,7 +243,7 @@ public class UserController {
     }
 
     /**
-     *
+     *保存班级
      */
     @RequestMapping(value = "saveClassSet",method = RequestMethod.POST)
     public void saveClassSet(HttpServletRequest request, HttpServletResponse response){
@@ -257,6 +257,27 @@ public class UserController {
             flag = 0;
             logger.info(SecurityUtil.getCurUserName()+"---保存班级配置失败");
             e.printStackTrace();
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 重置密码
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "reSetPassword",method = RequestMethod.POST)
+    public void reSetPassword(HttpServletRequest request, HttpServletResponse response){
+        int flag = 1;
+        String userId = request.getParameter("userId");
+        try{
+            userService.reSetPassword(Integer.parseInt(userId));
+        }catch (Exception e){
+            flag = 0;
         }
         try {
             response.getWriter().print(flag);

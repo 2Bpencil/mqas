@@ -45,19 +45,20 @@ function initTable(){
                     return ( parseInt(data) === 1?"男":"女");
                 },
                 'orderable' : false ,
-                width: '15%'
+                width: '10%'
             },
             {   "data": null,
                 "searchable":false,
                 'orderable' : false ,
-                width: '15%',
+                width: '20%',
                 'render':function (data, type, row, meta) {
                     //data  和 row  是数据
                     var buttons = '';
                     buttons+='<button type="button" onclick="editUser('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteUser('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="assignmentRole('+data.id+')" class="btn btn-primary btn-xs" >分配角色</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="assignmentClass('+data.id+')" class="btn btn-primary btn-xs" >分配班级</button>';
+                    buttons+='<button type="button" onclick="assignmentClass('+data.id+')" class="btn btn-primary btn-xs" >分配班级</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="reSetPassword('+data.id+')" class="btn btn-primary btn-xs" >重置密码</button>';
                     return buttons;
                 }
             },
@@ -517,6 +518,30 @@ function clearForm(){
     $('#userForm').validate().resetForm();
 }
 
+/**
+ * 重置密码
+ * @param id
+ */
+function reSetPassword(id) {
+    $.ajax({
+        type : "POST",
+        data : {
+            userId : id,
+        },
+        dataType:'json',
+        url : contextPath + "user/reSetPassword",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success : function(result){
+            if(result == '1'){
+                showAlert("重置密码成功",'success');
+            }else{
+                showAlert("重置密码失败",'error');
+            }
+        }
+    });
+}
 
 /*常量*/
 var CONSTANT = {

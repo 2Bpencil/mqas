@@ -47,7 +47,6 @@ function initWrongQuestionDistribution(){
         },
         dataType:"json",
         success : function(result){
-            console.log(result);
             distributionData = result.data;
             distributionOption.legend.data = result.legend;
             var seriesData = [];

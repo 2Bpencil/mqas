@@ -54,8 +54,11 @@ function validatePasswordData(){
                 minlength: 6,
                 remote : {//远程地址只能输出"true"或"false"
                     url : contextPath + "user/checkPassword",
-                    type : "get",
+                    type : "POST",
                     dataType : "json",//如果要在页面输出其它语句此处需要改为json
+                    beforeSend : function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
                     data : {
 
                     }
@@ -96,9 +99,12 @@ function validatePasswordData(){
 
             //保存
             $.ajax({
-                type : "GET",
+                type : "POST",
                 data : $("#passwordForm").serialize(),
                 dataType:"json",
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
                 url : contextPath+"user/modifyPassword",
                 success: function(result){
                     if(result == 1){
