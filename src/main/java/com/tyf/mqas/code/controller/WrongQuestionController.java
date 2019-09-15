@@ -52,7 +52,7 @@ public class WrongQuestionController {
     public ModelAndView wrongQuestionManage(HttpServletRequest request){
         String id = request.getParameter("id");
         Student student = studentService.getStudentById(Integer.parseInt(id));
-        ModelAndView modelAndView = new ModelAndView("/service/wrongQuestion");
+        ModelAndView modelAndView = new ModelAndView("service/wrongQuestion");
         modelAndView.addObject("student",student);
         return modelAndView;
     }

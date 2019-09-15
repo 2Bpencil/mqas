@@ -67,6 +67,7 @@ function initWrongQuestionDistribution(){
                 };
                 seriesData.push(seriesObj);
             }
+            distributionOption.series = [];
             distributionOption.series = seriesData;
             distributionEchart.setOption(distributionOption);
         }
