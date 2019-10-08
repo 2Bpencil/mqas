@@ -11,7 +11,13 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.*;
 import java.io.IOException;
-
+/**
+* @Description:  Security 拦截器
+* @Param:
+* @return:
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:22
+*/
 @Service
 public class SysFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
     private final static Logger logger = LoggerFactory.getLogger(SysFilterSecurityInterceptor.class);

@@ -1,10 +1,14 @@
-package com.tyf.mqas.config.webMvc;
+package com.tyf.mqas.config.webmvc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
-
+/**
+* @Description: 视图配置
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:19
+*/
 @Configuration
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
@@ -16,7 +20,13 @@ public class MvcConfig implements WebMvcConfigurer {
         logger.info("********************加载WebConfig************************* ");
     }
 
-    /*资源处理器*/
+    /**
+    * @Description:  资源处理器
+    * @Param:
+    * @return:
+    * @Author: Mr.Tan
+    * @Date: 2019/10/8 9:19
+    */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         if(!registry.hasMappingForPattern("/**")){

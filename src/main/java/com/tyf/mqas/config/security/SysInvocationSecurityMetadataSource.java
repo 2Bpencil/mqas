@@ -14,7 +14,11 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-
+/**
+* @Description:  初始化权限资源
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:23
+*/
 @Service
 public class SysInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 

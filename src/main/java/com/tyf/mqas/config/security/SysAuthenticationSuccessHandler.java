@@ -19,7 +19,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-
+/**
+* @Description: 登录成功后控制类
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:22
+*/
 @Component
 public class SysAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final static Logger logger = LoggerFactory.getLogger(SysAuthenticationSuccessHandler.class);

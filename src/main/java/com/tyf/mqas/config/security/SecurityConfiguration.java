@@ -30,7 +30,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+* @Description: Security配置
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:20
+*/
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {

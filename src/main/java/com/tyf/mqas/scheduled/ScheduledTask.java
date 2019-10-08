@@ -1,4 +1,4 @@
-package com.tyf.mqas.Scheduled;
+package com.tyf.mqas.scheduled;
 
 import com.tyf.mqas.code.dao.StudentRecordsRepository;
 import com.tyf.mqas.code.dao.StudentRepository;
@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
- * 定时任务
- */
+* @Description:  定时任务
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:16
+*/
 @EnableScheduling
 @Component
 public class ScheduledTask {
@@ -52,6 +53,7 @@ public class ScheduledTask {
         Integer total =studentRepository.getAllStudentNum();
         studentRecords.setTotal(total);
         studentRecordsRepository.save(studentRecords);
+        logger.info("定时任务---------》》保存学生总数");
     }
 
 }

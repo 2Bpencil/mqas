@@ -1,5 +1,9 @@
 package com.tyf.mqas.base.datapage;
-
+/**
+* @Description: DataTable  行数据
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:24
+*/
 public class DataColumn {
 
     private String data;

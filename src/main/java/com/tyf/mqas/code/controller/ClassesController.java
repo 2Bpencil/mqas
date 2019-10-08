@@ -30,7 +30,7 @@ import java.util.UUID;
 
 /**
  * @ClassName ClassesController
- * @Description:
+ * @Description:  班级管理
  * @Author tyf
  * @Date 2019年08月17日
  * @Version V1.0

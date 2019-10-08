@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Iterator;
-
+/**
+* @Description: 权限控制器
+* @Author: Mr.Tan
+* @Date: 2019/10/8 9:21
+*/
 @Service
 public class SysAccessDecisionManager implements AccessDecisionManager {
 

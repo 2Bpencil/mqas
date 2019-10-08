@@ -3,7 +3,7 @@ package com.tyf.mqas.utils;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @Auther: tyf
+ * @Author: tyf
  * @Date: 2019/7/11 16:37
  * @Description:
  */
