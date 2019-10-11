@@ -1,20 +1,15 @@
-var testQuestionTable;//表格对象
-var $table = "#testQuestion_table";
-var testPaperId = '';
-var testPaperTypeId = '';
-var initTableFirst  = true;
+
+var $table = "#testPaper_table";
+var testPaperTable;
 $(document).ready(function(){
-    initTree()
+    initTable();
     validateData();
 });
 /**
  * 初始化表格
  */
 function initTable(){
-    if(initTableFirst){
-        initTableFirst = false;
-    }
-	testQuestionTable = $($table).DataTable({
+    testPaperTable = $($table).DataTable({
         dom: '<"html5buttons"B>lTfgitp',
         "serverSide": true,     // true表示使用后台分页
         "ajax": {
@@ -23,7 +18,7 @@ function initTable(){
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(header, token);
             },
-            data:{testPaperTypeId:testPaperTypeId},
+            data:{},
         },
         "columns": [
             { "data": "id",
@@ -32,10 +27,25 @@ function initTable(){
             },
             { "data": "name",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
-                width: '60%'
-
+                width: '40%'
             },
-            { "data": "knowledge_name",
+            { "data": "type",
+                "searchable":false,
+                render : function(data,type, row, meta) {
+                    var subject = '';
+                    if(data == 0){
+                        subject = '语文';
+                    }else if(data == 1){
+                        subject = '数学';
+                    }else{
+                        subject = '英语';
+                    }
+                    return subject;
+                },
+                width: '20%'
+            },
+            { "data": "time",
+                "searchable":false,
                 width: '20%'
             },
             { "data": null,
@@ -45,8 +55,8 @@ function initTable(){
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
-                    buttons+='<button type="button" onclick="editTestQuestion('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="deleteTestQuestion('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="deleteTestPaper('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="downloadTestPaper('+data.id+')" class="btn btn-primary btn-xs" >下载</button>&nbsp;&nbsp;';
                     return buttons;
                 }
             },
@@ -85,7 +95,7 @@ function validateData(){
         rules: {
             name: {
                 required: true,
-                maxlength: 50,
+                maxlength: 100,
                 remote : {//远程地址只能输出"true"或"false"
                             url : contextPath + "testPaper/verifyTheRepeat",
                             type : "POST",
@@ -93,26 +103,39 @@ function validateData(){
                             beforeSend : function(xhr) {
                                 xhr.setRequestHeader(header, token);
                             },
-                            data : {
-                                id : function(){
-                                    return $("#testPaperForm_id").val();
-                                }
-                            }
                         },
             },
+            form_type:{
+                required: true,
+            },
+            file:{
+                required: true,
+            }
         },
         messages : {
             name : {
                 required: "不能为空",
-                maxlength : "不超过50个字符",
+                maxlength : "不超过100个字符",
                 remote : "试卷名称已存在",
             },
+            form_type:{
+                required: "请选择科目",
+            },
+            file:{
+                required: "请上传文件",
+            }
         },
         submitHandler : function(form) {
-            //保存
+            var formData = new FormData();
+            formData.append("file",$("#testPaperForm_file")[0].files[0]);
+            formData.append("name",$('#testPaperForm_name').val());
+            formData.append("type",$('#form_type').val());
             $.ajax({
                 type : "POST",
-                data : $("#testPaperForm").serialize(),
+                data : formData,
+                contentType : false, //必须
+                processData : false,
+                dataType:"json",
                 url : contextPath+"testPaper/saveOrEditTestPaper",
                 beforeSend : function(xhr) {
                     xhr.setRequestHeader(header, token);
@@ -121,88 +144,7 @@ function validateData(){
                     if(result == 1){
                         hideModal('testPaperModal');
                         clearTestPaperForm();
-                        showAlert("保存成功",'success');
-                        initTree();
-                    }else{
-                        showAlert("保存失败",'error');
-                    }
-                }
-            });
-
-        }
-    });
-    $("#testPaperTypeForm").validate({
-        rules: {
-            name: {
-                required: true,
-                maxlength: 50
-            },
-        },
-        messages : {
-            name : {
-                required: "不能为空",
-                maxlength : "不超过50个字符",
-            },
-        },
-        submitHandler : function(form) {
-            //保存
-            $.ajax({
-                type : "POST",
-                data : $("#testPaperTypeForm").serialize(),
-                url : contextPath+"testPaper/saveOrEditTestPaperType",
-                beforeSend : function(xhr) {
-                    xhr.setRequestHeader(header, token);
-                },
-                success: function(result){
-                    if(result == 1){
-                        hideModal('testPaperTypeModal');
-                        clearTestPaperTypeForm();
-                        showAlert("保存成功",'success');
-                        initTree();
-                    }else{
-                        showAlert("保存失败",'error');
-                    }
-                }
-            });
-
-        }
-    });
-    $("#testQuestionForm").validate({
-        rules: {
-            name: {
-                required: true,
-                maxlength: 50
-            },
-            knowledgeCode:{
-                required: true,
-                maxlength: 50
-            },
-        },
-        messages : {
-
-            name : {
-                required: "不能为空",
-                maxlength : "不超过50个字符",
-            },
-            knowledgeCode:{
-                required: "不能为空",
-                maxlength : "不超过50个字符",
-            },
-        },
-        submitHandler : function(form) {
-            //保存
-            $.ajax({
-                type : "POST",
-                data : $("#testQuestionForm").serialize(),
-                url : contextPath+"testPaper/saveOrEditTestQuestion",
-                beforeSend : function(xhr) {
-                    xhr.setRequestHeader(header, token);
-                },
-                success: function(result){
-                    if(result == 1){
-                        hideModal('TestQuestionModal');
                         reloadTable();
-                        clearTestQuestionForm();
                         showAlert("保存成功",'success');
                     }else{
                         showAlert("保存失败",'error');
@@ -217,109 +159,31 @@ function validateData(){
  * 新增试卷
  */
 function addTestPaper(){
-
     showModal("testPaperModal");
 }
-function editTestPaper(){
-    if(testPaperId == ''){
-        swal("请选中试卷!", "", "error")
-        return;
-    }
-    $.ajax({
-        type : "POST",
-        data : {id:testPaperId},
-        dataType:"json",
-        url : contextPath+"testPaper/getTestPaperInfo",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            $('#testPaperForm_id').val(result.id);
-            $('#testPaperForm_name').val(result.name);
-            showModal("testPaperModal");
-        }
-    });
-}
-/**
- * 新增试题类型
- */
-function addTestPaperType(){
-    if(testPaperId == ''){
-        swal("请选中试卷!", "", "error");
-        return;
-    }
-    $('#testPaperTypeForm_testPaperId').val(testPaperId);
-    showModal("testPaperTypeModal");
-}
-function editTestPaperType(){
-    if(testPaperTypeId == ''){
-        swal("请选中试题类型!", "", "error");
-        return;
-    }
-    $.ajax({
-        type : "POST",
-        data : {id:testPaperTypeId},
-        dataType:"json",
-        url : contextPath+"testPaper/getTestPaperTypeInfo",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            $('#testPaperTypeForm_id').val(result.id);
-            $('#testPaperTypeForm_testPaperId').val(result.testPaperId);
-            $('#testPaperTypeForm_name').val(result.name);
-            showModal("testPaperTypeModal");
-        }
-    });
-}
 
 /**
- * 新增试卷小题
+ * 下载试卷
  */
-function addTestQuestion(){
-    if(testPaperTypeId == ''){
-        swal("请选中试题类型!", "", "error");
-        return;
-    }
-    $('#testQuestionForm_testPaperTypeId').val(testPaperTypeId);
-    showModal("TestQuestionModal");
+function downloadTestPaper(id){
+    var form = document.getElementById('downloadPaperForm');
+    $('#download_id').val(id);
+    form.submit();
 }
-function editTestQuestion(id){
-    $.ajax({
-        type : "POST",
-        data : {id:id},
-        dataType:"json",
-        url : contextPath+"testPaper/getTestQuestionInfo",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            $('#testQuestionForm_id').val(result.id);
-            $('#testQuestionForm_testPaperTypeId').val(result.testPaperTypeId);
-            $('#testQuestionForm_name').val(result.name);
-            $('#testQuestionForm_knowledgeCode').val(result.knowledgeCode);
-            showModal("TestQuestionModal");
-        }
-    });
-}
+
 
 
 /**
  * 刷新表格
  */
 function reloadTable(){
-    testQuestionTable.settings()[0].ajax.data={testPaperTypeId:testPaperTypeId};
-    testQuestionTable.ajax.reload();
+    testPaperTable.ajax.reload();
 }
 /**
  * 删除
  * @param id
  */
-function deleteTestPaper(){
-    if(testPaperId == ''){
-        swal("请选中试卷!", "", "error");
-        return;
-    }
+function deleteTestPaper(id){
     swal({
         title: "是否确定删除?",
         text: "你将会删除该试卷下的所有记录!",
@@ -331,7 +195,7 @@ function deleteTestPaper(){
     }, function () {
         $.ajax({
             type : "POST",
-            data : {id:testPaperId},
+            data : {id:id},
             dataType:"json",
             url : contextPath+"testPaper/deleteTestPaper",
             beforeSend : function(xhr) {
@@ -339,9 +203,6 @@ function deleteTestPaper(){
             },
             success: function(result){
                 if(result == 1){
-                    initTree();
-                    testPaperId = '';
-                    testPaperTypeId = '';
                     reloadTable();
                     swal("删除成功!", "", "success");
                 }else{
@@ -350,163 +211,6 @@ function deleteTestPaper(){
             }
         });
     });
-}
-function deleteTestPaperType(){
-    if(testPaperTypeId == ''){
-        swal("请选中试题类型!", "", "error");
-        return;
-    }
-    swal({
-        title: "是否确定删除?",
-        text: "你将会删除该题型下所有信息!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        closeOnConfirm: false
-    }, function () {
-        $.ajax({
-            type : "POST",
-            data : {id:testPaperTypeId},
-            dataType:"json",
-            url : contextPath+"testPaper/deleteTestPaperType",
-            beforeSend : function(xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            success: function(result){
-                if(result == 1){
-                    initTree();
-                    testPaperTypeId = '';
-                    reloadTable();
-                    swal("删除成功!", "", "success");
-                }else{
-                    swal("删除失败!", "", "error");
-                }
-            }
-        });
-    });
-}
-function deleteTestQuestion(id){
-    swal({
-        title: "是否确定删除?",
-        text: "你将会删除这条记录!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        closeOnConfirm: false
-    }, function () {
-        $.ajax({
-            type : "POST",
-            data : {id:id},
-            dataType:"json",
-            url : contextPath+"testPaper/deleteTestQuestion",
-            beforeSend : function(xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            success: function(result){
-                if(result == 1){
-                    reloadTable();
-                    swal("删除成功!", "", "success");
-                }else{
-                    swal("删除失败!", "", "error");
-                }
-            }
-        });
-    });
-}
-
-/**
- * 初始化树
- */
-function initTree(){
-    var zNodes = []; //zTree的数据属性
-    var setting = { //zTree的参数配置
-        data : {
-            simpleData : {
-                enable : true
-            }
-        },
-        async : {
-            enable : true,
-            type : "GET",
-            url : contextPath+"testPaper/getTestPaperTree",
-            beforeSend : function(xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-        },
-        callback : {
-            onAsyncSuccess : zTreeOnAsyncSuccess,//异步加载树完成后回调函数
-            onClick: zTreeOnClick
-        }
-    };
-    $.fn.zTree.init($("#testPaperGroup"), setting, zNodes);
-
-}
-
-/**
- * 树节点点击事件
- * @param event
- * @param treeId
- * @param treeNode
- */
-function zTreeOnClick(event, treeId, treeNode) {
-    //试卷
-    if(treeNode.value == 0){
-        testPaperId = (treeNode.id+"").replace('testPaper','');
-        testPaperTypeId = '';
-    }else{
-    //题型
-        testPaperTypeId = treeNode.id;
-        //刷新表格
-        if(initTableFirst){
-            initTable();
-        }else{
-            reloadTable();
-        }
-    }
-}
-
-/*
- * 异步加载树完成后回调函数
- */
-function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
-    var  treeObj = $.fn.zTree.getZTreeObj("testPaperGroup");
-    treeObj.expandAll(true);
-    var nodes = treeObj.getNodes();
-    var nodeArr = [];
-    for (var i = 0; i <nodes.length ; i++) {
-        nodeArr = getAllNodes(nodes[i],nodeArr);
-    }
-    if(nodeArr.length>0){
-        classesId= nodeArr[0].id;
-        var parentNode = nodeArr[0].getParentNode();
-
-    }
-}
-function expandAll(){
-    var  treeObj = $.fn.zTree.getZTreeObj("testPaperGroup");
-    treeObj.expandAll(true);
-}
-function closeAll(){
-    var  treeObj = $.fn.zTree.getZTreeObj("testPaperGroup");
-    treeObj.expandAll(false);
-}
-
-/**
- * 获取所有叶子节点
- */
-function getAllNodes(node,nodeArr){
-    if(node.isParent){//是父节点
-        for (var i = 0; i <node.children.length ; i++) {
-            getAllNodes(node.children[i],nodeArr);
-        }
-    }else{
-        if(node.value==1){
-            nodeArr.push(node);
-        }
-    }
-    return nodeArr;
 }
 
 
@@ -516,20 +220,7 @@ function getAllNodes(node,nodeArr){
  */
 function clearTestPaperForm(){
     $('#testPaperForm')[0].reset();
-    $('#form_id').val(null);
     $('#testPaperForm').validate().resetForm();
-}
-function clearTestPaperTypeForm(){
-    $('#testPaperTypeForm')[0].reset();
-    $('#testPaperTypeForm_id').val(null);
-    $('#testPaperTypeForm_testPaperId').val(null);
-    $('#testPaperTypeForm').validate().resetForm();
-}
-function clearTestQuestionForm(){
-    $('#testQuestionForm')[0].reset();
-    $('#testQuestionForm_id').val(null);
-    $('#testQuestionForm_testPaperTypeId').val(null);
-    $('#testQuestionForm').validate().resetForm();
 }
 
 

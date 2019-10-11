@@ -189,29 +189,7 @@ public class StudentController {
         }
     }
 
-    /**
-     * 保存错题
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "saveWrongQuestion",method = RequestMethod.POST)
-    public void saveWrongQuestion(HttpServletRequest request, HttpServletResponse response) {
-        int flag = 1;
-        String id = request.getParameter("studentId");
-        try{
-            studentService.saveWrongQuestion(request,Integer.parseInt(id));
-            logger.info(SecurityUtil.getCurUserName()+"保存错题信息成功");
-        }catch (Exception e){
-            flag = 0;
-            logger.error(SecurityUtil.getCurUserName()+"保存错题信息失败");
-        }
-        try {
-            response.getWriter().print(flag);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-    }
 
 
 

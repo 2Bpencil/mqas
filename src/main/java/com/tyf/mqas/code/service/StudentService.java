@@ -33,11 +33,10 @@ public class StudentService extends PageGetter<Student>{
     private StudentRepository studentRepository;
     @Autowired
     private WrongQuestionRepository wrongQuestionRepository;
-    @Autowired
-    private KnowledgeRepository knowledgeRepository;
+
     @Autowired
     private StudentRecordsRepository studentRecordsRepository;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 
     /**
      * 分页查询
@@ -94,34 +93,7 @@ public class StudentService extends PageGetter<Student>{
         return num > 0?false:true;
     }
 
-    /**
-     * 保存错题信息
-     * @param request
-     * @param id
-     */
-    public void saveWrongQuestion(HttpServletRequest request,Integer id){
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
-            Iterator iter = mr.getFileMap().values().iterator();
-            if (iter.hasNext()) {
-                MultipartFile file = (MultipartFile) iter.next();
-                List<String[]> dataList = PoiUtil.readImportFile(file,2);
-                List<WrongQuestion> list = new ArrayList<>();
-                Date date = new Date();
-                dataList.forEach(data->{
-                    WrongQuestion wrongQuestion = new WrongQuestion();
-                    wrongQuestion.setName(data[1]);
-                    wrongQuestion.setKnowledgeCode(data[2]);
-                    wrongQuestion.setTime(sdf.format(date));
-                    wrongQuestion.setStudentId(id);
-                    wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(data[2]).getName());
-                   list.add(wrongQuestion);
-                });
-                wrongQuestionRepository.saveAll(list);
-            }
-        }
 
-    }
 
     /**
      * 获取学生数量走势信息

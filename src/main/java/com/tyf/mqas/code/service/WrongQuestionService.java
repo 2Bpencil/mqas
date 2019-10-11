@@ -4,25 +4,43 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
+import com.tyf.mqas.code.dao.KnowledgeRepository;
 import com.tyf.mqas.code.dao.WrongQuestionRepository;
+import com.tyf.mqas.code.entity.TestPaper;
 import com.tyf.mqas.code.entity.WrongQuestion;
+import com.tyf.mqas.config.ConfigData;
+import com.tyf.mqas.utils.FileUtil;
+import com.tyf.mqas.utils.PoiUtil;
+import com.tyf.mqas.utils.SecurityUtil;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional
 public class WrongQuestionService extends PageGetter<WrongQuestion>{
 
+    private final static Logger logger = LoggerFactory.getLogger(WrongQuestionService.class);
+
     @Autowired
     private WrongQuestionRepository wrongQuestionRepository;
+    @Autowired
+    private KnowledgeRepository knowledgeRepository;
+    @Autowired
+    private ConfigData configData;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     /**
      * 分页查询
      * @param parameterMap
@@ -54,6 +72,10 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
      * @param id
      */
     public void deleteWrongQuestion(Integer id){
+        WrongQuestion wrongQuestion = wrongQuestionRepository.getOne(id);
+        logger.info(SecurityUtil.getCurUserName()+"-删除-错题 "+wrongQuestion.getName()+" 成功");
+        //删除文件
+        FileUtil.deleteFile(configData.getWrongQuestionDir()+"/"+wrongQuestion.getFileSaveName());
         wrongQuestionRepository.deleteById(id);
     }
 
@@ -132,7 +154,70 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         return JSONObject.toJSONString(dataMap);
     }
 
+    /**
+     * 保存错题信息
+     * @param request
+     * @param wrongQuestion
+     */
+    public void saveWrongQuestion(HttpServletRequest request, WrongQuestion wrongQuestion){
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
+            Iterator iter = mr.getFileMap().values().iterator();
+            if (iter.hasNext()) {
+                MultipartFile file = (MultipartFile) iter.next();
+                String realFileName = file.getOriginalFilename();
+                String suffix = realFileName.substring(realFileName.lastIndexOf(".") + 1);
+                wrongQuestion.setTime(sdf.format(new Date()));
+                wrongQuestion.setFileSuffix(suffix);
+                wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(wrongQuestion.getKnowledgeCode()).getName());
+                //保存路径
+                String saveDir = configData.getWrongQuestionDir();
+                String saveFileName = UUID.randomUUID().toString();
+                wrongQuestion.setFileSaveName(saveFileName);
+                InputStream input = null;
+                try {
+                    input = file.getInputStream();
+                    FileUtil.copyFile(input,saveDir+"/"+saveFileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                wrongQuestionRepository.save(wrongQuestion);
+            }
+        }
 
+    }
+
+    /**
+     * 下载试卷
+     * @param response
+     * @param id
+     */
+    public void downloadWrongQuestion(HttpServletResponse response, Integer id){
+        WrongQuestion wrongQuestion = wrongQuestionRepository.getOne(id);
+        logger.info(SecurityUtil.getCurUserName()+"-下载-错题 "+wrongQuestion.getName()+" 成功");
+        File file = new File(configData.getWrongQuestionDir()+"/"+wrongQuestion.getFileSaveName());
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            // 设置在下载框默认显示的文件名
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String((System.currentTimeMillis()+"."+wrongQuestion.getFileSuffix()).getBytes(), "iso-8859-1"));
+            // 指明response的返回对象是文件流
+            response.setContentType("application/octet-stream");
+            // 读出文件到response
+            // 这里是先需要把要把文件内容先读到缓冲区
+            // 再把缓冲区的内容写到response的输出流供用户下载
+            byte[] b = new byte[bufferedInputStream.available()];
+            bufferedInputStream.read(b);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(b);
+            // 人走带门
+            bufferedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

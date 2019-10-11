@@ -1,8 +1,10 @@
 var wrongQuestionTable;//表格对象
+var studentValidator;
 var $table = "#wrongQuestion_table";
 var studentId = '';
 $(document).ready(function(){
     studentId = $('#studentId').val();
+    validateData();
     initTable();
 });
 /**
@@ -47,6 +49,7 @@ function initTable(){
                 //data  和 row  是数据
                     var buttons = '';
                     buttons+='<button type="button" onclick="deleteWrongQuestion('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
+                    buttons+='<button type="button" onclick="downloadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs" >下载</button>&nbsp;&nbsp;';
                     return buttons;
                 }
             },
@@ -77,8 +80,111 @@ function initTable(){
         //这里可以接管错误处理，也可以不做任何处理
     }).DataTable();
 }
+/**
+ * 验证数据
+ */
+function validateData(){
 
+    studentValidator= $("#wrongQuestionForm").validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 100
+            },
+            code:{
+                required: true,
+                maxlength: 100
+            },
+            level:{
+                required: true,
+            },
+            file:{
+                required: true,
+            }
 
+        },
+        messages : {
+
+            name : {
+                required: "不能为空",
+                maxlength : "不超过100个字符",
+            },
+            code:{
+                required: "不能为空",
+                maxlength : "不超过100个字符",
+            },
+            level:{
+                required: "请选择错题级别",
+            },
+            file:{
+                required: "请上传文件",
+            }
+        },
+        submitHandler : function(form) {
+            saveWrongQuestion();
+
+        }
+    });
+}
+/**
+ * 上传错题
+ */
+function uploadWrongQuestion() {
+    $('#form_student_id').val(studentId);
+    showModal('wrongQuestionModal')
+}
+/**
+ * 清空表单
+ */
+function clearWrongForm(){
+    $('#wrongQuestionForm')[0].reset();
+}
+/**
+ * 下载试卷
+ */
+function downloadWrongQuestion(id){
+    var form = document.getElementById('downloadWrongQuestionForm');
+    $('#download_id').val(id);
+    form.submit();
+}
+/**
+ * 保存错题
+ */
+function saveWrongQuestion() {
+
+    // $('#wrongQuestionForm')[0].submit();
+    // clearWrongForm();
+    // showAlert("保存成功",'success');
+
+    var formData = new FormData();
+    formData.append("file",$("#form_file")[0].files[0]);
+    formData.append("name",$('#form_name').val());
+    formData.append("studentId",$('#form_student_id').val());
+    formData.append("knowledgeCode",$('#form_code').val());
+    formData.append("level",$('#form_level').val());
+    $.ajax({
+        type : "POST",
+        data : formData,
+        contentType : false, //必须
+        processData : false,
+        dataType:"json",
+        url : contextPath+"wrongQuestion/saveWrongQuestion",
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(result){
+            if(result == 1){
+                hideModal('wrongQuestionModal');
+                clearWrongForm();
+                reloadTable();
+                showAlert("保存成功",'success');
+            }else{
+                showAlert("保存失败",'error');
+            }
+        }
+    });
+
+}
 /**
  * 刷新表格
  */

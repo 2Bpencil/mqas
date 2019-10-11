@@ -16,10 +16,9 @@ public class WrongQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 225)
+    @Column(length = 100)
     private String name;
     @Column(length = 100)
-    //知识编码
     private String knowledgeCode;
     @Column
     private String time;
@@ -27,6 +26,10 @@ public class WrongQuestion {
     private Integer studentId;
     @Column(length = 100)
     private String knowledgeName;
+    @Column(length = 100)
+    private String fileSuffix;
+    @Column(length = 100)
+    private String fileSaveName;
 
 
     public Integer getId() {
@@ -75,6 +78,22 @@ public class WrongQuestion {
 
     public void setKnowledgeName(String knowledgeName) {
         this.knowledgeName = knowledgeName;
+    }
+
+    public String getFileSuffix() {
+        return fileSuffix;
+    }
+
+    public void setFileSuffix(String fileSuffix) {
+        this.fileSuffix = fileSuffix;
+    }
+
+    public String getFileSaveName() {
+        return fileSaveName;
+    }
+
+    public void setFileSaveName(String fileSaveName) {
+        this.fileSaveName = fileSaveName;
     }
 }
     

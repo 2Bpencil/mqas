@@ -60,7 +60,6 @@ function initTable(){
                     var buttons = '';
                     buttons+='<button type="button" onclick="editStudent('+data.id+')" class="btn btn-primary btn-xs" >编辑</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="deleteStudent('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="uploadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >上传错题</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="manageWrongQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题管理</button>&nbsp;&nbsp;';
                     buttons+='<button type="button" onclick="analysisOfMistakenQuestion('+data.id+')" class="btn btn-primary btn-xs"  >错题统计</button>';
                     return buttons;
@@ -163,6 +162,7 @@ function validateData(){
 
         }
     });
+
 }
 /**
  * 保存
@@ -356,54 +356,9 @@ function clearForm(){
     $('#form_classesId').val(null);
     $('#studentForm').validate().resetForm();
 }
-/**
- * 清空表单
- */
-function clearWrongForm(){
-    $('#wrongQuestionForm')[0].reset();
-}
 
-/**
- * 上传错题
- */
-function uploadWrongQuestion(id) {
-    $('#form_student_id').val(id);
-    showModal('wrongQuestionModal')
-}
-/**
- * 保存错题
- */
-function saveWrongQuestion() {
 
-    // $('#wrongQuestionForm')[0].submit();
-    // clearWrongForm();
-    // showAlert("保存成功",'success');
 
-    var formData = new FormData();
-    formData.append("file",$("#form_file")[0].files[0]);
-    formData.append("studentId",$('#form_student_id').val());
-    $.ajax({
-        type : "POST",
-        data : formData,
-        contentType : false, //必须
-        processData : false,
-        dataType:"json",
-        url : contextPath+"student/saveWrongQuestion",
-        beforeSend : function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(result){
-            if(result == 1){
-                hideModal('wrongQuestionModal');
-                clearWrongForm();
-                showAlert("保存成功",'success');
-            }else{
-                showAlert("保存失败",'error');
-            }
-        }
-    });
-
-}
 
 /**
  * 错题管理页面

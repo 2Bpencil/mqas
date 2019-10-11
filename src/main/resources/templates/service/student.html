@@ -44,10 +44,7 @@
             </div>
             <div class="col-sm-8">
                 <div class="title-action">
-                    <!--操作按钮-->
-                    <a href="#" class="btn btn-primary" data-toggle="modal" onclick="addStudent()">新增学生</a>
-                    <a th:href="@{/student/downloadTemplates}"  class="btn btn-primary" >下载错题模板</a>
-                    <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
+
                 </div>
             </div>
         </div>
@@ -73,6 +70,9 @@
                         <div class="ibox-title">
                             <h5 id="className">学生列表</h5>
                             <div class="ibox-tools">
+                                <!--操作按钮-->
+                                <a href="#" class="btn btn-primary" data-toggle="modal" onclick="addStudent()">新增学生</a>
+                                <a href="#" class="btn btn-primary" onclick="reloadTable()">刷新</a>
                             </div>
                         </div>
                         <div class="ibox-content">
@@ -145,28 +145,7 @@
 </div>
 
 
-<div class="modal inmodal" id="wrongQuestionModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"  onclick="clearWrongForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <i class="fa fa-file-excel-o modal-icon"></i>
-                <h4 class="modal-title">错题表单</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form" id="wrongQuestionForm" th:action="@{/student/saveWrongQuestion}" method="POST">
-                    <input type="hidden" id="form_student_id" name="studentId">
-                    <div class="form-group"><label>上传错题</label> <input type="file" id="form_file"  placeholder="" class="form-control" name="file"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearWrongForm();">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="saveWrongQuestion()">保存</button>
-                    </div>
-                </form>
-            </div>
 
-        </div>
-    </div>
-</div>
 
 <div th:replace="layout/default :: js('/js/service/student.js,/js/plugins/upload/ajaxfileupload.js')"></div>
 

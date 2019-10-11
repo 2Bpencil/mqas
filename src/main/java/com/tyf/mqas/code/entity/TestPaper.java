@@ -1,11 +1,11 @@
 package com.tyf.mqas.code.entity;
 
 import javax.persistence.*;
-
 /**
- * 试卷
- */
-
+* @Description:   试卷
+* @Author: Mr.Tan
+* @Date: 2019/10/10 14:39
+*/
 @Entity
 @Table(name = "test_paper")
 public class TestPaper {
@@ -13,13 +13,20 @@ public class TestPaper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(length = 50)
+    @Column(length = 100)
     private String name;
     @Column
     private String time;
+    @Column
+    //科目类型
+    private Integer type;
+    @Column(length = 100)
+    private String fileName;
+    @Column(length = 100)
+    private String saveFileName;
 
-    public Integer getId() {
+
+  public Integer getId() {
         return id;
     }
 
@@ -41,5 +48,29 @@ public class TestPaper {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getSaveFileName() {
+        return saveFileName;
+    }
+
+    public void setSaveFileName(String saveFileName) {
+        this.saveFileName = saveFileName;
     }
 }

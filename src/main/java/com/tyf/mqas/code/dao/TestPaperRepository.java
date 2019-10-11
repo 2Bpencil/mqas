@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface TestPaperRepository extends ExpandJpaRepository<TestPaper,Integer> {
 
 
-    @Query(value = "select count(*) from test_paper where name = ?2 and id != ?1", nativeQuery = true)
-    Integer getTestPaperByIdAndName(Integer id,String name);
 
     @Query(value = "select count(*) from test_paper where name = ?1", nativeQuery = true)
     Integer getTestPaperByName(String name);

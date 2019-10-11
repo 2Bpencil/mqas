@@ -33,7 +33,7 @@ spring:
     jpa:
       hibernate:
         ddl-auto: update
-      show-sql: true
+      show-sql: false
     #******************************************视图配置*****************************************
     thymeleaf:
       #开启模板缓存（默认值：true）
@@ -67,11 +67,11 @@ spring:
 
 
 #******************************************应用监控配置*****************************************
-management:
-  server:
-    port: 8084
-    ssl:
-      enabled: false
+#management:
+#  server:
+#    port: 8084
+#    ssl:
+#      enabled: false
 #******************************************日志配置*****************************************
 #logging:
  # file: springboot.log

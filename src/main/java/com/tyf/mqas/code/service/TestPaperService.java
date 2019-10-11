@@ -1,34 +1,37 @@
 package com.tyf.mqas.code.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
-import com.tyf.mqas.code.dao.KnowledgeRepository;
 import com.tyf.mqas.code.dao.TestPaperRepository;
-import com.tyf.mqas.code.dao.TestPaperTypeRepository;
-import com.tyf.mqas.code.dao.TestQuestionRepository;
 import com.tyf.mqas.code.entity.*;
-import org.apache.commons.lang.StringUtils;
+import com.tyf.mqas.config.ConfigData;
+
+import com.tyf.mqas.utils.FileUtil;
+import com.tyf.mqas.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @Service
 @Transactional
-public class TestPaperService extends PageGetter<TestQuestion> {
+public class TestPaperService extends PageGetter<TestPaper> {
+
+    private final static Logger logger = LoggerFactory.getLogger(TestPaperService.class);
 
     @Autowired
     private TestPaperRepository testPaperRepository;
     @Autowired
-    private TestPaperTypeRepository testPaperTypeRepository;
-    @Autowired
-    private TestQuestionRepository testQuestionRepository;
-    @Autowired
-    private KnowledgeRepository knowledgeRepository;
+    private ConfigData configData;
 
 
     /**
@@ -36,28 +39,19 @@ public class TestPaperService extends PageGetter<TestQuestion> {
      * @param parameterMap
      * @return
      */
-    public DataPage<TestQuestion> getDataPage(Map<String,String[]> parameterMap,String testPaperTypeId){
-
-        String sql = "SELECT test_question.* FROM test_question   WHERE test_question.test_paper_type_id = "+testPaperTypeId;
-        String countSql = "SELECT COUNT(*) FROM test_question   WHERE test_question.test_paper_type_id = "+testPaperTypeId;
-
-        return super.getPages(parameterMap,sql,countSql);
+    public DataPage<TestPaper> getDataPage(Map<String,String[]> parameterMap){
+        return super.getPages(parameterMap);
     }
 
 
     /**
      * 判断重复
      * @param name
-     * @param id
      * @return
      */
-    public boolean verifyTheRepeat(String name,String id){
+    public boolean verifyTheRepeat(String name){
         Integer num = null;
-        if(StringUtils.isNotBlank(id)){
-            num = testPaperRepository.getTestPaperByIdAndName(Integer.parseInt(id), name);
-        }else{
-            num = testPaperRepository.getTestPaperByName( name);
-        }
+        num = testPaperRepository.getTestPaperByName( name);
         return num > 0?false:true;
     }
 
@@ -66,76 +60,84 @@ public class TestPaperService extends PageGetter<TestQuestion> {
      * @param testPaper
      * @return
      */
-    public TestPaper saveOrEditTestPaper(TestPaper testPaper){
-        return testPaperRepository.save(testPaper);
+    public void saveOrEditTestPaper(TestPaper testPaper,HttpServletRequest request){
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
+            Iterator iter = mr.getFileMap().values().iterator();
+            if (iter.hasNext()) {
+                MultipartFile file = (MultipartFile) iter.next();
+                String realFileName = file.getOriginalFilename();
+                String suffix = realFileName.substring(realFileName.lastIndexOf(".") + 1);
+                //保存路径
+                String saveDir = configData.getTestPaperDir();
+                String saveFileName = UUID.randomUUID().toString();
+                String fileName = testPaper.getName()+"."+suffix;
+                testPaper.setSaveFileName(saveFileName);
+                testPaper.setFileName(fileName);
+                InputStream input = null;
+                try {
+                    input = file.getInputStream();
+                    FileUtil.copyFile(input,saveDir+"/"+saveFileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                testPaperRepository.save(testPaper);
+            }
+        }
+
     }
 
-    public TestPaperType saveOrEditTestPaperType(TestPaperType testPaperType){
-        return testPaperTypeRepository.save(testPaperType);
-    }
 
-    public TestQuestion saveOrEditTestQuestion(TestQuestion testQuestion){
-        Knowledge knowledge = knowledgeRepository.findByCode(testQuestion.getKnowledgeCode());
-        testQuestion.setKnowledgeName(knowledge.getName());
-        return testQuestionRepository.save(testQuestion);
-    }
 
-    /**
-     *
-     * @return
-     */
-    public String getTestPaperTreeJson(){
-        List<TestPaper> paperList = testPaperRepository.findAll();
-        List<Tree> treeList = new ArrayList<>();
-        paperList.forEach(testPaper -> {
-            Tree tree = new Tree();
-            tree.setName(testPaper.getName());
-            tree.setId("testPaper"+testPaper.getId());
-            tree.setValue("0");
-            tree.setpId("");
-            tree.setIcon("/img/icon/test.png");
-            treeList.add(tree);
-            List<TestPaperType> testPaperTypeList = testPaperTypeRepository.findAllByTestPaperId(testPaper.getId());
-            testPaperTypeList.forEach(testPaperType -> {
-                Tree tree2 = new Tree();
-                tree2.setName(testPaperType.getName());
-                tree2.setId(testPaperType.getId().toString());
-                tree2.setValue("1");
-                tree2.setIcon("/img/icon/testType.png");
-                tree2.setpId("testPaper"+testPaper.getId());
-                treeList.add(tree2);
-            });
-        });
-        return JSONArray.toJSONString(treeList);
-    }
 
     public TestPaper getTestPaper(Integer id){
         return testPaperRepository.getOne(id);
     }
-
-    public TestPaperType getTestPaperType(Integer id){
-        return testPaperTypeRepository.getOne(id);
-    }
-
-    public TestQuestion getTestQuestion(Integer id){
-        return testQuestionRepository.getOne(id);
-    }
-
-    public void deleteTestQuestion(Integer id){
-        testQuestionRepository.deleteById(id);
-    }
-
-    public void deleteTestPaperType(Integer id){
-        testQuestionRepository.deleteByTestPaperTypeId(id);
-        testPaperTypeRepository.deleteById(id);
-    }
+    /** 
+    * @Description: 删除
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/10 19:14
+    */ 
     public void deleteTestPaper(Integer id){
-        List<TestPaperType> typeList = testPaperTypeRepository.findAllByTestPaperId(id);
-        typeList.forEach(testPaperType -> {
-            testQuestionRepository.deleteByTestPaperTypeId(testPaperType.getId());
-            testPaperTypeRepository.deleteById(testPaperType.getId());
-        });
+        TestPaper testPaper = testPaperRepository.getOne(id);
+        logger.info(SecurityUtil.getCurUserName()+"-删除-试卷 "+testPaper.getName()+" 成功");
+        //删除文件
+        FileUtil.deleteFile(configData.getTestPaperDir()+"/"+testPaper.getSaveFileName());
         testPaperRepository.deleteById(id);
+    }
+
+    /**
+     * 下载试卷
+     * @param response
+     * @param id
+     */
+    public void downloadTestPaper(HttpServletResponse response,Integer id){
+        TestPaper testPaper = testPaperRepository.getOne(id);
+        logger.info(SecurityUtil.getCurUserName()+"-下载-试卷 "+testPaper.getName()+" 成功");
+        File file = new File(configData.getTestPaperDir()+"/"+testPaper.getSaveFileName());
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            // 设置在下载框默认显示的文件名
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String((testPaper.getFileName()).getBytes(), "iso-8859-1"));
+            // 指明response的返回对象是文件流
+            response.setContentType("application/octet-stream");
+            // 读出文件到response
+            // 这里是先需要把要把文件内容先读到缓冲区
+            // 再把缓冲区的内容写到response的输出流供用户下载
+            byte[] b = new byte[bufferedInputStream.available()];
+            bufferedInputStream.read(b);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(b);
+            // 人走带门
+            bufferedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

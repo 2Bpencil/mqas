@@ -58,6 +58,44 @@ public class WrongQuestionController {
     }
 
     /**
+     * 保存错题
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "saveWrongQuestion",method = RequestMethod.POST)
+    public void saveWrongQuestion(@ModelAttribute("wrongQuestion")WrongQuestion wrongQuestion, HttpServletRequest request, HttpServletResponse response) {
+        int flag = 1;
+        try{
+            wrongQuestionService.saveWrongQuestion(request,wrongQuestion);
+            logger.info(SecurityUtil.getCurUserName()+"保存错题信息成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            flag = 0;
+            logger.error(SecurityUtil.getCurUserName()+"保存错题信息失败");
+        }
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * @Description: 下载
+     * @Param:
+     * @return:
+     * @Author: Mr.Tan
+     * @Date: 2019/10/10 19:39
+     */
+    @RequestMapping(value = "downloadWrongQuestion",method = RequestMethod.GET)
+    public void downloadTestPaper(HttpServletRequest request, HttpServletResponse response){
+        String id = request.getParameter("id");
+        wrongQuestionService.downloadWrongQuestion(response,Integer.parseInt(id));
+    }
+
+
+    /**
      * 错题分析
      * @param request
      * @return
