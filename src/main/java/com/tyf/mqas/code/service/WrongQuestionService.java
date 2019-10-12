@@ -242,7 +242,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             //复制文件到临时文件夹
             FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
             try {
-                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding, "学生错题");
+                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding , "学生错题");
             } catch (IOException e) {
                 e.printStackTrace();
             }
