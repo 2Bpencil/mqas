@@ -10,6 +10,8 @@ import com.tyf.mqas.code.dao.WrongQuestionRepository;
 import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.entity.StudentRecords;
 import com.tyf.mqas.code.entity.WrongQuestion;
+import com.tyf.mqas.config.ConfigData;
+import com.tyf.mqas.utils.FileUtil;
 import com.tyf.mqas.utils.PoiUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class StudentService extends PageGetter<Student>{
 
     @Autowired
     private StudentRecordsRepository studentRecordsRepository;
+    @Autowired
+    private ConfigData configData;
 
 
     /**
@@ -65,6 +69,10 @@ public class StudentService extends PageGetter<Student>{
      */
     public void deleteStudent(Integer id){
         studentRepository.deleteById(id);
+        List<WrongQuestion> wrongQuestions = wrongQuestionRepository.findAllByStudentId(id);
+        wrongQuestions.forEach(q->{
+            FileUtil.deleteFile(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
+        });
         wrongQuestionRepository.deleteAllByStudentId(id);
     }
 

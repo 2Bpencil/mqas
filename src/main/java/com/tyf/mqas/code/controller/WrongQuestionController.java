@@ -218,4 +218,43 @@ public class WrongQuestionController {
             e.printStackTrace();
         }
     }
+    /** 
+    * @Description:  导出学生错题
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan
+    * @Date: 2019/10/12 11:25
+    */ 
+    @RequestMapping(value = "exportStudentWrongQuestion",method = RequestMethod.GET)
+    public void exportStudentWrongQuestion(HttpServletRequest request, HttpServletResponse response){
+        String studentId = request.getParameter("studentId");
+        String code = request.getParameter("code");
+        String level = request.getParameter("level");
+        String export_start_time = request.getParameter("export_start_time");
+        String export_end_time = request.getParameter("export_end_time");
+        wrongQuestionService.exportStudentWrongQuestion(Integer.parseInt(studentId),code,level,export_start_time,export_end_time,response);
+    }
+    /** 
+    * @Description: 判断是否有文件
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/12 17:16
+    */ 
+    @RequestMapping(value = "hasStudentWrongQuestion",method = RequestMethod.POST)
+    public void hasStudentWrongQuestion(HttpServletRequest request, HttpServletResponse response){
+        boolean flag = false;
+        String studentId = request.getParameter("studentId");
+        String code = request.getParameter("code");
+        String level = request.getParameter("level");
+        String export_start_time = request.getParameter("export_start_time");
+        String export_end_time = request.getParameter("export_end_time");
+        flag = wrongQuestionService.hasStudentWrongQuestion(Integer.parseInt(studentId),code,level,export_start_time,export_end_time);
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
  }

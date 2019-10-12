@@ -27,6 +27,7 @@ public class Starter implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         FileUtil.creatFoler(configData.getTestPaperDir());
         FileUtil.creatFoler(configData.getWrongQuestionDir());
+        FileUtil.creatFoler(configData.getWrongQuestionDir()+"/temp");
         logger.info("------完成初始化存储文件夹");
     }
 

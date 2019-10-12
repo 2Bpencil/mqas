@@ -5,7 +5,7 @@ server:
     uri-encoding: UTF-8
   servlet:
     session:
-      timeout: 30
+      timeout: 60s
 
 spring:
     #***************************************数据源配置***************************************

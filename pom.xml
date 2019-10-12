@@ -111,7 +111,12 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.14</version>
         </dependency>
-
+        <!-- zip -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.2</version>
+        </dependency>
 
 
 

@@ -31,6 +31,8 @@ public interface WrongQuestionRepository extends ExpandJpaRepository<WrongQuesti
 
     void deleteAllByStudentId(Integer studentId);
 
+    List<WrongQuestion> findAllByStudentId(Integer studentId);
+
     /**
      * 获取重点知识
      * @param studentId

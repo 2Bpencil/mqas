@@ -22,13 +22,21 @@ public class FileUtil {
     * @Author: Mr.Tan 
     * @Date: 2019/10/11 9:27
     */ 
-    public static void copyFileUsingFileChannels(File source,String pathNew) throws IOException {
+    public static void copyFileUsingFileChannels(File source,String pathNew){
         File fileNew = new File(pathNew);
-        FileChannel  inputChannel = new FileInputStream(source).getChannel();
-        FileChannel outputChannel = new FileOutputStream(fileNew).getChannel();
-        outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-        outputChannel.close();
-        inputChannel.close();
+        FileChannel  inputChannel = null;
+        try {
+            inputChannel = new FileInputStream(source).getChannel();
+            FileChannel outputChannel = new FileOutputStream(fileNew).getChannel();
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+            outputChannel.close();
+            inputChannel.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -152,6 +160,7 @@ public class FileUtil {
         }
         return flag;
     }
+
 
 }
     

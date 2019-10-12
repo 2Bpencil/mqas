@@ -27,9 +27,9 @@ function initTable(){
             },
             { "data": "name",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
-                width: '40%'
+                width: '30%'
             },
-            { "data": "type",
+            { "data": "level",
                 "searchable":false,
                 render : function(data,type, row, meta) {
                     var subject = '';

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.KnowledgeRepository;
+import com.tyf.mqas.code.dao.WrongQuestionDao;
 import com.tyf.mqas.code.dao.WrongQuestionRepository;
 import com.tyf.mqas.code.entity.TestPaper;
 import com.tyf.mqas.code.entity.WrongQuestion;
@@ -12,10 +13,12 @@ import com.tyf.mqas.config.ConfigData;
 import com.tyf.mqas.utils.FileUtil;
 import com.tyf.mqas.utils.PoiUtil;
 import com.tyf.mqas.utils.SecurityUtil;
+import com.tyf.mqas.utils.ZipTools;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -39,6 +42,9 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     private KnowledgeRepository knowledgeRepository;
     @Autowired
     private ConfigData configData;
+    @Autowired
+    private WrongQuestionDao wrongQuestionDao;
+
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     /**
@@ -188,7 +194,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     }
 
     /**
-     * 下载试卷
+     * 下载错题
      * @param response
      * @param id
      */
@@ -216,6 +222,70 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    /** 
+    * @Description: 导出学生错题
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/12 14:16
+    */ 
+    public void exportStudentWrongQuestion(Integer studentId,String code,String level,String startTime,String endTime,HttpServletResponse response){
+        String uuid = UUID.randomUUID().toString();
+        String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
+        //创建临时文件夹
+        FileUtil.creatFoler(tempFolder);
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,code,level,startTime,endTime);
+        wrongQuestionList.forEach(q->{
+            File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
+            //复制文件到临时文件夹
+            FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
+            try {
+                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding, "学生错题");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        File file = new File(tempFolder+".zip");
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            // 设置在下载框默认显示的文件名
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String((uuid+".zip").getBytes(), "iso-8859-1"));
+            // 指明response的返回对象是文件流
+            response.setContentType("application/octet-stream");
+            // 读出文件到response
+            // 这里是先需要把要把文件内容先读到缓冲区
+            // 再把缓冲区的内容写到response的输出流供用户下载
+            byte[] b = new byte[bufferedInputStream.available()];
+            bufferedInputStream.read(b);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(b);
+            // 人走带门
+            bufferedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //删除生成的临时文件
+        FileUtil.delFolder(tempFolder);
+        FileUtil.deleteFile(tempFolder+".zip");
+    }
+    /** 
+    * @Description: 判断是否有文件 
+    * @Param:  
+    * @return:
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/12 17:17
+    */ 
+    public boolean hasStudentWrongQuestion(Integer studentId,String code,String level,String startTime,String endTime){
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,code,level,startTime,endTime);
+        if(wrongQuestionList.size()>0){
+            return true;
+        }else{
+            return false;
         }
     }
 

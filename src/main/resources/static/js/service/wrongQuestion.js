@@ -1,5 +1,6 @@
 var wrongQuestionTable;//表格对象
 var studentValidator;
+var exportValidator;
 var $table = "#wrongQuestion_table";
 var studentId = '';
 $(document).ready(function(){
@@ -30,8 +31,23 @@ function initTable(){
             { "data": "name",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
                 'orderable' : false ,
-                width: '50%'
+                width: '30%'
 
+            },
+            { "data": "level",
+                "searchable":false,
+                render : function(data,type, row, meta) {
+                    var subject = '';
+                    if(data == 0){
+                        subject = '简单';
+                    }else if(data == 1){
+                        subject = '普通';
+                    }else{
+                        subject = '复杂';
+                    }
+                    return subject;
+                },
+                width: '20%'
             },
             { "data": "knowledge_name",
                 'orderable' : false ,
@@ -125,6 +141,74 @@ function validateData(){
 
         }
     });
+
+
+    exportValidator= $("#exportForm").validate({
+        rules: {
+            // code:{
+            //     required: true,
+            //     maxlength: 100
+            // },
+            // level:{
+            //     required: true,
+            // },
+            export_start_time:{
+                required: true,
+            },
+            export_end_time:{
+                required: true,
+            },
+
+
+        },
+        messages : {
+
+            // code:{
+            //     required: "不能为空",
+            //     maxlength : "不超过100个字符",
+            // },
+            // level:{
+            //     required: "请选择错题级别",
+            // },
+            export_start_time:{
+                required: "不能为空",
+            },
+            export_end_time:{
+                required: "不能为空",
+            },
+        },
+        submitHandler : function(form) {
+            var formData = new FormData();
+            formData.append("code",$('#export_form_code').val());
+            formData.append("studentId",$('#export_form_student_id').val());
+            formData.append("level",$('#export_form_level').val());
+            formData.append("export_start_time",$('#export_start_time').val());
+            formData.append("export_end_time",$('#export_end_time').val());
+            $.ajax({
+                type : "POST",
+                data : formData,
+                contentType : false, //必须
+                processData : false,
+                dataType:"json",
+                url : contextPath+"wrongQuestion/hasStudentWrongQuestion",
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function(result){
+                    if(result){
+                        exportZip();
+                        hideModal('exportModal');
+                        clearExportForm();
+                    }else{
+                        showAlert("没有可导出的错题文件",'error');
+                    }
+                }
+            });
+
+
+
+        }
+    });
 }
 /**
  * 上传错题
@@ -138,6 +222,7 @@ function uploadWrongQuestion() {
  */
 function clearWrongForm(){
     $('#wrongQuestionForm')[0].reset();
+    $('#wrongQuestionForm').validate().resetForm();
 }
 /**
  * 下载试卷
@@ -241,6 +326,25 @@ function backPrevious() {
     window.location.href=contextPath+"student/studentManage";
 }
 
+/**
+ * 弹出导出配置表单
+ */
+function exportWrongQuestion(){
+    $('#export_form_student_id').val(studentId);
+    showModal('exportModal')
+}
+
+/**
+ * 导出zip包
+ */
+function exportZip(){
+    var form = document.getElementById('exportForm');
+    form.submit();
+}
+function clearExportForm(){
+    $('#exportForm')[0].reset();
+    $('#exportForm').validate().resetForm();
+}
 
 /*常量*/
 var CONSTANT = {

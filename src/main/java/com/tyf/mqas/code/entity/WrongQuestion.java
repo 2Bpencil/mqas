@@ -30,6 +30,8 @@ public class WrongQuestion {
     private String fileSuffix;
     @Column(length = 100)
     private String fileSaveName;
+    @Column
+    private Integer level;
 
 
     public Integer getId() {
@@ -94,6 +96,14 @@ public class WrongQuestion {
 
     public void setFileSaveName(String fileSaveName) {
         this.fileSaveName = fileSaveName;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }
     
