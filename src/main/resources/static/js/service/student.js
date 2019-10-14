@@ -162,6 +162,76 @@ function validateData(){
 
         }
     });
+    $("#exportForm").validate({
+        rules: {
+            // code:{
+            //     required: true,
+            //     maxlength: 100
+            // },
+            // level:{
+            //     required: true,
+            // },
+            export_start_time:{
+                required: true,
+            },
+            export_end_time:{
+                required: true,
+            },
+
+
+        },
+        messages : {
+
+            // code:{
+            //     required: "不能为空",
+            //     maxlength : "不超过100个字符",
+            // },
+            // level:{
+            //     required: "请选择错题级别",
+            // },
+            export_start_time:{
+                required: "不能为空",
+            },
+            export_end_time:{
+                required: "不能为空",
+            },
+        },
+        submitHandler : function(form) {
+
+
+
+            var formData = new FormData();
+            formData.append("code",$('#export_form_code').val());
+            formData.append("classId",$('#export_form_class_id').val());
+            formData.append("type",$('#export_form_type').val());
+            formData.append("level",$('#export_form_level').val());
+            formData.append("export_start_time",$('#export_start_time').val());
+            formData.append("export_end_time",$('#export_end_time').val());
+            $.ajax({
+                type : "POST",
+                data : formData,
+                contentType : false, //必须
+                processData : false,
+                dataType:"json",
+                url : contextPath+"wrongQuestion/hasClassWrongQuestion",
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function(result){
+                    if(result){
+                        exportZip();
+                        hideModal('exportModal');
+                        clearExportForm();
+                    }else{
+                        showAlert("没有可导出的错题文件",'error');
+                    }
+                }
+            });
+
+
+
+        }
+    });
 
 }
 /**
@@ -302,11 +372,16 @@ function initTree(){
  */
 function zTreeOnClick(event, treeId, treeNode) {
     if(treeNode.value == 1){
+        $("#export_form_type").val(0);//班级
+        $("#export_form_class_id").val(treeNode.id);
         classesId =treeNode.id;
         var parentNode = treeNode.getParentNode();
         $('#className').html(parentNode.name+treeNode.name+"学生列表");
         studentTable.settings()[0].ajax.data={classesId:classesId};
         reloadTable();
+    }else{
+        $("#export_form_type").val(1);//年级
+        $("#export_form_class_id").val(treeNode.id);
     }
 }
 
@@ -383,6 +458,29 @@ function analysisOfClass(){
         return;
     }
     window.location.href=contextPath+"classes/classAnalysis?id="+classesId;
+}
+/**
+ * 弹出导出配置表单
+ */
+function exportWrongQuestion(){
+    console.log($('#export_form_class_id').val());
+    if($('#export_form_class_id').val()=='' || $('#export_form_class_id').val()==null){
+        showAlert("请选择要导出的年级或者班级",'error');
+        return;
+    }
+    showModal('exportModal')
+}
+
+/**
+ * 导出zip包
+ */
+function exportZip(){
+    var form = document.getElementById('exportForm');
+    form.submit();
+}
+function clearExportForm(){
+    $('#exportForm')[0].reset();
+    $('#exportForm').validate().resetForm();
 }
 
 /*常量*/

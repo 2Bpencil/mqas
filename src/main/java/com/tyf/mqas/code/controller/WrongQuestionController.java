@@ -257,4 +257,45 @@ public class WrongQuestionController {
         }
     }
 
+    /**
+    * @Description:  导出年级班级错题
+    * @Param:
+    * @return:
+    * @Author: Mr.Tan
+    * @Date: 2019/10/14 9:52
+    */
+    @RequestMapping(value = "exportClassWrongQuestion",method = RequestMethod.GET)
+    public void exportClassWrongQuestion(HttpServletRequest request, HttpServletResponse response){
+        String type = request.getParameter("type");
+        String classId = request.getParameter("classId");
+        String code = request.getParameter("code");
+        String level = request.getParameter("level");
+        String export_start_time = request.getParameter("export_start_time");
+        String export_end_time = request.getParameter("export_end_time");
+        wrongQuestionService.exportClassWrongQuestion(Integer.parseInt(classId),Integer.parseInt(type),code,level,export_start_time,export_end_time,response);
+    }
+    /**
+    * @Description: 判断年级或者班级时候有错题可以导出
+    * @Param:
+    * @return:
+    * @Author: Mr.Tan
+    * @Date: 2019/10/14 9:52
+    */
+    @RequestMapping(value = "hasClassWrongQuestion",method = RequestMethod.POST)
+    public void hasClassWrongQuestion(HttpServletRequest request, HttpServletResponse response){
+        boolean flag = false;
+        //0 班级  1年级
+        String type = request.getParameter("type");
+        String classId = request.getParameter("classId");
+        String code = request.getParameter("code");
+        String level = request.getParameter("level");
+        String export_start_time = request.getParameter("export_start_time");
+        String export_end_time = request.getParameter("export_end_time");
+        flag = wrongQuestionService.hasClassWrongQuestion(Integer.parseInt(classId),Integer.parseInt(type),code,level,export_start_time,export_end_time);
+        try {
+            response.getWriter().print(flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
  }

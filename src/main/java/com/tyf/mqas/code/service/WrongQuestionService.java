@@ -274,6 +274,57 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         FileUtil.deleteFile(tempFolder+".zip");
     }
     /** 
+    * @Description:  导出年级班级错题
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/14 11:19
+    */ 
+    public void exportClassWrongQuestion(Integer classId,Integer type,String code,String level,String startTime,String endTime,HttpServletResponse response){
+        String uuid = UUID.randomUUID().toString();
+        String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
+        //创建临时文件夹
+        FileUtil.creatFoler(tempFolder);
+
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(classId,type,code,level,startTime,endTime);
+        wrongQuestionList.forEach(q->{
+            File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
+            //复制文件到临时文件夹
+            FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
+            try {
+                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding , "学生错题");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        File file = new File(tempFolder+".zip");
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            // 设置在下载框默认显示的文件名
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String((uuid+".zip").getBytes(), "iso-8859-1"));
+            // 指明response的返回对象是文件流
+            response.setContentType("application/octet-stream");
+            // 读出文件到response
+            // 这里是先需要把要把文件内容先读到缓冲区
+            // 再把缓冲区的内容写到response的输出流供用户下载
+            byte[] b = new byte[bufferedInputStream.available()];
+            bufferedInputStream.read(b);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(b);
+            // 人走带门
+            bufferedInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //删除生成的临时文件
+        FileUtil.delFolder(tempFolder);
+        FileUtil.deleteFile(tempFolder+".zip");
+    }
+
+    /** 
     * @Description: 判断是否有文件 
     * @Param:  
     * @return:
@@ -282,6 +333,20 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     */ 
     public boolean hasStudentWrongQuestion(Integer studentId,String code,String level,String startTime,String endTime){
         List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,code,level,startTime,endTime);
+        if(wrongQuestionList.size()>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    /** 
+    * @Description:  判断年级班级是否有文件
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/14 11:20
+    */ 
+    public boolean hasClassWrongQuestion(Integer studentId,Integer type,String code,String level,String startTime,String endTime){
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(studentId,type,code,level,startTime,endTime);
         if(wrongQuestionList.size()>0){
             return true;
         }else{

@@ -55,6 +55,7 @@
                         <div class="ibox-title">
                             <h5>班级</h5>
                             <div class="ibox-tools">
+                                <button class="btn btn-primary btn-xs" type="button"  onclick="exportWrongQuestion()">导出错题 </button>
                                 <button class="btn btn-primary btn-xs" type="button"  onclick="analysisOfClass()"><i class="fa fa-bar-chart-o"></i>统计 </button>
                             </div>
                         </div>
@@ -143,7 +144,46 @@
         </div>
     </div>
 </div>
+<!--导出错题-->
+<div class="modal inmodal" id="exportModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"  onclick="clearExportForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <i class="fa fa-file-excel-o modal-icon"></i>
+                <h4 class="modal-title">导出表单</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="exportForm" th:action="@{/wrongQuestion/exportClassWrongQuestion}" method="GET">
+                    <input type="hidden" id="export_form_type" name="type" value="">
+                    <input type="hidden" id="export_form_class_id" name="classId" value="">
+                    <div class="form-group"><label>知识点代码</label> <input type="text" id="export_form_code"  placeholder="" class="form-control" name="code"></div>
+                    <div class="form-group">
+                        <label>错题级别</label>
+                        <select id="export_form_level"  class="form-control" name="level">
+                            <option value="">--请选择错题级别--</option>
+                            <option value="0">简单</option>
+                            <option value="1">普通</option>
+                            <option value="2">复杂</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>开始日期</label>
+                        <input class="Wdate form-control"  name="export_start_time" id="export_start_time" readonly="readonly" type="text"  onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'export_end_time\')}'})" >
+                    </div>
+                    <div class="form-group"><label>结束日期</label>
+                        <input class="Wdate form-control"  name="export_end_time" id="export_end_time" readonly="readonly" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'export_start_time\')}'})"  >
+                    </div>
 
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearExportForm();">关闭</button>
+                        <button type="submit" class="btn btn-primary" >导出</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 
