@@ -27,5 +27,7 @@ public interface KnowledgeRepository extends ExpandJpaRepository<Knowledge,Integ
     Integer getRsNumByKnowledgeId(Integer knowledgeId);
 
     Knowledge findByCode(String code);
+    @Query(value = "select code from knowledge where path like %?1%", nativeQuery = true)
+    List<String> findCodeByParentCode(String code);
 
 }

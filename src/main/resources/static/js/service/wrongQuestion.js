@@ -5,6 +5,9 @@ var $table = "#wrongQuestion_table";
 var studentId = '';
 $(document).ready(function(){
     studentId = $('#studentId').val();
+    initKnowledgeTree();
+    initExportKnowledgeTree();
+    initFuzzySearch();
     validateData();
     initTable();
 });
@@ -107,7 +110,7 @@ function validateData(){
                 required: true,
                 maxlength: 100
             },
-            code:{
+            knowledge_name:{
                 required: true,
                 maxlength: 100
             },
@@ -125,7 +128,7 @@ function validateData(){
                 required: "不能为空",
                 maxlength : "不超过100个字符",
             },
-            code:{
+            knowledge_name:{
                 required: "不能为空",
                 maxlength : "不超过100个字符",
             },
@@ -223,9 +226,10 @@ function uploadWrongQuestion() {
 function clearWrongForm(){
     $('#wrongQuestionForm')[0].reset();
     $('#wrongQuestionForm').validate().resetForm();
+    $('#knowledge_tree_div').hide();
 }
 /**
- * 下载试卷
+ * 下载错题
  */
 function downloadWrongQuestion(id){
     var form = document.getElementById('downloadWrongQuestionForm');
@@ -237,15 +241,13 @@ function downloadWrongQuestion(id){
  */
 function saveWrongQuestion() {
 
-    // $('#wrongQuestionForm')[0].submit();
-    // clearWrongForm();
-    // showAlert("保存成功",'success');
 
     var formData = new FormData();
     formData.append("file",$("#form_file")[0].files[0]);
     formData.append("name",$('#form_name').val());
     formData.append("studentId",$('#form_student_id').val());
     formData.append("knowledgeCode",$('#form_code').val());
+    formData.append("knowledgeName",$('#form_knowledge_name').val());
     formData.append("level",$('#form_level').val());
     $.ajax({
         type : "POST",
@@ -344,8 +346,108 @@ function exportZip(){
 function clearExportForm(){
     $('#exportForm')[0].reset();
     $('#exportForm').validate().resetForm();
+    $('#export_form_code').val(null)
 }
 
+/**
+ * 初始化知识树
+ */
+function initKnowledgeTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : false,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "ps",
+                "N" : "ps"
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            url : contextPath+"knowledge/getKnowledgeTree",
+
+        },
+        callback : {
+            onClick: zTreeOnClick
+        }
+    };
+    $.fn.zTree.init($("#knowledge_tree"), setting, zNodes);
+}
+/**
+ * 树节点点击事件
+ * @param event
+ * @param treeId
+ * @param treeNode
+ */
+function zTreeOnClick(event, treeId, treeNode) {
+    $('#form_code').val(treeNode.value);
+    $('#form_knowledge_name').val(treeNode.value2);
+    $('#knowledge_tree_div').hide();
+}
+/**
+ * 初始化导出错题知识树
+ */
+function initExportKnowledgeTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : false,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "ps",
+                "N" : "ps"
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            url : contextPath+"knowledge/getKnowledgeTree",
+
+        },
+        callback : {
+            onClick: zTreeOnClickExport
+        }
+    };
+    $.fn.zTree.init($("#export_knowledge_tree"), setting, zNodes);
+}
+function zTreeOnClickExport(event, treeId, treeNode) {
+    $('#export_form_code').val(treeNode.value);
+    $('#export_form_knowledge_name').val(treeNode.value2);
+    $('#export_knowledge_tree_div').hide();
+}
+
+/**
+ * 显示知识树
+ */
+function knowledgeShow(id){
+    $('#'+id).show();
+}
+
+/**
+ * 初始化模糊搜索方法
+ */
+function initFuzzySearch(){
+    fuzzySearch('knowledge_tree','#search_tree',null,true); //初始化模糊搜索方法
+    fuzzySearch('export_knowledge_tree','#export_search_tree',null,true); //初始化模糊搜索方法
+}
 /*常量*/
 var CONSTANT = {
     DATA_TABLES : {

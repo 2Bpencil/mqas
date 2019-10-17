@@ -7,6 +7,7 @@ import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.KnowledgeRepository;
 import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Knowledge;
+import com.tyf.mqas.code.entity.Tree;
 import com.tyf.mqas.code.entity.TreeTable;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,28 @@ public class KnowledgeService {
             treeTables.add(treeTable);
         });
         return JSONArray.toJSONString(treeTables);
+    }
+    /** 
+    * @Description: 获取所有知识树json
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/17 11:35
+    */ 
+    public String getKnowledgeTree(){
+        List<Knowledge> list = knowledgeRepository.findAllBySort();
+        List<Tree> treeList = new ArrayList<>();
+        list.forEach(k->{
+            Tree tree = new Tree();
+            tree.setId(k.getId().toString());
+            tree.setpId(k.getPid()==0?"":k.getPid().toString());
+            tree.setName(k.getName());
+            tree.setValue2(k.getName());
+            tree.setValue(k.getCode());
+            tree.setIcon("/img/icon/knowledge.png");
+            treeList.add(tree);
+        });
+        return JSONArray.toJSONString(treeList);
     }
 
     /**
@@ -124,5 +147,6 @@ public class KnowledgeService {
         }
         return true;
     }
+
 
 }

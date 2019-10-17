@@ -58,6 +58,22 @@ public class KnowledgeController {
             e.printStackTrace();
         }
     }
+    /** 
+    * @Description: 获取知识树
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/17 11:40
+    */ 
+    @RequestMapping(value = "getKnowledgeTree",method = RequestMethod.GET)
+    public void getKnowledgeTree(HttpServletRequest request, HttpServletResponse response){
+        String json = knowledgeService.getKnowledgeTree();
+        try {
+            response.getWriter().print(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
     * 保存或者编辑实体

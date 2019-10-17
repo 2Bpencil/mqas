@@ -175,7 +175,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
                 String suffix = realFileName.substring(realFileName.lastIndexOf(".") + 1);
                 wrongQuestion.setTime(sdf.format(new Date()));
                 wrongQuestion.setFileSuffix(suffix);
-                wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(wrongQuestion.getKnowledgeCode()).getName());
+//                wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(wrongQuestion.getKnowledgeCode()).getName());
                 //保存路径
                 String saveDir = configData.getWrongQuestionDir();
                 String saveFileName = UUID.randomUUID().toString();
@@ -236,7 +236,8 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
         //创建临时文件夹
         FileUtil.creatFoler(tempFolder);
-        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,code,level,startTime,endTime);
+        String codes = getAllKnowledgeCodeByCode(code);
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,codes,level,startTime,endTime);
         wrongQuestionList.forEach(q->{
             File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
             //复制文件到临时文件夹
@@ -248,27 +249,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             }
         });
         File file = new File(tempFolder+".zip");
-        try {
-            InputStream is = new FileInputStream(file);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
-            // 设置在下载框默认显示的文件名
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String((uuid+".zip").getBytes(), "iso-8859-1"));
-            // 指明response的返回对象是文件流
-            response.setContentType("application/octet-stream");
-            // 读出文件到response
-            // 这里是先需要把要把文件内容先读到缓冲区
-            // 再把缓冲区的内容写到response的输出流供用户下载
-            byte[] b = new byte[bufferedInputStream.available()];
-            bufferedInputStream.read(b);
-            OutputStream outputStream = response.getOutputStream();
-            outputStream.write(b);
-            // 人走带门
-            bufferedInputStream.close();
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        exportFile(file,uuid+".zip",response);
         //删除生成的临时文件
         FileUtil.delFolder(tempFolder);
         FileUtil.deleteFile(tempFolder+".zip");
@@ -285,9 +266,18 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
         //创建临时文件夹
         FileUtil.creatFoler(tempFolder);
-
-        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(classId,type,code,level,startTime,endTime);
+        //去重集合
+        List<WrongQuestion> wrongQuestionDuplicateRemovalList = new ArrayList<>();
+        Map<String,WrongQuestion>  wrongQuestionMap = new HashMap<>();
+        String codes = getAllKnowledgeCodeByCode(code);
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(classId,type,codes,level,startTime,endTime);
         wrongQuestionList.forEach(q->{
+            wrongQuestionMap.put(q.getName(),q);
+        });
+        wrongQuestionMap.keySet().forEach(key->{
+            wrongQuestionDuplicateRemovalList.add(wrongQuestionMap.get(key));
+        });
+        wrongQuestionDuplicateRemovalList.forEach(q->{
             File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
             //复制文件到临时文件夹
             FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
@@ -298,11 +288,24 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             }
         });
         File file = new File(tempFolder+".zip");
+        exportFile(file,uuid+".zip",response);
+        //删除生成的临时文件
+        FileUtil.delFolder(tempFolder);
+        FileUtil.deleteFile(tempFolder+".zip");
+    }
+    /** 
+    * @Description: 向浏览器导出文件
+    * @Param:
+    * @return:
+    * @Author: Mr.Tan 
+    * @Date: 2019/10/16 14:23
+    */ 
+    private void exportFile(File file,String fileName,HttpServletResponse response){
         try {
             InputStream is = new FileInputStream(file);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
             // 设置在下载框默认显示的文件名
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String((uuid+".zip").getBytes(), "iso-8859-1"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String((fileName).getBytes(), "iso-8859-1"));
             // 指明response的返回对象是文件流
             response.setContentType("application/octet-stream");
             // 读出文件到response
@@ -319,9 +322,6 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //删除生成的临时文件
-        FileUtil.delFolder(tempFolder);
-        FileUtil.deleteFile(tempFolder+".zip");
     }
 
     /** 
@@ -332,7 +332,8 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     * @Date: 2019/10/12 17:17
     */ 
     public boolean hasStudentWrongQuestion(Integer studentId,String code,String level,String startTime,String endTime){
-        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,code,level,startTime,endTime);
+        String codes = getAllKnowledgeCodeByCode(code);
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,codes,level,startTime,endTime);
         if(wrongQuestionList.size()>0){
             return true;
         }else{
@@ -346,13 +347,25 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     * @Date: 2019/10/14 11:20
     */ 
     public boolean hasClassWrongQuestion(Integer studentId,Integer type,String code,String level,String startTime,String endTime){
-        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(studentId,type,code,level,startTime,endTime);
+        String codes = getAllKnowledgeCodeByCode(code);
+        List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByClassIdAndConditions(studentId,type,codes,level,startTime,endTime);
         if(wrongQuestionList.size()>0){
             return true;
         }else{
             return false;
         }
     }
-
+    private String getAllKnowledgeCodeByCode(String code){
+        String codes = "";
+        List<String> codeList = knowledgeRepository.findCodeByParentCode(code);
+        for (String c:codeList  ) {
+            if(StringUtils.isBlank(code)){
+                code += "'"+c+"'";
+            }else {
+                code += ",'"+c+"'";
+            }
+        }
+        return codes;
+    }
 
 }

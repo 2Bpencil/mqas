@@ -28,7 +28,7 @@ public class WrongQuestionDao {
     public List<WrongQuestion> getWrongQuestionByStudentIdAndConditions(Integer studentId,String code,String level,String startTime,String endTime){
         String sql = "select * from wrong_question where student_id = "+ studentId +" and time BETWEEN '"+startTime+"' AND '"+endTime+"' ";
         if(StringUtils.isNotBlank(code)){
-            sql += " and knowledge_code = '"+code+"' ";
+            sql += " and knowledge_code in ("+code+") ";
         }
         if(StringUtils.isNotBlank(level)){
             sql += " and level = "+level+" ";
@@ -52,7 +52,7 @@ public class WrongQuestionDao {
             //班级
             sql = "SELECT wq.* FROM wrong_question wq LEFT JOIN student stu ON wq.student_id = stu.id WHERE stu.classes_id = ?  and wq.time BETWEEN '"+startTime+"' AND '"+endTime+"' ";
             if(StringUtils.isNotBlank(code)){
-                sql += " and wq.knowledge_code = '"+code+"' ";
+                sql += " and wq.knowledge_code in ("+code+") ";
             }
             if(StringUtils.isNotBlank(level)){
                 sql += " and wq.level = "+level+" ";

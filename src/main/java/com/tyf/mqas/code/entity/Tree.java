@@ -6,6 +6,7 @@ public class Tree {
 	private String pId;
 	private String value;
 	private String icon;
+	private String value2;
 
 	public Tree() {
 		super();
@@ -64,5 +65,13 @@ public class Tree {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public String getValue2() {
+		return value2;
+	}
+
+	public void setValue2(String value2) {
+		this.value2 = value2;
 	}
 }

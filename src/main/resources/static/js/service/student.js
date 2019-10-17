@@ -4,6 +4,8 @@ var studentValidator;//表单验证
 var $table = "#student_table";
 $(document).ready(function(){
     initTree()
+    initExportKnowledgeTree();
+    initFuzzySearch();
     validateData();
 });
 /**
@@ -420,6 +422,52 @@ function getAllNodes(node,nodeArr){
     return nodeArr;
 }
 
+/**
+ * 初始化导出错题知识树
+ */
+function initExportKnowledgeTree(){
+    var zNodes = []; //zTree的数据属性
+    var setting = { //zTree的参数配置
+        check : {
+            enable : false,
+            chkStyle : 'checkbox',
+            chkboxType : {
+                "Y" : "ps",
+                "N" : "ps"
+            }
+        },
+        data : {
+            simpleData : {
+                enable : true
+            }
+        },
+        async : {
+            enable : true,
+            type : "GET",
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            url : contextPath+"knowledge/getKnowledgeTree",
+
+        },
+        callback : {
+            onClick: zTreeOnClickExport
+        }
+    };
+    $.fn.zTree.init($("#export_knowledge_tree"), setting, zNodes);
+}
+function zTreeOnClickExport(event, treeId, treeNode) {
+    $('#export_form_code').val(treeNode.value);
+    $('#export_form_knowledge_name').val(treeNode.value2);
+    $('#export_knowledge_tree_div').hide();
+}
+
+/**
+ * 初始化模糊搜索方法
+ */
+function initFuzzySearch(){
+    fuzzySearch('export_knowledge_tree','#export_search_tree',null,true); //初始化模糊搜索方法
+}
 
 
 /**
@@ -463,7 +511,6 @@ function analysisOfClass(){
  * 弹出导出配置表单
  */
 function exportWrongQuestion(){
-    console.log($('#export_form_class_id').val());
     if($('#export_form_class_id').val()=='' || $('#export_form_class_id').val()==null){
         showAlert("请选择要导出的年级或者班级",'error');
         return;
@@ -478,9 +525,17 @@ function exportZip(){
     var form = document.getElementById('exportForm');
     form.submit();
 }
+/**
+ * 显示知识树
+ */
+function knowledgeShow(id){
+    $('#'+id).show();
+}
 function clearExportForm(){
     $('#exportForm')[0].reset();
     $('#exportForm').validate().resetForm();
+    $('#export_form_code').val(null);
+    $('#export_knowledge_tree_div').hide();
 }
 
 /*常量*/
