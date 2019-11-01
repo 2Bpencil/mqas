@@ -72,6 +72,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //登录页面用户任意访问
                 .permitAll()
                 .and()
+                .sessionManagement()
+                .invalidSessionUrl("/login")
+                .and()
                 .logout().logoutSuccessHandler(logoutSuccessHandler)
                 .permitAll()
                 .and()

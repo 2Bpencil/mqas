@@ -347,6 +347,7 @@ function clearExportForm(){
     $('#exportForm')[0].reset();
     $('#exportForm').validate().resetForm();
     $('#export_form_code').val(null)
+    $('#export_knowledge_tree_div').hide();
 }
 
 /**

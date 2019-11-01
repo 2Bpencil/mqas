@@ -351,8 +351,9 @@ public class PoiUtil {
 	 */
 	public static Integer convertStringToInteger(String data) {
 		Integer dataInt = null;
-		if (StringUtils.isBlank(data))
+		if (StringUtils.isBlank(data)){
 			return null;
+		}
 		try {
 			dataInt = Integer.parseInt(data);
 			return dataInt;
