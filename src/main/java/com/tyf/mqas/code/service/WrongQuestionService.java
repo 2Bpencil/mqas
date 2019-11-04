@@ -4,17 +4,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.base.datapage.PageGetter;
-import com.tyf.mqas.code.dao.KnowledgeRepository;
-import com.tyf.mqas.code.dao.WrongQuestionDao;
-import com.tyf.mqas.code.dao.WrongQuestionRepository;
+import com.tyf.mqas.code.dao.*;
+import com.tyf.mqas.code.entity.Classes;
+import com.tyf.mqas.code.entity.Student;
 import com.tyf.mqas.code.entity.TestPaper;
 import com.tyf.mqas.code.entity.WrongQuestion;
 import com.tyf.mqas.config.ConfigData;
-import com.tyf.mqas.utils.FileUtil;
-import com.tyf.mqas.utils.PoiUtil;
-import com.tyf.mqas.utils.SecurityUtil;
-import com.tyf.mqas.utils.ZipTools;
+import com.tyf.mqas.utils.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,6 +43,10 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     private ConfigData configData;
     @Autowired
     private WrongQuestionDao wrongQuestionDao;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private ClassesRepository classesRepository;
 
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -232,27 +235,27 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     * @Date: 2019/10/12 14:16
     */ 
     public void exportStudentWrongQuestion(Integer studentId,String code,String level,String startTime,String endTime,HttpServletResponse response){
-        String uuid = UUID.randomUUID().toString();
-        String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
-        //创建临时文件夹
-        FileUtil.creatFoler(tempFolder);
         String codes = getAllKnowledgeCodeByCode(code);
         List<WrongQuestion> wrongQuestionList = wrongQuestionDao.getWrongQuestionByStudentIdAndConditions(studentId,codes,level,startTime,endTime);
+        // 创建Word文件
+        XWPFDocument doc = new XWPFDocument();
         wrongQuestionList.forEach(q->{
             File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
-            //复制文件到临时文件夹
-            FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
-            try {
-                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding , "学生错题");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            PoiWordUtil.addPicture(doc,file,q.getFileSuffix(),q.getName());
         });
-        File file = new File(tempFolder+".zip");
-        exportFile(file,uuid+".zip",response);
-        //删除生成的临时文件
-        FileUtil.delFolder(tempFolder);
-        FileUtil.deleteFile(tempFolder+".zip");
+        Student student = studentRepository.getStudentById(studentId);
+        try{
+            String fileName = "学生--"+student.getName()+"--错题_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;");
+            response.setHeader("Content-disposition", "attachment;filename="
+                    + new String(fileName.getBytes(Charset.defaultCharset().toString()), "ISO8859-1") + ".docx");
+            OutputStream outputStream = response.getOutputStream();
+            doc.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
     /** 
     * @Description:  导出年级班级错题
@@ -277,21 +280,25 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
         wrongQuestionMap.keySet().forEach(key->{
             wrongQuestionDuplicateRemovalList.add(wrongQuestionMap.get(key));
         });
+        // 创建Word文件
+        XWPFDocument doc = new XWPFDocument();
         wrongQuestionDuplicateRemovalList.forEach(q->{
             File file = new File(configData.getWrongQuestionDir()+"/"+q.getFileSaveName());
-            //复制文件到临时文件夹
-            FileUtil.copyFileUsingFileChannels(file,tempFolder+"/"+System.currentTimeMillis()+"."+q.getFileSuffix());
-            try {
-                ZipTools.compress(tempFolder, tempFolder+".zip", ZipTools.encoding , "学生错题");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            PoiWordUtil.addPicture(doc,file,q.getFileSuffix(),q.getName());
         });
-        File file = new File(tempFolder+".zip");
-        exportFile(file,uuid+".zip",response);
-        //删除生成的临时文件
-        FileUtil.delFolder(tempFolder);
-        FileUtil.deleteFile(tempFolder+".zip");
+        Classes classes = classesRepository.getOne(classId);
+        try{
+            String fileName = classes.getName()+"--错题_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;");
+            response.setHeader("Content-disposition", "attachment;filename="
+                    + new String(fileName.getBytes(Charset.defaultCharset().toString()), "ISO8859-1") + ".docx");
+            OutputStream outputStream = response.getOutputStream();
+            doc.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
     /** 
     * @Description: 向浏览器导出文件
@@ -323,6 +330,8 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             e.printStackTrace();
         }
     }
+
+
 
     /** 
     * @Description: 判断是否有文件 

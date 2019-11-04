@@ -19,15 +19,27 @@ public class PoiWordUtil {
     public static void main(String[] args) {
         // 创建Word文件
         XWPFDocument doc = new XWPFDocument();
-        //插入图片
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\aaa"),"jpg","aaa");
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\bbb"),"jpg","bbb");
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\bbb"),"jpg","ccc");
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\bbb"),"jpg","ddd");
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\bbb"),"jpg","eee");
+        PoiWordUtil.addPicture(doc,new File("F:\\test\\doc\\bbb"),"jpg","fff");
+        try{
+            FileOutputStream out = new FileOutputStream("F:\\test\\doc\\test.docx");
+            doc.write(out);
+            out.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void  addPicture(XWPFDocument doc, File imgFile,String suffix,String title){
         // 新建一个段落
         XWPFParagraph p = doc.createParagraph();
         XWPFRun r = p.createRun();
-
-        File imgFile = new File("F:\\test\\doc\\timg.jpg");
         int format = 0;
-
-        switch (".jpg"){
+        switch ("."+suffix){
             case ".wmf":
                 format = XWPFDocument.PICTURE_TYPE_WMF;
                 break;
@@ -62,24 +74,17 @@ public class PoiWordUtil {
                 format = XWPFDocument.PICTURE_TYPE_WPG;
                 break;
         }
-        r.setText(imgFile.getPath());
+        r.setText(title);
         r.addBreak();
         try {
-            r.addPicture(new FileInputStream(imgFile.getPath()), format, imgFile.getPath(), Units.toEMU(430), Units.toEMU(250));
+            r.addPicture(new FileInputStream(imgFile.getPath()), format, imgFile.getPath(), Units.toEMU(400), Units.toEMU(200));
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        r.addBreak(BreakType.PAGE);
-        try{
-            FileOutputStream out = new FileOutputStream("F:\\test\\doc\\test.doc");
-            doc.write(out);
-            out.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
+        //另起一页
+//        r.addBreak(BreakType.PAGE);
     }
 
 
