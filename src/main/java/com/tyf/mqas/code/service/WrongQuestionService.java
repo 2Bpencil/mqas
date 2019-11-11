@@ -265,10 +265,6 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
     * @Date: 2019/10/14 11:19
     */ 
     public void exportClassWrongQuestion(Integer classId,Integer type,String code,String level,String startTime,String endTime,HttpServletResponse response){
-        String uuid = UUID.randomUUID().toString();
-        String tempFolder = configData.getWrongQuestionDir()+"/temp/"+ uuid;
-        //创建临时文件夹
-        FileUtil.creatFoler(tempFolder);
         //去重集合
         List<WrongQuestion> wrongQuestionDuplicateRemovalList = new ArrayList<>();
         Map<String,WrongQuestion>  wrongQuestionMap = new HashMap<>();
