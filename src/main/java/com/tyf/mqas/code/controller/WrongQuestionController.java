@@ -1,6 +1,5 @@
 package com.tyf.mqas.code.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tyf.mqas.base.datapage.DataPage;
 import com.tyf.mqas.code.entity.Student;
