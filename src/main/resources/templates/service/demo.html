@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      th:replace="layout/layout">
+
+<body >
+
+    <div class="row wrapper border-bottom white-bg page-heading" th:fragment="pageTitle">
+        <div class="col-sm-4">
+
+            <h2>This is main tit<!--页面名称-->le</h2>
+        </div>
+        <div class="col-sm-8">
+            <!--页面按钮-->
+            <div class="title-action">
+                <a href="empty_page.html" class="btn btn-primary">This is action area</a>
+            </div>
+        </div>
+    </div>
+    <!--页面内容-->
+    <div class="wrapper wrapper-content" th:fragment="content">
+        <div class="middle-box text-center animated fadeInRightBig">
+            <h3 class="font-bold">This is page content  hi ly</h3>
+        </div>
+    </div>
+
+    <div  th:fragment="jsDiv">
+
+    </div>
+
+    <div  th:fragment="modal">
+
+    </div>
+</body>
+
+</html>
