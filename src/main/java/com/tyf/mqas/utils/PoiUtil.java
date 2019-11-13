@@ -81,7 +81,6 @@ public class PoiUtil {
 	 * @return
 	 */
 	public static boolean checkImportFileHead(MultipartFile importFile, String[] heads) {
-		System.out.println();
 		Workbook wb = null;
 		try {
 			wb = new XSSFWorkbook(importFile.getInputStream());
