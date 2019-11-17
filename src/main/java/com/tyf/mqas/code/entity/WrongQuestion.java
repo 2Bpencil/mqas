@@ -16,7 +16,7 @@ public class WrongQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(length = 100)
+    @Column(length = 500)
     private String name;
     @Column(length = 100)
     private String knowledgeCode;

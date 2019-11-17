@@ -7,7 +7,6 @@ import com.tyf.mqas.base.datapage.PageGetter;
 import com.tyf.mqas.code.dao.*;
 import com.tyf.mqas.code.entity.Classes;
 import com.tyf.mqas.code.entity.Student;
-import com.tyf.mqas.code.entity.TestPaper;
 import com.tyf.mqas.code.entity.WrongQuestion;
 import com.tyf.mqas.config.ConfigData;
 import com.tyf.mqas.utils.*;
@@ -16,7 +15,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -176,24 +174,23 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
                 MultipartFile file = (MultipartFile) iter.next();
                 String realFileName = file.getOriginalFilename();
                 String suffix = realFileName.substring(realFileName.lastIndexOf(".") + 1);
-                wrongQuestion.setTime(sdf.format(new Date()));
                 wrongQuestion.setFileSuffix(suffix);
-//                wrongQuestion.setKnowledgeName(knowledgeRepository.findByCode(wrongQuestion.getKnowledgeCode()).getName());
                 //保存路径
                 String saveDir = configData.getWrongQuestionDir();
                 String saveFileName = UUID.randomUUID().toString();
-                wrongQuestion.setFileSaveName(saveFileName);
+                wrongQuestion.setFileSaveName(saveFileName+"."+suffix);
                 InputStream input = null;
                 try {
                     input = file.getInputStream();
-                    FileUtil.copyFile(input,saveDir+"/"+saveFileName);
+                    FileUtil.copyFile(input,saveDir+"/"+saveFileName+"."+suffix);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                wrongQuestionRepository.save(wrongQuestion);
+
             }
         }
-
+        wrongQuestion.setTime(sdf.format(new Date()));
+        wrongQuestionRepository.save(wrongQuestion);
     }
 
     /**
@@ -371,6 +368,30 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             }
         }
         return codes;
+    }
+
+    /**
+     * 识别图片中的文字
+     * @param request
+     * @return
+     */
+    public String ocr(HttpServletRequest request){
+        String content = "";
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
+            Iterator iter = mr.getFileMap().values().iterator();
+            if (iter.hasNext()) {
+                MultipartFile file = (MultipartFile) iter.next();
+                try {
+                    content = Tess4jUtils.doOCR_BufferedImage(file.getInputStream());
+                    content = content.replaceAll("\\s*|\t|\r|\n","");
+                } catch (Exception e) {
+                    content = "图片内容识别错误！";
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content;
     }
 
 }

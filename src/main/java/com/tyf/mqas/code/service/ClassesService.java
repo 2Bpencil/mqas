@@ -263,6 +263,9 @@ public class ClassesService {
         grades.forEach(grade->{
             Map<String,Object> map = new HashMap<>();
             Integer num = studentRepository.getStudentNumByGradeId(grade.getId());
+            if(num==0){
+                num = 50;
+            }
             map.put("name",grade.getName());
             map.put("max",num);
             indicatorList.add(map);

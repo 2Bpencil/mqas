@@ -297,4 +297,21 @@ public class WrongQuestionController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @Description: 上传图片进行识别
+     * @Param:
+     * @return:
+     * @Author: Mr.Tan
+     * @Date: 2019/10/14 9:52
+     */
+    @RequestMapping(value = "uploadOcr",method = RequestMethod.POST)
+    public void uploadOcr(HttpServletRequest request, HttpServletResponse response){
+        String content = wrongQuestionService.ocr(request);
+        try {
+            response.getWriter().print(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
  }

@@ -34,8 +34,22 @@ function initTable(){
             { "data": "name",
                 render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS,
                 'orderable' : false ,
-                width: '30%'
+                width: '40%'
 
+            },
+            { "data": "file_save_name",
+                "searchable":false,
+                'orderable' : false ,
+                width: '5%',
+                'render':function (data, type, row, meta) {
+                    //data  和 row  是数据
+                    console.log("data    "+data);
+                    let img = '';
+                    if(data != null && data != '' && data != 'undefined'){
+                        img =  '<img style="width: 100px;height:90px:" src="/wrongQuestionImage/'+data+'" >';
+                    }
+                    return img;
+                }
             },
             { "data": "level",
                 "searchable":false,
@@ -50,25 +64,25 @@ function initTable(){
                     }
                     return subject;
                 },
-                width: '20%'
+                width: '10%'
             },
             { "data": "knowledge_name",
                 'orderable' : false ,
-                width: '20%'
+                width: '10%'
             },
             { "data": "time",
                 "searchable":false,
-                width: '20%'
+                width: '10%'
             },
             { "data": null,
                 "searchable":false,
                 'orderable' : false ,
-                width: '10%',
+                width: '5%',
                 'render':function (data, type, row, meta) {
                 //data  和 row  是数据
                     var buttons = '';
                     buttons+='<button type="button" onclick="deleteWrongQuestion('+data.id+')" class="btn btn-primary btn-xs" >删除</button>&nbsp;&nbsp;';
-                    buttons+='<button type="button" onclick="downloadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs" >下载</button>&nbsp;&nbsp;';
+                    // buttons+='<button type="button" onclick="downloadWrongQuestion('+data.id+')" class="btn btn-primary btn-xs" >下载</button>&nbsp;&nbsp;';
                     return buttons;
                 }
             },
@@ -108,7 +122,7 @@ function validateData(){
         rules: {
             name: {
                 required: true,
-                maxlength: 100
+                maxlength: 500
             },
             knowledge_name:{
                 required: true,
@@ -117,16 +131,16 @@ function validateData(){
             level:{
                 required: true,
             },
-            file:{
-                required: true,
-            }
+            // file:{
+            //     required: true,
+            // }
 
         },
         messages : {
 
             name : {
                 required: "不能为空",
-                maxlength : "不超过100个字符",
+                maxlength : "不超过500个字符",
             },
             knowledge_name:{
                 required: "不能为空",
@@ -135,9 +149,9 @@ function validateData(){
             level:{
                 required: "请选择错题级别",
             },
-            file:{
-                required: "请上传文件",
-            }
+            // file:{
+            //     required: "请上传文件",
+            // }
         },
         submitHandler : function(form) {
             saveWrongQuestion();
@@ -207,9 +221,41 @@ function validateData(){
                     }
                 }
             });
+        }
+    });
+    $("#uploadForm").validate({
+        rules: {
+            upload_file:{
+                required: true,
+            }
 
+        },
+        messages : {
 
+            upload_file:{
+                required: "请上传文件",
+            }
+        },
+        submitHandler : function(form) {
 
+            var formData = new FormData();
+            formData.append("file",$("#upload_file")[0].files[0]);
+            $.ajax({
+                type : "POST",
+                data : formData,
+                contentType : false, //必须
+                processData : false,
+                dataType:"text",
+                url : contextPath+"wrongQuestion/uploadOcr",
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function(result){
+                    hideModal("uploadModal");
+                    $('#form_name').val(result);
+                    clearUploadForm();
+                }
+            });
         }
     });
 }
@@ -220,6 +266,14 @@ function uploadWrongQuestion() {
     $('#form_student_id').val(studentId);
     showModal('wrongQuestionModal')
 }
+
+/**
+ * ocr图片识别
+ */
+function ocrUpload() {
+    showModal('uploadModal')
+}
+
 /**
  * 清空表单
  */
@@ -348,6 +402,11 @@ function clearExportForm(){
     $('#exportForm').validate().resetForm();
     $('#export_form_code').val(null)
     $('#export_knowledge_tree_div').hide();
+}
+function clearUploadForm(){
+    $('#uploadForm')[0].reset();
+    $('#uploadForm').validate().resetForm();
+
 }
 
 /**

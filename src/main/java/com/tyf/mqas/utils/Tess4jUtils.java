@@ -3,7 +3,10 @@ package com.tyf.mqas.utils;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * @Description: 
@@ -19,6 +22,17 @@ public class Tess4jUtils {
         instance.setLanguage("chi_sim");
         String result = instance.doOCR(imageFile);
         System.out.println(result.replaceAll(" ",""));
+    }
+
+
+    public static String doOCR_BufferedImage(InputStream is) throws Exception{
+        ITesseract instance = new Tesseract();
+        BufferedImage bi = ImageIO.read(is);
+        //set language
+        instance.setDatapath(testResourcesLanguagePath);
+        instance.setLanguage("chi_sim");
+        String result = instance.doOCR(bi);
+        return result;
     }
 
 }

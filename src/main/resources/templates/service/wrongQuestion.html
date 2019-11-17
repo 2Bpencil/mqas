@@ -40,6 +40,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>错题信息</th>
+                                <th>图片</th>
                                 <th>级别</th>
                                 <th>知识点</th>
                                 <th>时间</th>
@@ -49,6 +50,7 @@
                             <tfoot>
                                 <th>ID</th>
                                 <th>错题信息</th>
+                                <th>图片</th>
                                 <th>级别</th>
                                 <th>知识点</th>
                                 <th>时间</th>
@@ -82,7 +84,11 @@
                 <div class="modal-body">
                     <form role="form" id="wrongQuestionForm" >
                         <input type="hidden" id="form_student_id" name="studentId">
-                        <div class="form-group"><label>错题标识</label> <input type="text" id="form_name"  placeholder="用于区分重复错题" class="form-control" name="name"></div>
+                        <div class="form-group">
+                            <label>错题题目</label>
+                            <label><button class="btn btn-success btn-xs" type="button" onclick="ocrUpload()"><i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">错题图片识别</span></button></label>
+                            <textarea id="form_name" name="name" rows="4" placeholder="错题题目" class="form-control"></textarea>
+                        </div>
                         <div class="form-group">
                             <label>知识点名称</label>
                             <input type="text" id="form_knowledge_name" readonly="readonly" onclick="knowledgeShow('knowledge_tree_div');" placeholder="请选择知识点" class="form-control" name="knowledge_name">
@@ -104,7 +110,7 @@
                             </select>
 
                         </div>
-                        <div class="form-group"><label>上传错题</label> <input type="file" id="form_file"  placeholder="" class="form-control" name="file"></div>
+                        <div class="form-group"><label>上传图片</label> <input type="file" id="form_file"  placeholder="" class="form-control" name="file"></div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearWrongForm();">关闭</button>
                             <button type="submit" class="btn btn-primary" >保存</button>
@@ -163,6 +169,32 @@
             </div>
         </div>
     </div>
+
+    <div class="modal inmodal" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"  onclick="clearUploadForm();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">错题图片识别</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="uploadForm" >
+                        <div class="form-group">
+                            <label>错题图片</label>
+                            <input type="file" id="upload_file"  class="form-control" name="upload_file">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal" onclick="clearUploadForm();">关闭</button>
+                            <button type="submit" class="btn btn-primary" >识别</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 </body>
