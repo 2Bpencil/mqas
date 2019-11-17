@@ -57,6 +57,7 @@ public class PoiWordUtil {
         XWPFParagraph p = doc.createParagraph();
         //一个XWPFRun代表具有相同属性的一个区域。
         XWPFRun r = p.createRun();
+
         int format = 0;
         switch ("."+suffix){
             case ".wmf":
@@ -96,7 +97,11 @@ public class PoiWordUtil {
         r.setText(title);
         r.addBreak();
         try {
-            r.addPicture(new FileInputStream(imgFile.getPath()), format, imgFile.getPath(), Units.toEMU(400), Units.toEMU(200));
+            r.addPicture(new FileInputStream(imgFile.getPath()), format, imgFile.getPath(), Units.toEMU(100), Units.toEMU(50));
+            for (int i = 0; i < 5 ; i++) {
+                r.setText("");
+                r.addBreak();
+            }
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
