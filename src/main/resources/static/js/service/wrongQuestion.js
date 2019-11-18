@@ -43,7 +43,6 @@ function initTable(){
                 width: '5%',
                 'render':function (data, type, row, meta) {
                     //data  和 row  是数据
-                    console.log("data    "+data);
                     let img = '';
                     if(data != null && data != '' && data != 'undefined'){
                         img =  '<img style="width: 100px;height:90px:" src="/wrongQuestionImage/'+data+'" >';
@@ -237,7 +236,7 @@ function validateData(){
             }
         },
         submitHandler : function(form) {
-
+            toastrTips("图片正在识别中,请稍后...");
             var formData = new FormData();
             formData.append("file",$("#upload_file")[0].files[0]);
             $.ajax({
@@ -252,6 +251,7 @@ function validateData(){
                 },
                 success: function(result){
                     hideModal("uploadModal");
+
                     $('#form_name').val(result);
                     clearUploadForm();
                 }

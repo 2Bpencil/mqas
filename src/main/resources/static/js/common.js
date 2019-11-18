@@ -35,6 +35,30 @@ function showAlert(msg,type){
 }
 
 /**
+ * 提示
+ * @param msg
+ */
+function toastrTips(msg) {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "progressBar": true,
+        "preventDuplicates": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "400",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toastr.info(msg);
+}
+
+/**
  * 清除密码表单
  */
 function clearPasswordForm(){

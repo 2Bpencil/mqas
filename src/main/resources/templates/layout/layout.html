@@ -25,6 +25,9 @@
     <link th:href="@{/css/plugins/select2/select2.min.css}" rel="stylesheet">
     <link th:href="@{/css/plugins/iCheck/custom.css}" rel="stylesheet">
     <link th:href="@{/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css}" rel="stylesheet">
+    <!-- Toastr style -->
+    <link th:href="@{/css/plugins/toastr/toastr.min.css}" rel="stylesheet">
+
 </head>
 <body>
     <div id="wrapper">
@@ -174,6 +177,8 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/inspinia.js}"></script>
     <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+    <!-- Toastr script -->
+    <script th:src="@{/js/plugins/toastr/toastr.min.js}"></script>
     <!--getScheme()获取协议，getServerName()获取服务器名，getServerPort()服务器端口，getContextPath() APP根路径-->
     <a th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/'} "
        id="contextPath" style="display: none"></a>
