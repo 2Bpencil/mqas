@@ -16,6 +16,8 @@ public class ConfigData {
     private String testPaperDir;
     @Value("${wrongQuestionDir}")
     private String wrongQuestionDir;
+    @Value("${tessdataPath}")
+    private String tessdataPath;
 
     public String getTestPaperDir() {
         return testPaperDir;
@@ -31,6 +33,14 @@ public class ConfigData {
 
     public void setWrongQuestionDir(String wrongQuestionDir) {
         this.wrongQuestionDir = wrongQuestionDir;
+    }
+
+    public String getTessdataPath() {
+        return tessdataPath;
+    }
+
+    public void setTessdataPath(String tessdataPath) {
+        this.tessdataPath = tessdataPath;
     }
 }
     

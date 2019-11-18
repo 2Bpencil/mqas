@@ -383,7 +383,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             if (iter.hasNext()) {
                 MultipartFile file = (MultipartFile) iter.next();
                 try {
-                    content = Tess4jUtils.doOCR_BufferedImage(file.getInputStream());
+                    content = Tess4jUtils.doOCR_BufferedImage(file.getInputStream(),configData.getTessdataPath());
                     content = content.replaceAll("\\s*|\t|\r|\n","");
                 } catch (Exception e) {
                     content = "图片内容识别错误！";
