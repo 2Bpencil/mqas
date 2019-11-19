@@ -31,9 +31,9 @@ public class ScheduledTask {
 
 
     /**
-     * 每天保存当月的学生总数
+     * 每天保存当月的学生总数  每天下午六点
      */
-    @Scheduled(cron="0 0 0 * * ?")
+    @Scheduled(cron="0 0 18 * * ?")
     public void saveStudentRecords(){
         LocalDate localDate = LocalDate.now();
         int month = localDate.getMonthValue();
