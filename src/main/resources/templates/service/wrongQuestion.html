@@ -87,7 +87,7 @@
                         <div class="form-group">
                             <label>错题题目</label>
                             <label><button class="btn btn-success btn-xs" type="button" onclick="ocrUpload()"><i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">错题图片识别</span></button></label>
-                            <textarea id="form_name" name="name" rows="4" placeholder="错题题目" class="form-control"></textarea>
+                            <textarea id="form_name" name="name" rows="8" placeholder="错题题目" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
                             <label>知识点名称</label>
@@ -179,6 +179,13 @@
                 </div>
                 <div class="modal-body">
                     <form role="form" id="uploadForm" >
+                        <div class="form-group">
+                            <label>文字识别类型</label>
+                            <select class="form-control m-b"id="form_ocrType"  name="ocrType">
+                                <option value="0">中文</option>
+                                <option value="1">英文</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>错题图片</label>
                             <input type="file" id="upload_file"  class="form-control" name="upload_file">

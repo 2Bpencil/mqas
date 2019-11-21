@@ -376,6 +376,7 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
      * @return
      */
     public String ocr(HttpServletRequest request){
+        String ocrType = request.getParameter("ocrType");
         String content = "";
         if (request instanceof MultipartHttpServletRequest) {
             MultipartHttpServletRequest mr = (MultipartHttpServletRequest) request;
@@ -383,8 +384,11 @@ public class WrongQuestionService extends PageGetter<WrongQuestion>{
             if (iter.hasNext()) {
                 MultipartFile file = (MultipartFile) iter.next();
                 try {
-                    content = Tess4jUtils.doOCR_BufferedImage(file.getInputStream(),configData.getTessdataPath());
-                    content = content.replaceAll("\\s*|\t|\r|\n","");
+                    if(Integer.parseInt(ocrType)==0){
+                        content = Tess4jUtils.doOCR_Chi(file.getInputStream(),configData.getTessdataPath());
+                    }else{
+                        content = Tess4jUtils.doOCR_Eng(file.getInputStream(),configData.getTessdataPath());
+                    }
                 } catch (Exception e) {
                     content = "图片内容识别错误！";
                     e.printStackTrace();

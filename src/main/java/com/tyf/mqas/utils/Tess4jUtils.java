@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class Tess4jUtils {
     public static void main(String[] args) throws Exception{
         ITesseract instance = new Tesseract();
-        File imageFile = new File("C:\\Users\\Administrator\\Pictures\\wx2.jpg");
+        File imageFile = new File("C:\\Users\\Administrator\\Pictures\\math.jpg");
         instance.setDatapath("F:\\mqas\\tessdata");
         instance.setLanguage("chi_sim");
         String result = instance.doOCR(imageFile);
@@ -31,6 +31,37 @@ public class Tess4jUtils {
         //set language
         instance.setDatapath(tessdataPath);
         instance.setLanguage("chi_sim");
+        String result = instance.doOCR(bi);
+        return result;
+    }
+    /** 
+    * @Description:  识别中文
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/11/19 11:40
+    */ 
+    public static String doOCR_Chi(InputStream is,String tessdataPath)throws Exception{
+        ITesseract instance = new Tesseract();
+        BufferedImage bi = ImageIO.read(is);
+        instance.setDatapath(tessdataPath);
+        instance.setLanguage("chi_sim");
+        String result = instance.doOCR(bi);
+        result = result.replaceAll("\\s*|\t|\r|\n","");
+        return result;
+    }
+    /** 
+    * @Description:  识别英文
+    * @Param:  
+    * @return:  
+    * @Author: Mr.Tan 
+    * @Date: 2019/11/19 11:40
+    */ 
+    public static String doOCR_Eng(InputStream is,String tessdataPath)throws Exception{
+        ITesseract instance = new Tesseract();
+        BufferedImage bi = ImageIO.read(is);
+        instance.setDatapath(tessdataPath);
+        instance.setLanguage("eng");
         String result = instance.doOCR(bi);
         return result;
     }

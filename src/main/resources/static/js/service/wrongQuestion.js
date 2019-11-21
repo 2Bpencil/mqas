@@ -121,7 +121,7 @@ function validateData(){
         rules: {
             name: {
                 required: true,
-                maxlength: 500
+                // maxlength: 500
             },
             knowledge_name:{
                 required: true,
@@ -139,7 +139,7 @@ function validateData(){
 
             name : {
                 required: "不能为空",
-                maxlength : "不超过500个字符",
+                // maxlength : "不超过500个字符",
             },
             knowledge_name:{
                 required: "不能为空",
@@ -239,6 +239,7 @@ function validateData(){
             toastrTips("图片正在识别中,请稍后...");
             var formData = new FormData();
             formData.append("file",$("#upload_file")[0].files[0]);
+            formData.append("ocrType",$("#form_ocrType").val());
             $.ajax({
                 type : "POST",
                 data : formData,

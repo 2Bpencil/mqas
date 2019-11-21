@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
+    <link rel="shortcut icon" th:href="@{/img/icon/homework.png}"><!--设置标签的图片-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -26,9 +26,9 @@
 
             </div>
             <h3>Welcome to IN+</h3>
-            <p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.
-                <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
-            </p>
+            <!--<p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.-->
+                <!--&lt;!&ndash;Continually expanded and constantly improved Inspinia Admin Them (IN+)&ndash;&gt;-->
+            <!--</p>-->
             <p style="color: red" th:if="${param.error != null}">用户名或者密码错误，请重试！</p>
             <form class="m-t" role="form" th:action="@{/login}" method="POST">
                 <div class="form-group">
