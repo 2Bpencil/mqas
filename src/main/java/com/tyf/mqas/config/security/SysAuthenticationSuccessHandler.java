@@ -45,6 +45,8 @@ public class SysAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
          */
         session.setAttribute(SecurityUtil.CURRENT_USER_SESSION, user);
         session.setAttribute(SecurityUtil.CURRENT_USER_MENU, menuService.getMenusByUserId(user.getId()));
+        //将按钮权限存入
+
         redirectStrategy.sendRedirect(request,response,"/index");
         logger.info("用户-"+user.getUsername()+"-登录成功!");
     }

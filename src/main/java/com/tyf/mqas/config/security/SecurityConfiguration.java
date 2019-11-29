@@ -131,7 +131,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return engine;
     }
 
-    //声明ViewResolver
     @Bean
     public ThymeleafViewResolver viewResolver(){
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();

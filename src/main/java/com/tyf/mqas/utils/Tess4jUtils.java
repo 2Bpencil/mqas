@@ -7,6 +7,7 @@ import org.springframework.util.ClassUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
@@ -17,10 +18,11 @@ import java.io.InputStream;
 public class Tess4jUtils {
     public static void main(String[] args) throws Exception{
         ITesseract instance = new Tesseract();
-        File imageFile = new File("C:\\Users\\Administrator\\Pictures\\math.jpg");
+        FileInputStream fi = new FileInputStream("C:\\Users\\Administrator\\Pictures\\demo\\math.jpg");
+        BufferedImage bi = ImageIO.read(fi);
         instance.setDatapath("F:\\mqas\\tessdata");
-        instance.setLanguage("chi_sim");
-        String result = instance.doOCR(imageFile);
+        instance.setLanguage("chi_sim+equ");
+        String result = instance.doOCR(bi);
         System.out.println(result.replaceAll(" ",""));
     }
 
