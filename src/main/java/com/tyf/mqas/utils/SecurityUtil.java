@@ -12,6 +12,7 @@ public class SecurityUtil {
 
     final public static String CURRENT_USER_SESSION = "CurUser";
     final public static String CURRENT_USER_MENU = "curMenu";
+    final public static String CURRENT_USER_BUTTON = "curButton";
 
 
     /**

@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 * @Description: 登录成功后控制类
@@ -45,7 +47,12 @@ public class SysAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
          */
         session.setAttribute(SecurityUtil.CURRENT_USER_SESSION, user);
         session.setAttribute(SecurityUtil.CURRENT_USER_MENU, menuService.getMenusByUserId(user.getId()));
+        Map<String,Object> buttonMap = new HashMap<>();
+        buttonMap.put("clear","ROLE_TEST");
+        session.setAttribute(SecurityUtil.CURRENT_USER_BUTTON,buttonMap);
         //将按钮权限存入
+
+
 
         redirectStrategy.sendRedirect(request,response,"/index");
         logger.info("用户-"+user.getUsername()+"-登录成功!");
